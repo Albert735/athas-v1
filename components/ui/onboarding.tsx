@@ -16,6 +16,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
+import Octicons from "@expo/vector-icons/Octicons";
+import { TouchableOpacity } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
 
@@ -61,7 +63,7 @@ export function Onboarding({
   primaryButtonText = "Get Started",
   skipButtonText = "Skip",
   nextButtonText = "Next",
-  backButtonText = "Back",
+  // backButtonText = "Back",
   style,
   children,
 }: OnboardingProps) {
@@ -205,6 +207,17 @@ export function Onboarding({
 
   return (
     <View style={[styles.container, { backgroundColor }, style]}>
+      {/* Back Arrow */}
+      {!isFirstStep && (
+        <TouchableOpacity
+          onPress={handleBack}
+          style={styles.backButton}
+          activeOpacity={0.7}
+        >
+          <Octicons name="arrow-left" size={24} color="black" />
+        </TouchableOpacity>
+      )}
+
       <GestureDetector gesture={panGesture}>
         <Animated.View style={[styles.container, animatedStyle]}>
           <ScrollView
@@ -239,12 +252,6 @@ export function Onboarding({
 
       {/* Navigation Buttons */}
       <View style={styles.buttonContainer}>
-        {!isFirstStep && (
-          <Button variant="outline" onPress={handleBack} style={{ flex: 1 }}>
-            {backButtonText}
-          </Button>
-        )}
-
         <Button
           variant="default"
           onPress={handleNext}
@@ -319,6 +326,16 @@ const styles = StyleSheet.create({
     height: 8,
     borderRadius: 4,
     marginHorizontal: 4,
+  },
+  backButton: {
+    position: "absolute",
+    top: 60,
+    left: 24,
+    zIndex: 100,
+    width: 40,
+    height: 40,
+    justifyContent: "center",
+    alignItems: "center",
   },
   skipContainer: {
     position: "absolute",

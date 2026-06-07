@@ -1,6 +1,7 @@
 import { Onboarding, useOnboarding } from "@/components/ui/onboarding";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
+import { router } from "expo-router";
 
 export const OnboardingPresets = {
   welcome: [
@@ -32,8 +33,7 @@ export const OnboardingPresets = {
 };
 
 export default function OnboardingScreen() {
-  const { hasCompletedOnboarding, completeOnboarding, skipOnboarding } =
-    useOnboarding();
+  const { hasCompletedOnboarding, skipOnboarding } = useOnboarding();
 
   if (hasCompletedOnboarding) {
     return (
@@ -51,6 +51,10 @@ export default function OnboardingScreen() {
     );
   }
 
+  const completeOnboarding = () => {
+    router.replace("/(auth)/log-in");
+  };
+
   return (
     <Onboarding
       steps={OnboardingPresets.welcome}
@@ -62,7 +66,7 @@ export default function OnboardingScreen() {
       primaryButtonText="Get Started"
       skipButtonText="Skip"
       nextButtonText="Next"
-      backButtonText="Back"
+      //   backButtonText="Back"
     />
   );
 }
