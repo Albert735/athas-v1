@@ -4,9 +4,13 @@ import { Progress } from "./progress";
 import { StepOne } from "./step-one";
 import { StepTwo } from "./step-two";
 
-export function SignUpForm() {
-  const [step, setStep] = useState(1);
+//type definition
+interface SignUpFormProps {
+  step: number;
+  setStep: (step: number) => void;
+}
 
+export function SignUpForm({ step, setStep }: SignUpFormProps) {
   const [formData, setFormData] = useState({
     fullName: "",
     email: "",

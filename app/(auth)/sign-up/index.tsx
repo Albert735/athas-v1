@@ -12,10 +12,22 @@ import { router } from "expo-router";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { TouchableOpacity } from "react-native";
+import Octicons from "@expo/vector-icons/Octicons";
+import { useState } from "react";
 
 const SPACING = 30;
 
 export default function SignUpScreen() {
+  const [step, setStep] = useState(1);
+  const handleBack = () => {
+    if (step === 2) {
+      setStep(1);
+    } else {
+      router.back();
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -27,6 +39,13 @@ export default function SignUpScreen() {
           contentContainerStyle={styles.scrollContent}
         >
           <View style={styles.header}>
+            <TouchableOpacity
+              onPress={handleBack}
+              style={styles.backButton}
+              activeOpacity={0.7}
+            >
+              <Octicons name="arrow-left" size={24} color="black" />
+            </TouchableOpacity>
             <Button
               variant="outline"
               size="sm"
@@ -63,7 +82,7 @@ export default function SignUpScreen() {
 
             {/* Form */}
             <View style={styles.formCard}>
-              <SignUpForm />
+              <SignUpForm step={step} setStep={setStep} />
             </View>
           </View>
         </ScrollView>
@@ -81,7 +100,9 @@ const styles = StyleSheet.create({
     width: "100%",
     paddingHorizontal: SPACING,
     paddingTop: 10,
-    alignItems: "flex-end",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
 
   content: {
@@ -181,5 +202,9 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     paddingBottom: 40,
     gap: 50,
+  },
+
+  backButton: {
+    padding: 4,
   },
 });
