@@ -11,7 +11,6 @@ export default function AuthLayout() {
       <Stack
         screenOptions={{
           headerShown: false,
-          animation: "fade",
         }}
       >
         <Stack.Screen name="sign-in/index" />
