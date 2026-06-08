@@ -137,7 +137,7 @@ const styles = StyleSheet.create({
   content: {
     width: "100%",
     paddingHorizontal: SPACING,
-    gap: 32,
+    gap: 16,
   },
 
   /** Hero — centred branding stack */
@@ -244,8 +244,8 @@ const styles = StyleSheet.create({
   /** ScrollView inner content — grows to fill, with bottom padding and gap between header and content */
   scrollContent: {
     flexGrow: 1,
-    paddingBottom: 40,
-    gap: 50,
+    // justifyContent: "space-between",
+    gap: 16,
   },
 
   /** Back arrow touch target — small padding for easier tapping */

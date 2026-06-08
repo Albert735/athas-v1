@@ -47,6 +47,7 @@ export default function LogInScreen() {
           contentContainerStyle={{
             flexGrow: 1,
             justifyContent: "space-between",
+            gap: 16,
           }}
           showsVerticalScrollIndicator={false}
         >
