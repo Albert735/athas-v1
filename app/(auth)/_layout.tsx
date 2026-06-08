@@ -8,9 +8,14 @@ export default function AuthLayout() {
   return (
     <>
       <StatusBar style={colorScheme === "dark" ? "light" : "dark"} animated />
-      <Stack screenOptions={{ headerShown: false }}>
-        <Stack.Screen name="log-in" />
-        <Stack.Screen name="sign-up" />
+      <Stack
+        screenOptions={{
+          headerShown: false,
+          animation: "fade",
+        }}
+      >
+        <Stack.Screen name="sign-in/index" />
+        <Stack.Screen name="sign-up/index" />
       </Stack>
     </>
   );

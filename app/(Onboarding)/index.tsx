@@ -52,14 +52,14 @@ export default function OnboardingScreen() {
   }
 
   const completeOnboarding = () => {
-    router.replace("/(auth)/log-in");
+    router.replace("/(auth)/sign-in");
   };
 
   return (
     <Onboarding
       steps={OnboardingPresets.welcome}
       onComplete={completeOnboarding}
-      onSkip={skipOnboarding}
+      onSkip={completeOnboarding}
       showSkip={true}
       showProgress={true}
       swipeEnabled={true}
