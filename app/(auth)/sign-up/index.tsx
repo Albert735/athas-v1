@@ -7,7 +7,6 @@ import {
   View,
 } from "react-native";
 import { SignUpForm } from "@/components/authentication/sign-up/form";
-import { GraduationCap } from "lucide-react-native";
 import { router } from "expo-router";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
