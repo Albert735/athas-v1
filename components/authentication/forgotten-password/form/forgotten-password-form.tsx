@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react-native";
+import { router } from "expo-router";
 
 export function ForgottenPasswordForm() {
   return (
@@ -17,14 +18,20 @@ export function ForgottenPasswordForm() {
           autoCorrect={false}
         />
 
-        <Button variant="default" icon={SendHorizontal}>
+        <Button
+          variant="default"
+          icon={SendHorizontal}
+          onPress={() => {
+            router.push("/OTP");
+          }}
+        >
           Send Reset Link
         </Button>
-
-        <Text style={styles.helperText}>
-          We'll send a password reset link to this email address.
-        </Text>
       </View>
+
+      {/* <Text style={styles.helperText}>
+        We'll send a password reset link to this email address.
+      </Text> */}
     </View>
   );
 }

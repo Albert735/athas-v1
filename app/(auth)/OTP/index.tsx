@@ -1,24 +1,17 @@
-import { Button } from "@/components/ui/button";
-import { Text } from "@/components/ui/text";
-import { ForgottenPasswordForm } from "@/components/authentication/forgotten-password/form/forgotten-password-form";
+import { StyleSheet, View } from "react-native";
 
+import { Text } from "@/components/ui/text";
+import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react-native";
 import { Image } from "expo-image";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView } from "react-native";
+import { OTPForm } from "@/components/authentication/OTP/form/OTP-form";
 
-const SPACING = 30;
-
-export default function ForgottenPasswordScreen() {
+export default function OTPScreen() {
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView
-        style={styles.wrapper}
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        {/* TODO: Create an onBoarding component for the first time user */}
-
+      <KeyboardAvoidingView style={styles.wrapper} behavior="padding">
         <View>
           <View style={styles.logoContainer}>
             <Image
@@ -30,21 +23,23 @@ export default function ForgottenPasswordScreen() {
 
           <View style={styles.content}>
             <View style={styles.header}>
-              <Text style={styles.title}>Forgotten Access?</Text>
+              <Text style={styles.title}>Verify Your Identity</Text>
 
               <Text style={styles.subtitle}>
-                Enter your institutional email address and we'll send a secure
-                link to reset your credentials.
+                We've sent a 6-digit verification code to your registered
+                academic email
               </Text>
             </View>
 
-            <ForgottenPasswordForm />
+            <OTPForm />
           </View>
         </View>
 
         <View style={styles.footerContainer}>
           <ShieldCheck strokeWidth={1} size={12} />
-          <Text style={styles.footer}>SSO PROTECTED</Text>
+          <Text style={styles.footer}>
+            SECURED BY ATHAS IDENTITY {`\n`} MANAGEMENT
+          </Text>
         </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -55,29 +50,24 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   wrapper: {
     flex: 1,
     justifyContent: "space-between",
   },
-
   content: {
-    paddingHorizontal: SPACING,
+    paddingHorizontal: 30,
     gap: 32,
     marginTop: "10%",
   },
-
   header: {
     gap: 12,
     alignItems: "center",
   },
-
   title: {
     fontSize: 28,
     fontWeight: "700",
     textAlign: "center",
   },
-
   subtitle: {
     fontSize: 15,
     lineHeight: 24,
@@ -85,18 +75,15 @@ const styles = StyleSheet.create({
     opacity: 0.7,
     maxWidth: 320,
   },
-
   logoContainer: {
     alignItems: "center",
     marginTop: "5%",
   },
-
   logo: {
     width: 40,
     height: 40,
     borderRadius: 12,
   },
-
   footerContainer: {
     flexDirection: "column",
     alignItems: "center",
@@ -104,7 +91,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     marginBottom: "5%",
   },
-
   footer: {
     fontSize: 12,
     fontWeight: "600",
