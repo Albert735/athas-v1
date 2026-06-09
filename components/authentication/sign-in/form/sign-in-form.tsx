@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { StyleSheet, View } from "react-native";
 import { Text } from "@/components/ui/text";
+import { router } from "expo-router";
 
 /**
  * SignInForm — Email/password login form.
@@ -38,6 +39,9 @@ export function SignInForm() {
             <Text
               variant="caption"
               style={{ fontSize: 12, textDecorationLine: "underline" }}
+              onPress={() => {
+                router.push("/(auth)/forgotten-password");
+              }}
             >
               Forgot Password?
             </Text>
