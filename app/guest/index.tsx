@@ -3,6 +3,8 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { Compass, Wifi, Presentation, Map } from "lucide-react-native";
+import { router } from "expo-router";
+import Octicons from "@expo/vector-icons/Octicons";
 
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
@@ -10,6 +12,17 @@ import { Text } from "@/components/ui/text";
 export default function GuestScreen() {
   return (
     <SafeAreaView style={styles.container}>
+      {/* ── Header ─────────────────────────────────── */}
+      <View style={styles.header}>
+        <TouchableOpacity
+          onPress={() => router.back()}
+          style={styles.backButton}
+          activeOpacity={0.7}
+        >
+          <Octicons name="arrow-left" size={24} color="black" />
+        </TouchableOpacity>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -84,6 +97,18 @@ const SPACING = 30;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  header: {
+    width: "100%",
+    paddingHorizontal: SPACING,
+    paddingTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  backButton: {
+    padding: 4,
   },
 
   content: {

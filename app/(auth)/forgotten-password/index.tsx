@@ -4,9 +4,11 @@ import { ForgottenPasswordForm } from "@/components/authentication/forgotten-pas
 
 import { ShieldCheck } from "lucide-react-native";
 import { Image } from "expo-image";
+import { router } from "expo-router";
+import Octicons from "@expo/vector-icons/Octicons";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingView, Platform, StyleSheet, View } from "react-native";
+import { KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, View } from "react-native";
 
 const SPACING = 30;
 
@@ -17,9 +19,18 @@ export default function ForgottenPasswordScreen() {
         style={styles.wrapper}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        {/* TODO: Create an onBoarding component for the first time user */}
-
         <View>
+          {/* ── Header ─────────────────────────────────── */}
+          <View style={styles.header}>
+            <TouchableOpacity
+              onPress={() => router.back()}
+              style={styles.backButton}
+              activeOpacity={0.7}
+            >
+              <Octicons name="arrow-left" size={24} color="black" />
+            </TouchableOpacity>
+          </View>
+
           <View style={styles.logoContainer}>
             <Image
               source={require("../../../assets/images/icon.png")}
@@ -29,7 +40,7 @@ export default function ForgottenPasswordScreen() {
           </View>
 
           <View style={styles.content}>
-            <View style={styles.header}>
+            <View style={styles.titleSection}>
               <Text style={styles.title}>Forgotten Access?</Text>
 
               <Text style={styles.subtitle}>
@@ -61,13 +72,25 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
 
+  header: {
+    width: "100%",
+    paddingHorizontal: SPACING,
+    paddingTop: 10,
+    flexDirection: "row",
+    alignItems: "center",
+  },
+
+  backButton: {
+    padding: 4,
+  },
+
   content: {
     paddingHorizontal: SPACING,
     gap: 32,
     marginTop: "10%",
   },
 
-  header: {
+  titleSection: {
     gap: 12,
     alignItems: "center",
   },
