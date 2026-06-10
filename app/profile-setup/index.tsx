@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable } from "react-native";
+import { View, StyleSheet, Pressable, Image } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Landmark, Map } from "lucide-react-native";
 import { Badge } from "@/components/ui/badge";
@@ -35,140 +35,150 @@ export default function ProfileSetupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <View style={styles.header}>
-          <Text style={styles.title}>Refine Your Map</Text>
-        </View>
+      <Image source={require("@/assets/images/icon.png")} style={styles.logo} />
 
-        <View style={{ gap: 66 }}>
-          {/* Department Card */}
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <Landmark size={20} />
-              <Text style={styles.sectionTitle}>Primary Department</Text>
-            </View>
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "space-between",
+          paddingVertical: 20,
+        }}
+      >
+        <View style={styles.innerContainer}>
+          <View style={styles.header}>
+            <Text style={styles.title}>Refine Your Map</Text>
+          </View>
 
-            <Text style={styles.description}>
-              We'll use this to prioritize academic buildings and resources
-              relevant to your field on your map.
-            </Text>
+          <View style={{ gap: 66 }}>
+            {/* Department Card */}
+            <View style={styles.card}>
+              <View style={styles.sectionHeader}>
+                <Landmark size={20} />
+                <Text style={styles.sectionTitle}>Primary Department</Text>
+              </View>
 
-            {/* School Combobox */}
+              <Text style={styles.description}>
+                We'll use this to prioritize academic buildings and resources
+                relevant to your field on your map.
+              </Text>
 
-            <View>
-              <Text style={styles.label}>SCHOOL</Text>
+              {/* School Combobox */}
 
-              <Combobox
-                value={school}
-                onValueChange={(val) => {
-                  setSchool(val);
-                  setDepartment(null);
-                }}
-              >
-                <ComboboxTrigger>
-                  <ComboboxValue placeholder="Select your school" />
-                </ComboboxTrigger>
+              <View>
+                <Text style={styles.label}>SCHOOL</Text>
 
-                <ComboboxContent>
-                  <ComboboxInput placeholder="Search school..." />
+                <Combobox
+                  value={school}
+                  onValueChange={(val) => {
+                    setSchool(val);
+                    setDepartment(null);
+                  }}
+                >
+                  <ComboboxTrigger>
+                    <ComboboxValue placeholder="Select your school" />
+                  </ComboboxTrigger>
 
-                  <ComboboxList>
-                    <ComboboxEmpty>No school found</ComboboxEmpty>
+                  <ComboboxContent>
+                    <ComboboxInput placeholder="Search school..." />
 
-                    {schools.map((s) => (
-                      <ComboboxItem key={s.value} value={s.value}>
-                        {s.label}
-                      </ComboboxItem>
-                    ))}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
-            </View>
+                    <ComboboxList>
+                      <ComboboxEmpty>No school found</ComboboxEmpty>
 
-            {/* Department Combobox */}
-
-            <View>
-              <Text style={styles.label}>DEPARTMENT</Text>
-
-              <Combobox
-                value={department}
-                onValueChange={setDepartment}
-                disabled={!school}
-              >
-                <ComboboxTrigger>
-                  <ComboboxValue
-                    placeholder={
-                      school ? "Select department" : "Select school first"
-                    }
-                  />
-                </ComboboxTrigger>
-
-                <ComboboxContent>
-                  <ComboboxInput
-                    placeholder={school ? "Search department..." : "Disabled"}
-                  />
-
-                  <ComboboxList>
-                    {!school ? (
-                      <ComboboxEmpty>Select a school first</ComboboxEmpty>
-                    ) : departments.length === 0 ? (
-                      <ComboboxEmpty>No departments found</ComboboxEmpty>
-                    ) : (
-                      departments.map((d) => (
-                        <ComboboxItem key={d.value} value={d.value}>
-                          {d.label}
+                      {schools.map((s) => (
+                        <ComboboxItem key={s.value} value={s.value}>
+                          {s.label}
                         </ComboboxItem>
-                      ))
-                    )}
-                  </ComboboxList>
-                </ComboboxContent>
-              </Combobox>
+                      ))}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </View>
+
+              {/* Department Combobox */}
+
+              <View>
+                <Text style={styles.label}>DEPARTMENT</Text>
+
+                <Combobox
+                  value={department}
+                  onValueChange={setDepartment}
+                  disabled={!school}
+                >
+                  <ComboboxTrigger>
+                    <ComboboxValue
+                      placeholder={
+                        school ? "Select department" : "Select school first"
+                      }
+                    />
+                  </ComboboxTrigger>
+
+                  <ComboboxContent>
+                    <ComboboxInput
+                      placeholder={school ? "Search department..." : "Disabled"}
+                    />
+
+                    <ComboboxList>
+                      {!school ? (
+                        <ComboboxEmpty>Select a school first</ComboboxEmpty>
+                      ) : departments.length === 0 ? (
+                        <ComboboxEmpty>No departments found</ComboboxEmpty>
+                      ) : (
+                        departments.map((d) => (
+                          <ComboboxItem key={d.value} value={d.value}>
+                            {d.label}
+                          </ComboboxItem>
+                        ))
+                      )}
+                    </ComboboxList>
+                  </ComboboxContent>
+                </Combobox>
+              </View>
             </View>
-          </View>
 
-          {/* Academic Standing */}
-          <View style={styles.card}>
-            <View style={styles.sectionHeader}>
-              <Map size={20} />
-              <Text style={styles.sectionTitle}>Academic Standing</Text>
-            </View>
+            {/* Academic Standing */}
+            <View style={styles.card}>
+              <View style={styles.sectionHeader}>
+                <Map size={20} />
+                <Text style={styles.sectionTitle}>Academic Standing</Text>
+              </View>
 
-            <View style={styles.chipContainer}>
-              {levels.map((level) => {
-                const selected = selectedLevel === level;
+              <View style={styles.chipContainer}>
+                {levels.map((level) => {
+                  const selected = selectedLevel === level;
 
-                return (
-                  <Pressable
-                    key={level}
-                    onPress={() => setSelectedLevel(level)}
-                  >
-                    <Badge
-                      style={{
-                        paddingHorizontal: 12,
-                        paddingVertical: 10,
-                      }}
-                      variant={selected ? "default" : "outline"}
+                  return (
+                    <Pressable
+                      key={level}
+                      onPress={() => setSelectedLevel(level)}
                     >
-                      <Text
-                        style={[
-                          styles.chipText,
-                          selected && styles.selectedChipText,
-                        ]}
+                      <Badge
+                        style={{
+                          paddingHorizontal: 12,
+                          paddingVertical: 10,
+                        }}
+                        variant={selected ? "default" : "outline"}
                       >
-                        {level}
-                      </Text>
-                    </Badge>
-                  </Pressable>
-                );
-              })}
+                        <Text
+                          style={[
+                            styles.chipText,
+                            selected && styles.selectedChipText,
+                          ]}
+                        >
+                          {level}
+                        </Text>
+                      </Badge>
+                    </Pressable>
+                  );
+                })}
+              </View>
             </View>
           </View>
         </View>
-      </View>
 
-      <Button style={styles.button} onPress={() => {}}>
-        Complete Setup
-      </Button>
+        <Button style={styles.button} onPress={() => {}}>
+          Complete Setup
+        </Button>
+      </View>
     </SafeAreaView>
   );
 }
@@ -177,17 +187,21 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: SPACING,
-    gap: 24,
+    alignItems: "center",
   },
 
   innerContainer: {
-    flex: 1,
     gap: 16,
-    paddingVertical: 20,
+    width: "100%",
   },
 
   header: {
     gap: 8,
+  },
+
+  logo: {
+    width: 40,
+    height: 40,
   },
 
   title: {
