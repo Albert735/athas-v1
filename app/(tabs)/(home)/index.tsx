@@ -1,96 +1,53 @@
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
-import { Icon } from "@/components/ui/icon";
-import { Link } from "@/components/ui/link";
 import { Text } from "@/components/ui/text";
 import { View } from "@/components/ui/view";
+import { SafeAreaProvider, SafeAreaView } from "react-native-safe-area-context";
+import { Image } from "expo-image";
+import { Menu, Mic } from "lucide-react-native";
+import { StyleSheet } from "react-native";
+import { SearchBar } from "@/components/ui/searchbar";
+import { Icon } from "@/components/ui/icon";
 import { useColor } from "@/hooks/useColor";
-import { Terminal } from "lucide-react-native";
 
 export default function HomeScreen() {
-  const green = useColor("green");
-  const muted = useColor("muted");
-
+  const icon = useColor("icon");
   return (
-    <View
-      style={{
-        flex: 1,
-        gap: 16,
-        padding: 24,
-        justifyContent: "center",
-      }}
-    >
-      <Text
-        variant="heading"
-        style={{
-          textAlign: "center",
-        }}
-      >
-        Built with ❤️ by BNA
-      </Text>
-
-      <View
-        style={{
-          marginBottom: 20,
-        }}
-      >
-        <Card>
-          <View
-            style={{
-              gap: 8,
-              marginBottom: 16,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <Icon name={Terminal} />
-
-            <Text
-              variant="body"
-              style={{
-                fontWeight: "600",
-              }}
-            >
-              Add Components
-            </Text>
+    <SafeAreaView style={{ flex: 1 }}>
+      <View style={{ flex: 1, paddingTop: 20 }}>
+        {/** Header */}
+        <View style={styles.header}>
+          <View>
+            <Image
+              source={require("@/assets/images/icon.png")}
+              style={{ width: 32, height: 32 }}
+            />
           </View>
-          <View
-            style={{
-              backgroundColor: muted,
-              paddingHorizontal: 16,
-              paddingVertical: 12,
-              borderRadius: 8,
-              marginBottom: 16,
-              minWidth: "100%",
-            }}
-          >
-            <Text
-              variant="caption"
-              style={{
-                color: green,
-                fontFamily: "monospace",
-                fontSize: 16,
-                textAlign: "center",
-              }}
-            >
-              npx bna-ui add avatar
-            </Text>
+
+          <View>
+            <Menu />
           </View>
-          <Text
-            variant="caption"
-            style={{
-              textAlign: "center",
-              opacity: 0.7,
-            }}
-          >
-            Add components with a single command
-          </Text>
-        </Card>
+        </View>
+        {/** Search */}
+        <View style={styles.search}>
+          <SearchBar
+            placeholder="Search for anything..."
+            onSearch={(query) => console.log("Searching for:", query)}
+            loading={false}
+            rightIcon={<Icon name={Mic} size={16} color={icon} />}
+          />
+        </View>
       </View>
-
-      <Link asChild href="/sheet">
-        <Button>Open Components Sheet</Button>
-      </Link>
-    </View>
+    </SafeAreaView>
   );
 }
+
+const styles = StyleSheet.create({
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 20,
+  },
+  search: {
+    paddingHorizontal: 20,
+    marginTop: 20,
+  },
+});

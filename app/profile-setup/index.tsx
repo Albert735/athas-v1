@@ -18,6 +18,7 @@ import {
 } from "@/components/ui/combobox";
 import { schools } from "@/data/school";
 import { departmentsBySchool } from "@/data/department";
+import { router } from "expo-router";
 
 const SPACING = 24;
 
@@ -175,7 +176,12 @@ export default function ProfileSetupScreen() {
           </View>
         </View>
 
-        <Button style={styles.button} onPress={() => {}}>
+        <Button
+          style={styles.button}
+          onPress={() => {
+            router.push("/(tabs)/(home)");
+          }}
+        >
           Complete Setup
         </Button>
       </View>
