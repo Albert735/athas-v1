@@ -36,7 +36,7 @@ export function OTPForm() {
         variant="default"
         // icon={SendHorizontal}
         onPress={() => {
-          router.push("/OTP");
+          router.push("/reset-password");
         }}
       >
         Verify and Continue
