@@ -1,3 +1,9 @@
+/**
+ * Reset Password Form Component
+ * Renders new-password and confirm-password fields, password requirement
+ * badges, an update button, and a support link.
+ * On submit, navigates back to the sign-in screen.
+ */
 import { StyleSheet, View } from "react-native";
 
 import { Input } from "@/components/ui/input";
@@ -6,10 +12,12 @@ import { Button } from "@/components/ui/button";
 import { router } from "expo-router";
 import { Badge } from "@/components/ui/badge";
 
+/** Shape of each password validation rule displayed as a badge */
 interface PasswordRequirement {
   label: string;
 }
 
+/** List of password rules shown below the new-password input */
 const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
   { label: "8+ Characters" },
   { label: "Capital Letter" },
@@ -20,12 +28,13 @@ const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
 export function ResetPasswordForm() {
   return (
     <View style={styles.container}>
+      {/* New password input */}
       <View style={styles.field}>
         <Text style={styles.label}>NEW PASSWORD</Text>
-
         <Input placeholder="••••••••" />
       </View>
 
+      {/* Password requirement badges — rendered from the typed array */}
       <View style={styles.passwordRequirements}>
         {PASSWORD_REQUIREMENTS.map((req) => (
           <Badge
@@ -42,15 +51,15 @@ export function ResetPasswordForm() {
         ))}
       </View>
 
+      {/* Confirm password input */}
       <View style={styles.field}>
         <Text style={styles.label}>CONFIRM PASSWORD</Text>
-
         <Input placeholder="••••••••" />
       </View>
 
+      {/* Submit button — navigates to sign-in on success */}
       <Button
         variant="default"
-        // icon={SendHorizontal}
         onPress={() => {
           router.push("/sign-in");
         }}
@@ -58,6 +67,7 @@ export function ResetPasswordForm() {
         Update Password
       </Button>
 
+      {/* Support link for users having trouble */}
       <Text style={styles.footerText}>
         Having trouble?{" "}
         <Text style={styles.footerLinkText}>Contact Support</Text>
@@ -66,6 +76,7 @@ export function ResetPasswordForm() {
   );
 }
 
+// ─── Styles ─────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     width: "100%",

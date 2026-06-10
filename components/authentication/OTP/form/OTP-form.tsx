@@ -1,3 +1,8 @@
+/**
+ * OTP Form Component
+ * Renders a 6-digit OTP input, a verify button, and a resend code link.
+ * On successful verification, navigates to the reset-password screen.
+ */
 import { StyleSheet, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
@@ -8,11 +13,15 @@ import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
 
 export function OTPForm() {
+  // Tracks the current OTP digits entered by the user
   const [otp, setOtp] = useState("");
+
+  // Theme-aware primary color for slot borders
   const primary = useColor("primary");
 
   return (
     <View style={styles.container}>
+      {/* 6-digit OTP input — each slot is a rounded box */}
       <View style={styles.field}>
         <InputOTP
           length={6}
@@ -32,9 +41,9 @@ export function OTPForm() {
         />
       </View>
 
+      {/* Submit button — navigates to reset-password on press */}
       <Button
         variant="default"
-        // icon={SendHorizontal}
         onPress={() => {
           router.push("/reset-password");
         }}
@@ -42,6 +51,7 @@ export function OTPForm() {
         Verify and Continue
       </Button>
 
+      {/* Resend code prompt */}
       <View style={styles.footerContainer}>
         <Text style={styles.footer}>
           If you didn't receive a code?{" "}
@@ -52,10 +62,10 @@ export function OTPForm() {
   );
 }
 
+// ─── Styles ─────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     width: "100%",
-    // backgroundColor: "red",
     gap: 24,
   },
 

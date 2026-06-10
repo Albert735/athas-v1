@@ -1,3 +1,8 @@
+/**
+ * Reset Password Screen
+ * Allows the user to set a new password after OTP verification.
+ * Contains the new-password form with validation requirement badges.
+ */
 import { StyleSheet, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
@@ -10,8 +15,10 @@ import { ResetPasswordForm } from "@/components/authentication/reset-password/fo
 export default function ResetPasswordScreen() {
   return (
     <SafeAreaView style={styles.container}>
+      {/* KeyboardAvoidingView pushes content up when the keyboard opens */}
       <KeyboardAvoidingView style={styles.wrapper} behavior="padding">
         <View>
+          {/* App logo */}
           <View style={styles.logoContainer}>
             <Image
               source={require("../../../assets/images/icon.png")}
@@ -20,6 +27,7 @@ export default function ResetPasswordScreen() {
             />
           </View>
 
+          {/* Header text + reset password form */}
           <View style={styles.content}>
             <View style={styles.header}>
               <Text style={styles.title}>Reset Password</Text>
@@ -29,10 +37,12 @@ export default function ResetPasswordScreen() {
               </Text>
             </View>
 
+            {/* New password + confirm password fields with requirement badges */}
             <ResetPasswordForm />
           </View>
         </View>
 
+        {/* Security trust badge pinned to bottom */}
         <View style={styles.footerContainer}>
           <ShieldCheck strokeWidth={1} size={12} />
           <Text style={styles.footer}>SSO PROTECTED</Text>

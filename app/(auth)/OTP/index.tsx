@@ -1,3 +1,8 @@
+/**
+ * OTP Verification Screen
+ * Displays a 6-digit code input for identity verification.
+ * Navigated to after sign-in / forgot-password when 2FA is required.
+ */
 import { StyleSheet, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
@@ -11,8 +16,10 @@ import { OTPForm } from "@/components/authentication/OTP/form/OTP-form";
 export default function OTPScreen() {
   return (
     <SafeAreaView style={styles.container}>
+      {/* KeyboardAvoidingView pushes content up when the keyboard opens */}
       <KeyboardAvoidingView style={styles.wrapper} behavior="padding">
         <View>
+          {/* App logo */}
           <View style={styles.logoContainer}>
             <Image
               source={require("../../../assets/images/icon.png")}
@@ -21,6 +28,7 @@ export default function OTPScreen() {
             />
           </View>
 
+          {/* Header text + OTP input form */}
           <View style={styles.content}>
             <View style={styles.header}>
               <Text style={styles.title}>Verify Your Identity</Text>
@@ -31,10 +39,12 @@ export default function OTPScreen() {
               </Text>
             </View>
 
+            {/* 6-digit OTP input with verify button and resend link */}
             <OTPForm />
           </View>
         </View>
 
+        {/* Security trust badge pinned to bottom */}
         <View style={styles.footerContainer}>
           <ShieldCheck strokeWidth={1} size={12} />
           <Text style={styles.footer}>
