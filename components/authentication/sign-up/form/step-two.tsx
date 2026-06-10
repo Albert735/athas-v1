@@ -3,6 +3,7 @@ import { View, StyleSheet } from "react-native";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import { router } from "expo-router";
 
 /** Props received from the parent SignUpForm orchestrator */
 type Props = {
@@ -58,7 +59,14 @@ export function StepTwo({ data, setData, onBack }: Props) {
       </View>
 
       {/* Submit button — triggers account creation */}
-      <Button style={styles.button}>Create Account</Button>
+      <Button
+        style={styles.button}
+        onPress={() => {
+          router.push("/profile-setup");
+        }}
+      >
+        Create Account
+      </Button>
     </View>
   );
 }
