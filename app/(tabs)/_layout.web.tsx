@@ -1,11 +1,15 @@
-import React from 'react';
-import { Icon } from '@/components/ui/icon';
-import { useColor } from '@/hooks/useColor';
-import { Tabs } from 'expo-router';
-import { Home, Search, Settings } from 'lucide-react-native';
+import { Tabs } from "expo-router";
+import { useColor } from "@/hooks/useColor";
+import {
+  House,
+  CalendarDays,
+  Map,
+  Heart,
+  CircleUser,
+} from "lucide-react-native";
 
 export default function WebTabsLayout() {
-  const primary = useColor('primary');
+  const primary = useColor("primary");
 
   return (
     <Tabs
@@ -15,32 +19,42 @@ export default function WebTabsLayout() {
       }}
     >
       <Tabs.Screen
-        name='index'
+        name="(home)"
         options={{
-          title: 'Home',
-          tabBarIcon: ({ color }) => (
-            <Icon name={Home} size={24} color={color} />
-          ),
+          title: "Home",
+          tabBarIcon: ({ color }) => <House size={24} color={color} />,
         }}
       />
 
       <Tabs.Screen
-        name='settings'
+        name="schedule"
         options={{
-          title: 'Settings',
-          tabBarIcon: ({ color }) => (
-            <Icon name={Settings} size={24} color={color} />
-          ),
+          title: "Schedule",
+          tabBarIcon: ({ color }) => <CalendarDays size={24} color={color} />,
         }}
       />
 
       <Tabs.Screen
-        name='search'
+        name="map"
         options={{
-          title: 'Search',
-          tabBarIcon: ({ color }) => (
-            <Icon name={Search} size={24} color={color} />
-          ),
+          title: "Map",
+          tabBarIcon: ({ color }) => <Map size={24} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="favourite"
+        options={{
+          title: "Favourite",
+          tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
+        }}
+      />
+
+      <Tabs.Screen
+        name="profile"
+        options={{
+          title: "Profile",
+          tabBarIcon: ({ color }) => <CircleUser size={24} color={color} />,
         }}
       />
     </Tabs>
