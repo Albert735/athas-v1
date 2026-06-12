@@ -5,6 +5,7 @@ import {
   FlatList,
   TouchableOpacity,
   Pressable,
+  Dimensions,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
@@ -24,11 +25,16 @@ export default function HomeScreen() {
 
   // inside component — remove useBottomTabBarHeight entirely:
   const insets = useSafeAreaInsets();
-  const bottomInset = insets.bottom + 100;
+  const bottomInset = insets.bottom + 60;
+
+  const { height } = Dimensions.get("window");
+  const MAP_HEIGHT = height * 0.56;
+
+  // derive sheet top from mapContainer height instead of positioning from bottom
   return (
     <View style={styles.root}>
       {/* Map — top half, sits behind everything */}
-      <View style={styles.mapContainer}>
+      <View style={[styles.mapContainer, { height: MAP_HEIGHT }]}>
         {/* Replace with your Mapbox component */}
       </View>
 
@@ -88,7 +94,7 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       {/* Bottom sheet area */}
-      <View style={[styles.sheet, { bottom: bottomInset }]}>
+      <View style={[styles.sheet, { top: MAP_HEIGHT - 20 }]}>
         {/* Section Header */}
         <View style={styles.sectionHeader}>
           <Text style={styles.sectionTitle}>Popular places on campus</Text>
@@ -113,11 +119,40 @@ export default function HomeScreen() {
                 pressed && { opacity: 0.9 },
               ]}
             >
-              <Image
-                source={item.image}
-                style={styles.cardImage}
-                contentFit="cover"
-              />
+              <View>
+                <Image
+                  source={item.image}
+                  style={styles.cardImage}
+                  contentFit="cover"
+                />
+                {/* Open/Closed badge over the image */}
+                <View
+                  style={[
+                    styles.statusBadge,
+                    item.isOpen ? styles.statusOpen : styles.statusClosed,
+                  ]}
+                >
+                  <View
+                    style={[
+                      styles.statusDot,
+                      item.isOpen
+                        ? styles.statusDotOpen
+                        : styles.statusDotClosed,
+                    ]}
+                  />
+                  <Text
+                    style={[
+                      styles.statusText,
+                      item.isOpen
+                        ? styles.statusTextOpen
+                        : styles.statusTextClosed,
+                    ]}
+                  >
+                    {item.isOpen ? "Open" : "Closed"}
+                  </Text>
+                </View>
+              </View>
+
               <View style={styles.cardBody}>
                 <Text style={styles.cardName}>{item.name}</Text>
                 <Text style={styles.cardDescription} numberOfLines={2}>
@@ -148,8 +183,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    height: "56%",
-    backgroundColor: "#D1D5DB", // placeholder until Mapbox is in
+    backgroundColor: "#D1D5DB",
   },
 
   // Search + chips float over the map
@@ -223,9 +257,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    marginTop: 30,
+    // bottom: 0, // extends to bottom of screen
+    paddingTop: 30,
+    backgroundColor: "#F9FAFB",
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
-
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -263,6 +300,44 @@ const styles = StyleSheet.create({
   cardImage: {
     width: "100%",
     height: 120,
+  },
+  statusBadge: {
+    position: "absolute",
+    top: 8,
+    right: 8,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 20,
+  },
+  statusOpen: {
+    backgroundColor: "rgba(209, 250, 229, 0.95)",
+  },
+  statusClosed: {
+    backgroundColor: "rgba(254, 226, 226, 0.95)",
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+  },
+  statusDotOpen: {
+    backgroundColor: "#059669",
+  },
+  statusDotClosed: {
+    backgroundColor: "#DC2626",
+  },
+  statusText: {
+    fontSize: 11,
+    fontWeight: "600",
+  },
+  statusTextOpen: {
+    color: "#065F46",
+  },
+  statusTextClosed: {
+    color: "#991B1B",
   },
 
   cardBody: {
