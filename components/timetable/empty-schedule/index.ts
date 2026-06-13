@@ -1,1 +1,1 @@
-export { EmptySchedule } from "./empty-schedule";
+export * from "./empty-schedule";

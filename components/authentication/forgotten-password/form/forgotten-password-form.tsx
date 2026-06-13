@@ -22,7 +22,7 @@ export function ForgottenPasswordForm() {
           variant="default"
           icon={SendHorizontal}
           onPress={() => {
-            router.push("/OTP");
+            router.push("/otp");
           }}
         >
           Send Reset Link
