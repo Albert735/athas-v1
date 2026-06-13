@@ -1,44 +1,13 @@
 import { Stack } from "expo-router";
-import { Platform, useColorScheme } from "react-native";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { useColor } from "@/hooks/useColor";
-import { Text } from "@/components/ui/text";
 
-export default function MapLayout() {
-  const theme = useColorScheme();
-  const text = useColor("text");
-  const background = useColor("background");
-
+export default function ScheduleLayout() {
   return (
     <Stack
       screenOptions={{
         headerShown: false,
-        headerLargeTitle: false,
-        headerLargeTitleShadowVisible: false,
-        headerTransparent: true,
-        headerTintColor: text,
-        headerBlurEffect: isLiquidGlassAvailable()
-          ? undefined
-          : theme === "dark"
-            ? "systemMaterialDark"
-            : "systemMaterialLight",
-        headerStyle: {
-          backgroundColor: isLiquidGlassAvailable()
-            ? "transparent"
-            : background,
-        },
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Map",
-          headerTitle: () =>
-            Platform.OS === "android" ? (
-              <Text variant="heading">Map</Text>
-            ) : undefined,
-        }}
-      />
+      <Stack.Screen name="index" />
     </Stack>
   );
 }

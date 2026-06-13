@@ -44,7 +44,7 @@ export default function TabsLayout() {
       </NativeTabs.Trigger>
 
       {/* Schedule */}
-      <NativeTabs.Trigger name="schedule">
+      <NativeTabs.Trigger name="(schedule)">
         {Platform.select({
           ios: <Icon sf="calendar" />,
           android: (
@@ -56,7 +56,7 @@ export default function TabsLayout() {
 
       {/* Map */}
       <NativeTabs.Trigger
-        name="map"
+        name="(map)"
         role={isLiquidGlassAvailable() ? "search" : undefined}
       >
         {Platform.select({
@@ -67,7 +67,7 @@ export default function TabsLayout() {
       </NativeTabs.Trigger>
 
       {/* Favourite */}
-      <NativeTabs.Trigger name="favourite">
+      <NativeTabs.Trigger name="(favourite)">
         {Platform.select({
           ios: <Icon sf="heart" />,
           android: <Icon src={<VectorIcon family={Feather} name="heart" />} />,
@@ -77,7 +77,7 @@ export default function TabsLayout() {
       </NativeTabs.Trigger>
 
       {/* Profile */}
-      <NativeTabs.Trigger name="profile">
+      <NativeTabs.Trigger name="(profile)">
         {Platform.select({
           ios: <Icon sf="person.crop.circle" />,
           android: <Icon src={<VectorIcon family={Feather} name="user" />} />,
