@@ -7,11 +7,14 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Button } from "@/components/ui/button";
 
 import { Text } from "@/components/ui/text";
 import { Header } from "@/components/shared/screen/header";
 import { AddClassForm } from "@/components/timetable/add-class/form";
 import { useColor } from "@/hooks/useColor";
+import { DaySelector } from "@/components/timetable/day-selector";
+import { Plus } from "lucide-react-native";
 
 const SPACING = 20;
 
@@ -19,7 +22,7 @@ export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
 
   return (
-    <SafeAreaView style={styles.screen} edges={["bottom"]}>
+    <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
       <Header title="Add Class" showBack />
 
       <KeyboardAvoidingView
@@ -33,18 +36,22 @@ export default function AddClassScreen() {
         >
           <View style={styles.main}>
             <View style={styles.titleContainer}>
-              <Text
-                style={[styles.sub, { color: mutedColor }]}
-              >
+              <Text style={[styles.sub, { color: mutedColor }]}>
                 TIMETABLE ENTRY
               </Text>
 
-              <Text variant="subtitle">
-                Build your Academic{"\n"}Schedule
-              </Text>
+              <Text variant="subtitle">Build your Academic{"\n"}Schedule</Text>
             </View>
 
             <AddClassForm />
+
+            <DaySelector />
+
+            {/* <View style={{ height: 500, backgroundColor: "blue" }} /> */}
+
+            <Button style={styles.btn} variant="default" icon={Plus}>
+              Add Schedule
+            </Button>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -62,12 +69,10 @@ const styles = StyleSheet.create({
   },
 
   scrollContent: {
-    flexGrow: 1,
-    paddingBottom: 24,
+    paddingBottom: 150,
   },
 
   main: {
-    flex: 1,
     paddingHorizontal: SPACING,
     marginTop: 10,
     gap: 24,
@@ -81,5 +86,9 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "500",
     letterSpacing: 0.48,
+  },
+  btn: {
+    width: "100%",
+    marginTop: 10,
   },
 });

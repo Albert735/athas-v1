@@ -18,8 +18,6 @@ import {
   OptionType,
 } from "@/components/ui/combobox";
 
-
-
 import { useState } from "react";
 
 import { lectureHalls } from "@/data/lecture-halls";
@@ -103,7 +101,7 @@ export function AddClassForm() {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 16,
+    gap: 18,
   },
   inputGroup: {
     gap: 6,
