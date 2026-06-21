@@ -3,12 +3,13 @@ import { EmptySchedule } from "@/components/timetable/empty-schedule/empty-sched
 import { useTimetable } from "@/hooks/useTimetable";
 import { router } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ScheduledClassListScreen from "./scheduled-class-list";
 
 export default function ScheduleScreen() {
   const { classes } = useTimetable();
 
   const handleAddClass = () => {
-    router.push("/add-class");
+    router.replace("/add-class");
   };
 
   return (
@@ -16,7 +17,9 @@ export default function ScheduleScreen() {
       {!classes || classes.length === 0 ? (
         <EmptySchedule onAddClass={handleAddClass} />
       ) : (
-        <View>{/* later: class list */}</View>
+        <View>
+          <ScheduledClassListScreen />
+        </View>
       )}
     </SafeAreaView>
   );

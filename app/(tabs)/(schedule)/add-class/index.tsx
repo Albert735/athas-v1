@@ -15,6 +15,7 @@ import { AddClassForm } from "@/components/timetable/add-class/form";
 import { useColor } from "@/hooks/useColor";
 import { DaySelector } from "@/components/timetable/day-selector";
 import { Plus } from "lucide-react-native";
+import { router } from "expo-router";
 
 const SPACING = 20;
 
@@ -49,7 +50,14 @@ export default function AddClassScreen() {
 
             {/* <View style={{ height: 500, backgroundColor: "blue" }} /> */}
 
-            <Button style={styles.btn} variant="default" icon={Plus}>
+            <Button
+              style={styles.btn}
+              variant="default"
+              icon={Plus}
+              onPress={() => {
+                router.replace("/scheduled-class-list");
+              }}
+            >
               Add Schedule
             </Button>
           </View>
