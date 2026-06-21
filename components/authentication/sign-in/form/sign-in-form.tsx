@@ -51,7 +51,13 @@ export function SignInForm() {
       </View>
 
       {/* Submit button */}
-      <Button style={styles.button} variant="default">
+      <Button
+        style={styles.button}
+        variant="default"
+        onPress={() => {
+          router.push("/(tabs)/(home)");
+        }}
+      >
         Sign In
       </Button>
     </View>

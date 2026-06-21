@@ -12,7 +12,7 @@ export default function ScheduleScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "red" }}>
+    <SafeAreaView style={{ flex: 1 }}>
       {!classes || classes.length === 0 ? (
         <EmptySchedule onAddClass={handleAddClass} />
       ) : (
