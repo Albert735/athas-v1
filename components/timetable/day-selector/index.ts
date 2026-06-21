@@ -1,1 +1,1 @@
-export { DaySelector } from "./day-selector";
+export * from "./day-selector";
