@@ -1,43 +1,70 @@
-import { ActiveClassCard } from "@/components/timetable";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { ActiveClassCard, UpcomingClassCard } from "@/components/timetable";
+import { MOCK_UPCOMING_CLASS } from "@/data/upcoming-class";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  ScrollView,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Badge } from "@/components/ui/badge";
 import { Dot } from "lucide-react-native";
 
 export default function ScheduledClassListScreen() {
+  const today = new Date();
+
+  const day = today.toLocaleDateString("en-US", {
+    weekday: "short",
+  });
+
+  const date = today.getDate();
+
   return (
     <SafeAreaView style={styles.screen}>
-      <View style={styles.container}>
-        <Text style={styles.day}>Mon</Text>
-        <Text style={styles.date}>14</Text>
-      </View>
-
-      {/* active class card  */}
-
-      <View style={styles.activeClassCardContainer}>
-        <View style={styles.activeClassCardHeader}>
-          <Text>Ongoing Now</Text>
-          <Badge>
-            <View style={styles.badgeContainer}>
-              <Dot size={12} color="#fff" fill="#000" />
-              <Text style={styles.badgeText}>Live</Text>
-            </View>
-          </Badge>
-        </View>
-        <ActiveClassCard />
-      </View>
-
-      {/* upcomiing schedule  */}
-      <View>
-        <View style={styles.upcomingHeader}>
-          <Text style={styles.upcomingTitle}>Upcoming Schedule</Text>
-          <TouchableOpacity>
-            <Text>See All</Text>
-          </TouchableOpacity>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+      >
+        {/* Date Card */}
+        <View style={styles.dateCard}>
+          <Text style={styles.day}>{day}</Text>
+          <Text style={styles.date}>{date}</Text>
         </View>
 
-        {/* single upcoming class card  */}
-      </View>
+        {/* Active Class */}
+        <View style={styles.activeClassCardContainer}>
+          <View style={styles.activeClassCardHeader}>
+            <Text style={styles.sectionTitle}>Ongoing Now</Text>
+
+            <Badge>
+              <View style={styles.badgeContainer}>
+                <Dot size={12} color="#fff" fill="#000" />
+                <Text style={styles.badgeText}>Live</Text>
+              </View>
+            </Badge>
+          </View>
+
+          <ActiveClassCard />
+        </View>
+
+        {/* Upcoming Schedule */}
+        <View style={styles.upcomingSection}>
+          <View style={styles.upcomingHeader}>
+            <Text style={styles.upcomingTitle}>Upcoming Schedule</Text>
+
+            <TouchableOpacity>
+              <Text style={styles.seeAllText}>See All</Text>
+            </TouchableOpacity>
+          </View>
+
+          <View style={styles.upcomingList}>
+            {MOCK_UPCOMING_CLASS.map((item, index) => (
+              <UpcomingClassCard key={index} {...item} />
+            ))}
+          </View>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -47,53 +74,83 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-  container: {
-    flexDirection: "column",
+
+  content: {
+    paddingBottom: 40,
+  },
+
+  dateCard: {
+    width: 56,
+    height: 72,
+    borderRadius: 14,
+    backgroundColor: "#000",
     justifyContent: "center",
     alignItems: "center",
-    width: 48,
-    height: 65,
-    borderRadius: 12,
-    backgroundColor: "#000",
   },
+
   day: {
-    fontSize: 10,
-    fontWeight: "normal",
+    fontSize: 11,
     color: "#fff",
+    textTransform: "uppercase",
   },
+
   date: {
-    fontSize: 14,
-    fontWeight: "medium",
+    fontSize: 18,
+    fontWeight: "600",
     color: "#fff",
   },
+
   activeClassCardContainer: {
-    marginTop: 20,
+    marginTop: 24,
   },
+
   activeClassCardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+    marginBottom: 12,
   },
-  badgeText: {
-    fontSize: 10,
-    fontWeight: "normal",
-    color: "#fff",
+
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: "600",
   },
+
   badgeContainer: {
     flexDirection: "row",
     alignItems: "center",
-    gap: 5,
+    gap: 4,
   },
-  upcomingTitle: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#111",
+
+  badgeText: {
+    fontSize: 10,
+    color: "#fff",
   },
+
+  upcomingSection: {
+    marginTop: 28,
+  },
+
   upcomingHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 10,
+  },
+
+  upcomingTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#111",
+  },
+
+  seeAllText: {
+    fontSize: 14,
+    color: "#666",
+  },
+
+  upcomingList: {
+    marginTop: 16,
+    gap: 12,
   },
 });
+
