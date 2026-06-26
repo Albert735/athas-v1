@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { DoorOpen, School, Navigation } from "lucide-react-native";
 import { Button } from "@/components/ui/button";
+import { router } from "expo-router";
 
 export function ActiveClassCard() {
   return (
@@ -22,7 +23,14 @@ export function ActiveClassCard() {
         </View>
       </View>
 
-      <Button icon={Navigation} variant="default" size="sm">
+      <Button
+        icon={Navigation}
+        variant="default"
+        size="sm"
+        onPress={() => {
+          router.push("/(tabs)/(map)");
+        }}
+      >
         Start Navigation
       </Button>
     </View>
