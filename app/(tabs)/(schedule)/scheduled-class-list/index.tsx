@@ -10,15 +10,14 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Badge } from "@/components/ui/badge";
 import { Dot } from "lucide-react-native";
+import { getWeekDates } from "@/utils/get-week-dates";
+import { useState } from "react";
+import { Pressable } from "react-native";
 
 export default function ScheduledClassListScreen() {
-  const today = new Date();
+  const [selectedDate, setSelectedDate] = useState(new Date());
 
-  const day = today.toLocaleDateString("en-US", {
-    weekday: "short",
-  });
-
-  const date = today.getDate();
+  const weekDates = getWeekDates();
 
   return (
     <SafeAreaView style={styles.screen}>
@@ -27,9 +26,27 @@ export default function ScheduledClassListScreen() {
         contentContainerStyle={styles.content}
       >
         {/* Date Card */}
-        <View style={styles.dateCard}>
-          <Text style={styles.day}>{day}</Text>
-          <Text style={styles.date}>{date}</Text>
+        <View style={styles.dateRow}>
+          {weekDates.map((item) => {
+            const isSelected =
+              item.fullDate.toDateString() === selectedDate.toDateString();
+
+            return (
+              <Pressable
+                key={item.id}
+                onPress={() => setSelectedDate(item.fullDate)}
+                style={[styles.dateCard, isSelected && styles.dateCardActive]}
+              >
+                <Text style={[styles.day, isSelected && styles.textActive]}>
+                  {item.day}
+                </Text>
+
+                <Text style={[styles.date, isSelected && styles.textActive]}>
+                  {item.date}
+                </Text>
+              </Pressable>
+            );
+          })}
         </View>
 
         {/* Active Class */}
@@ -77,27 +94,6 @@ const styles = StyleSheet.create({
 
   content: {
     paddingBottom: 40,
-  },
-
-  dateCard: {
-    width: 56,
-    height: 72,
-    borderRadius: 14,
-    backgroundColor: "#000",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-
-  day: {
-    fontSize: 11,
-    color: "#fff",
-    textTransform: "uppercase",
-  },
-
-  date: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: "#fff",
   },
 
   activeClassCardContainer: {
@@ -152,5 +148,37 @@ const styles = StyleSheet.create({
     marginTop: 16,
     gap: 12,
   },
-});
+  dateRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
 
+  dateCardActive: {
+    backgroundColor: "#000",
+  },
+  textActive: {
+    color: "#fff",
+  },
+
+  dateCard: {
+    width: 40,
+    height: 56,
+    borderRadius: 14,
+    backgroundColor: "#F3F4F6",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  day: {
+    fontSize: 10,
+    color: "#6B7280",
+    marginBottom: 4,
+    textTransform: "uppercase",
+  },
+
+  date: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#111827",
+  },
+});
