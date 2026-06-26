@@ -28,6 +28,14 @@ export function UpcomingClassCard({
             <Text style={styles.statusText}>UPCOMING</Text>
           </View>
         </View>
+        <View
+          style={{
+            height: 40,
+            width: "0.5%",
+            backgroundColor: "#E5E7EB", // light gray
+            marginVertical: 6,
+          }}
+        />
 
         {/* Details Section */}
         <View style={styles.detailsContainer}>
