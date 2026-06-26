@@ -66,13 +66,13 @@ export default function TabsLayout() {
         <Label>Map</Label>
       </NativeTabs.Trigger>
 
-      {/* Favourite */}
-      <NativeTabs.Trigger name="(favourite)">
+      {/* NearBy */}
+      <NativeTabs.Trigger name="(nearby)">
         {Platform.select({
           ios: <Icon sf="heart" />,
           android: <Icon src={<VectorIcon family={Feather} name="heart" />} />,
         })}
-        <Label>Favourite</Label>
+        <Label>Near</Label>
         <Badge>1</Badge>
       </NativeTabs.Trigger>
 

@@ -31,10 +31,10 @@ export default function FavouriteLayout() {
       <Stack.Screen
         name="index"
         options={{
-          title: "Favourite",
+          title: "Near by",
           headerTitle: () =>
             Platform.OS === "android" ? (
-              <Text variant="heading">Favourite</Text>
+              <Text variant="heading">Near by</Text>
             ) : undefined,
         }}
       />
