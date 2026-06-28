@@ -6,6 +6,8 @@ import { useColor } from "@/hooks/useColor";
 import { ClosestCard, FacilityCard } from "@/components/near-by/facility-card";
 import { facilities } from "@/data/facility";
 import { closest } from "@/data/closest";
+import { router } from "expo-router";
+import { TouchableOpacity } from "react-native";
 
 export default function NearByScreen() {
   const icon = useColor("icon");
@@ -38,8 +40,12 @@ export default function NearByScreen() {
 
       <View style={styles.sectionContainer}>
         <View style={styles.subHeader}>
-          <Text>Closest to you</Text>
-          <Text>See All</Text>
+          <Text style={styles.subHeaderText}>Closest to you</Text>
+          <TouchableOpacity
+            onPress={() => router.push("/(tabs)/(nearby)/view-all")}
+          >
+            <Text style={styles.subHeaderSeeAll}>View All</Text>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.closestList}>
@@ -94,9 +100,19 @@ const styles = StyleSheet.create({
 
   sectionContainer: {
     marginTop: 20,
-    flex: 1,
+    gap: 12,
   },
   closestList: {
     gap: 16,
+  },
+  subHeaderText: {
+    fontSize: 14,
+    fontWeight: "600",
+    color: "#111",
+  },
+  subHeaderSeeAll: {
+    fontSize: 12,
+    fontWeight: "600",
+    color: "#000",
   },
 });

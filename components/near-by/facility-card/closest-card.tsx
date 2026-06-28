@@ -21,7 +21,7 @@ export function ClosestCard({
     <View style={styles.container}>
       <View style={styles.leftSection}>
         <View style={[styles.iconContainer, { backgroundColor: color }]}>
-          <MaterialIcons name={icon} size={24} color="#fff" />
+          <MaterialIcons name={icon} size={24} color="#000" />
         </View>
 
         <View style={styles.textContainer}>
@@ -37,7 +37,7 @@ export function ClosestCard({
       </View>
 
       <Pressable style={styles.navigationButton} onPress={onPress}>
-        <Navigation size={18} color="#2563EB" />
+        <Navigation size={18} color="#000" />
       </Pressable>
     </View>
   );
@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    backgroundColor: "#F3F3F7",
+    backgroundColor: "#F7F7F7",
     borderRadius: 18,
     padding: 10,
     marginRight: 12,
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
   iconContainer: {
     width: 48,
     height: 48,
-    borderRadius: 24,
+    borderRadius: 10,
     justifyContent: "center",
     alignItems: "center",
   },
@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
     width: 42,
     height: 42,
     borderRadius: 21,
-    backgroundColor: "#E8F1FF",
+    backgroundColor: "#F3F3F7",
     justifyContent: "center",
     alignItems: "center",
     marginLeft: 12,

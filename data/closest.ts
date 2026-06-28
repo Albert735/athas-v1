@@ -5,7 +5,7 @@ export const closest = [
     place: "Main Hall Cafetaria",
     located: "Central Cafetaria (CC) ",
     distance: "5km",
-    color: "#4F46E5",
+    color: "#EDEDED",
   },
   {
     label: "Hospital",
@@ -13,7 +13,7 @@ export const closest = [
     place: "University Hospital",
     located: "Main Gate",
     distance: "2km",
-    color: "#EF4444",
+    color: "#EDEDED",
   },
   {
     label: "Bank",
@@ -21,6 +21,6 @@ export const closest = [
     place: "First National Bank",
     located: "Banking square",
     distance: "12km",
-    color: "#10B981",
+    color: "#EDEDED",
   },
 ];
