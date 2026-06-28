@@ -3,8 +3,9 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
-import { FacilityCard } from "@/components/near-by/facility-card";
+import { ClosestCard, FacilityCard } from "@/components/near-by/facility-card";
 import { facilities } from "@/data/facility";
+import { closest } from "@/data/closest";
 
 export default function NearByScreen() {
   const icon = useColor("icon");
@@ -34,6 +35,26 @@ export default function NearByScreen() {
           ))}
         </View>
       </View>
+
+      <View style={styles.sectionContainer}>
+        <View style={styles.subHeader}>
+          <Text>Closest to you</Text>
+          <Text>See All</Text>
+        </View>
+
+        <View style={styles.closestList}>
+          {/* Horizontal scrollable list of nearby facilities */}
+          {closest.map((item, index) => (
+            <ClosestCard
+              key={index}
+              place={item.place}
+              icon={item.icon as any}
+              located={item.located}
+              color={item.color}
+            />
+          ))}
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -42,7 +63,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingHorizontal: 20,
-    backgroundColor: "#fff",
   },
 
   header: {
@@ -58,7 +78,6 @@ const styles = StyleSheet.create({
 
   gridContainer: {
     marginTop: 20,
-    flex: 1,
   },
 
   grid: {
@@ -66,5 +85,18 @@ const styles = StyleSheet.create({
     flexWrap: "wrap",
     justifyContent: "space-between",
     gap: 12,
+  },
+
+  subHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+  },
+
+  sectionContainer: {
+    marginTop: 20,
+    flex: 1,
+  },
+  closestList: {
+    gap: 16,
   },
 });
