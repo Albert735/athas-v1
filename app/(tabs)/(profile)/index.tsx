@@ -14,6 +14,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { IDCard } from "@/components/profile";
 import { Checkbox } from "@/components/ui/checkbox";
+import { router } from "expo-router";
 
 const initialPreferences = [
   {
@@ -119,7 +120,10 @@ export default function Profile() {
 
       {/* SETTINGS */}
       <View style={styles.settingsCard}>
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={() => router.push("/privacy-security")}
+        >
           <View style={styles.settingLeft}>
             <ShieldCheck size={22} color="#111827" />
             <Text style={styles.settingTitle}>Privacy & Security</Text>
@@ -129,7 +133,10 @@ export default function Profile() {
 
         {/* <View style={styles.divider} /> */}
 
-        <TouchableOpacity style={styles.settingItem}>
+        <TouchableOpacity
+          style={styles.settingItem}
+          onPress={() => router.push("/help-support")}
+        >
           <View style={styles.settingLeft}>
             <Info size={22} color="#111827" />
             <Text style={styles.settingTitle}>Help & Support</Text>
