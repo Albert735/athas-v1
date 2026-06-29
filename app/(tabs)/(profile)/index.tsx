@@ -1,8 +1,15 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 
-import { BookOpen, Coffee, Bus, ShieldCheck, Info } from "lucide-react-native";
+import {
+  BookOpen,
+  Coffee,
+  Toilet,
+  ShieldCheck,
+  Info,
+  ChevronRight,
+} from "lucide-react-native";
 
 import { Badge } from "@/components/ui/badge";
 import { IDCard } from "@/components/profile";
@@ -25,9 +32,9 @@ const initialPreferences = [
   },
   {
     id: "3",
-    title: "Shuttle Stops",
-    subtitle: "Campus transportation",
-    icon: Bus,
+    title: "Restrooms",
+    subtitle: "Ease your mind",
+    icon: Toilet,
     checked: false,
   },
 ];
@@ -81,7 +88,7 @@ export default function Profile() {
                 <View style={styles.preferenceItem}>
                   <View style={styles.preferenceLeft}>
                     <View style={styles.iconContainer}>
-                      <Icon size={20} color="#2563EB" />
+                      <Icon size={20} />
                     </View>
 
                     <View>
@@ -112,21 +119,23 @@ export default function Profile() {
 
       {/* SETTINGS */}
       <View style={styles.settingsCard}>
-        <View style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <ShieldCheck size={22} color="#111827" />
             <Text style={styles.settingTitle}>Privacy & Security</Text>
           </View>
-        </View>
+          <ChevronRight />
+        </TouchableOpacity>
 
-        <View style={styles.divider} />
+        {/* <View style={styles.divider} /> */}
 
-        <View style={styles.settingItem}>
+        <TouchableOpacity style={styles.settingItem}>
           <View style={styles.settingLeft}>
             <Info size={22} color="#111827" />
             <Text style={styles.settingTitle}>Help & Support</Text>
           </View>
-        </View>
+          <ChevronRight />
+        </TouchableOpacity>
       </View>
     </SafeAreaView>
   );
@@ -137,7 +146,6 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F8FAFC",
     paddingHorizontal: 20,
     paddingTop: 20,
   },
@@ -220,24 +228,30 @@ const styles = StyleSheet.create({
 
   prefSubtitle: {
     fontSize: 11,
-    color: "#9CA3AF",
     fontWeight: "700",
     letterSpacing: 1,
+    backgroundColor: "#EDEDED",
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    paddingVertical: 4,
   },
 
   preferencesCard: {
-    backgroundColor: "#fff",
+    backgroundColor: "#F7F7F7",
+    padding: 10,
     borderRadius: 20,
-    borderWidth: 1,
     borderColor: "#E5E7EB",
     overflow: "hidden",
+    gap: 12,
   },
 
   preferenceItem: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
+    padding: 10,
+    backgroundColor: "#fff",
+    borderRadius: 16,
   },
 
   preferenceLeft: {
@@ -250,7 +264,7 @@ const styles = StyleSheet.create({
     width: 46,
     height: 46,
     borderRadius: 14,
-    backgroundColor: "#EFF6FF",
+    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
     marginRight: 14,
@@ -276,12 +290,8 @@ const styles = StyleSheet.create({
 
   /* SETTINGS */
   settingsCard: {
-    marginTop: 24,
-    backgroundColor: "#fff",
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    overflow: "hidden",
+    marginTop: 32,
+    gap: 12,
   },
 
   settingItem: {
@@ -289,6 +299,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 18,
+    backgroundColor: "#F5F5F5",
+    borderRadius: 14,
   },
 
   settingLeft: {
