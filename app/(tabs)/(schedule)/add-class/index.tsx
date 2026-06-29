@@ -55,7 +55,7 @@ export default function AddClassScreen() {
               variant="default"
               icon={Plus}
               onPress={() => {
-                router.replace("/scheduled-class-list");
+                router.replace("/(tabs)/(schedule)/scheduled-class-list");
               }}
             >
               Add Schedule

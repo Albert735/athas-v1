@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
-import { Calendar, Plus } from "lucide-react-native";
+import { Plus } from "lucide-react-native";
 
 type Props = {
   onAddClass: () => void;

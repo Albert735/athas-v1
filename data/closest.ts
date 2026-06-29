@@ -1,9 +1,9 @@
 export const closest = [
   {
-    label: "Cafetaria",
+    label: "Cafeteria",
     icon: "restaurant",
-    place: "Main Hall Cafetaria",
-    located: "Central Cafetaria (CC) ",
+    place: "Main Hall Cafeteria",
+    located: "Central Cafeteria (CC)",
     distance: "5km",
     color: "#EDEDED",
   },

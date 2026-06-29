@@ -38,6 +38,16 @@ export default function FavouriteLayout() {
             ) : undefined,
         }}
       />
+      <Stack.Screen
+        name="view-all"
+        options={{
+          title: "View All",
+          headerTitle: () =>
+            Platform.OS === "android" ? (
+              <Text variant="heading">View All</Text>
+            ) : undefined,
+        }}
+      />
     </Stack>
   );
 }

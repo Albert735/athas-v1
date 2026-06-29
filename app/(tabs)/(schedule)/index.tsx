@@ -1,26 +1,25 @@
 import { View } from "react-native";
 import { EmptySchedule } from "@/components/timetable/empty-schedule/empty-schedule";
 import { useTimetable } from "@/hooks/useTimetable";
-import { router } from "expo-router";
+import { router, Redirect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
-import ScheduledClassListScreen from "./scheduled-class-list";
 
 export default function ScheduleScreen() {
   const { classes } = useTimetable();
 
   const handleAddClass = () => {
-    router.replace("/add-class");
+    router.push("/(tabs)/(schedule)/add-class");
   };
+
+  // If there are classes, redirect to the scheduled-class-list route
+  if (classes && classes.length > 0) {
+    return <Redirect href="/(tabs)/(schedule)/scheduled-class-list" />;
+  }
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      {!classes || classes.length === 0 ? (
-        <EmptySchedule onAddClass={handleAddClass} />
-      ) : (
-        <View>
-          <ScheduledClassListScreen />
-        </View>
-      )}
+      <EmptySchedule onAddClass={handleAddClass} />
     </SafeAreaView>
   );
 }
+

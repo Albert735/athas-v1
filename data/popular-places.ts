@@ -21,6 +21,7 @@ export const popularPlaces = [
     description: "Medical consultations and first aid",
     distance: "4 min walk",
     image: require("@/assets/images/restaurant-interior.jpg"),
+    isOpen: true,
   },
   {
     id: "4",

@@ -6,6 +6,7 @@ import {
   Map,
   Heart,
   CircleUser,
+  Search,
 } from "lucide-react-native";
 
 export default function WebTabsLayout() {
@@ -27,7 +28,7 @@ export default function WebTabsLayout() {
       />
 
       <Tabs.Screen
-        name="schedule"
+        name="(schedule)"
         options={{
           title: "Schedule",
           tabBarIcon: ({ color }) => <CalendarDays size={24} color={color} />,
@@ -35,7 +36,7 @@ export default function WebTabsLayout() {
       />
 
       <Tabs.Screen
-        name="map"
+        name="(map)"
         options={{
           title: "Map",
           tabBarIcon: ({ color }) => <Map size={24} color={color} />,
@@ -43,18 +44,28 @@ export default function WebTabsLayout() {
       />
 
       <Tabs.Screen
-        name="favourite"
+        name="(nearby)"
         options={{
-          title: "Favourite",
+          title: "Nearby",
           tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
         }}
       />
 
       <Tabs.Screen
-        name="profile"
+        name="(profile)"
         options={{
           title: "Profile",
           tabBarIcon: ({ color }) => <CircleUser size={24} color={color} />,
+        }}
+      />
+
+      {/* Search tab exists as a route but is hidden from the tab bar */}
+      <Tabs.Screen
+        name="(search)"
+        options={{
+          title: "Search",
+          href: null,
+          tabBarIcon: ({ color }) => <Search size={24} color={color} />,
         }}
       />
     </Tabs>
