@@ -15,6 +15,7 @@ import { Badge } from "@/components/ui/badge";
 import { IDCard } from "@/components/profile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { router } from "expo-router";
+import { ScrollView } from "@/components/ui/scroll-view";
 
 const initialPreferences = [
   {
@@ -51,99 +52,101 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* PROFILE HEADER */}
-      <View style={styles.card}>
-        <View style={styles.avatar}>
-          <Text style={styles.avatarText}>LM</Text>
+      <ScrollView contentContainerStyle={styles.scrollContent}>
+        {/* PROFILE HEADER */}
+        <View style={styles.card}>
+          <View style={styles.avatar}>
+            <Text style={styles.avatarText}>LM</Text>
+          </View>
+
+          <View style={styles.info}>
+            <Text style={styles.name}>Lamine Yamal</Text>
+
+            <Text style={styles.major}>Computer Science Student</Text>
+
+            <Badge style={styles.badge}>
+              <Text style={styles.batch}>Class of 2027</Text>
+            </Badge>
+          </View>
         </View>
 
-        <View style={styles.info}>
-          <Text style={styles.name}>Lamine Yamal</Text>
-
-          <Text style={styles.major}>Computer Science Student</Text>
-
-          <Badge style={styles.badge}>
-            <Text style={styles.batch}>Class of 2027</Text>
-          </Badge>
-        </View>
-      </View>
-
-      {/* ID CARD */}
-      <View style={styles.spacing}>
-        <IDCard />
-      </View>
-
-      {/* MAP PREFERENCES */}
-      <View style={styles.preferences}>
-        <View style={styles.prefHeader}>
-          <Text style={styles.prefTitle}>Map Preferences</Text>
-          <Text style={styles.prefSubtitle}>ONBOARDING CHOICES</Text>
+        {/* ID CARD */}
+        <View style={styles.spacing}>
+          <IDCard />
         </View>
 
-        <View style={styles.preferencesCard}>
-          {preferences.map((item, index) => {
-            const Icon = item.icon;
+        {/* MAP PREFERENCES */}
+        <View style={styles.preferences}>
+          <View style={styles.prefHeader}>
+            <Text style={styles.prefTitle}>Map Preferences</Text>
+            <Text style={styles.prefSubtitle}>ONBOARDING CHOICES</Text>
+          </View>
 
-            return (
-              <View key={item.id}>
-                <View style={styles.preferenceItem}>
-                  <View style={styles.preferenceLeft}>
-                    <View style={styles.iconContainer}>
-                      <Icon size={20} />
+          <View style={styles.preferencesCard}>
+            {preferences.map((item, index) => {
+              const Icon = item.icon;
+
+              return (
+                <View key={item.id}>
+                  <View style={styles.preferenceItem}>
+                    <View style={styles.preferenceLeft}>
+                      <View style={styles.iconContainer}>
+                        <Icon size={20} />
+                      </View>
+
+                      <View>
+                        <Text style={styles.preferenceTitle}>{item.title}</Text>
+
+                        <Text style={styles.preferenceSubtitle}>
+                          {item.subtitle}
+                        </Text>
+                      </View>
                     </View>
 
-                    <View>
-                      <Text style={styles.preferenceTitle}>{item.title}</Text>
-
-                      <Text style={styles.preferenceSubtitle}>
-                        {item.subtitle}
-                      </Text>
-                    </View>
+                    <Checkbox
+                      checked={item.checked}
+                      onCheckedChange={(value) =>
+                        togglePreference(item.id, value as boolean)
+                      }
+                    />
                   </View>
 
-                  <Checkbox
-                    checked={item.checked}
-                    onCheckedChange={(value) =>
-                      togglePreference(item.id, value as boolean)
-                    }
-                  />
+                  {index !== preferences.length - 1 && (
+                    <View style={styles.divider} />
+                  )}
                 </View>
-
-                {index !== preferences.length - 1 && (
-                  <View style={styles.divider} />
-                )}
-              </View>
-            );
-          })}
+              );
+            })}
+          </View>
         </View>
-      </View>
 
-      {/* SETTINGS */}
-      <View style={styles.settingsCard}>
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => router.push("/privacy-security")}
-        >
-          <View style={styles.settingLeft}>
-            <ShieldCheck size={22} color="#111827" />
-            <Text style={styles.settingTitle}>Privacy & Security</Text>
-          </View>
-          <ChevronRight />
-        </TouchableOpacity>
+        {/* SETTINGS */}
+        <View style={styles.settingsCard}>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => router.push("/privacy-security")}
+          >
+            <View style={styles.settingLeft}>
+              <ShieldCheck size={22} color="#111827" />
+              <Text style={styles.settingTitle}>Privacy & Security</Text>
+            </View>
+            <ChevronRight />
+          </TouchableOpacity>
 
-        {/* <View style={styles.divider} /> */}
+          {/* <View style={styles.divider} /> */}
 
-        <TouchableOpacity
-          style={styles.settingItem}
-          onPress={() => router.push("/help-support")}
-        >
-          <View style={styles.settingLeft}>
-            <Info size={22} color="#111827" />
-            <Text style={styles.settingTitle}>Help & Support</Text>
-          </View>
-          <ChevronRight />
-        </TouchableOpacity>
-      </View>
+          <TouchableOpacity
+            style={styles.settingItem}
+            onPress={() => router.push("/help-support")}
+          >
+            <View style={styles.settingLeft}>
+              <Info size={22} color="#111827" />
+              <Text style={styles.settingTitle}>Help & Support</Text>
+            </View>
+            <ChevronRight />
+          </TouchableOpacity>
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -153,8 +156,12 @@ export default function Profile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+
+  scrollContent: {
     paddingHorizontal: 20,
     paddingTop: 20,
+    paddingBottom: 120,
   },
 
   spacing: {

@@ -75,7 +75,7 @@ export default function PrivacySecurity() {
         <View style={styles.toggleCard}>
           <View style={styles.toggleRow}>
             <View style={styles.row}>
-              <MapPin size={20} color="#2563EB" />{" "}
+              <MapPin size={20} color="#2563EB" />
               <Switch
                 value={isLiveTrackingEnabled}
                 onValueChange={setIsLiveTrackingEnabled}
