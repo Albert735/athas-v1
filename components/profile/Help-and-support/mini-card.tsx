@@ -1,6 +1,6 @@
 import { LucideIcon, Navigation } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, TouchableOpacity, View } from "react-native";
 import { Icon } from "@/components/ui/icon";
 import { Text } from "@/components/ui/text";
 
@@ -17,8 +17,10 @@ export function MiniCard({
   const primary = useColor("primary");
 
   return (
-    <Pressable
-      style={({ pressed }) => [styles.container, pressed && styles.pressed]}
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => console.log("pressed")}
+      activeOpacity={0.5}
     >
       <View style={styles.left}>
         <View style={styles.iconContainer}>
@@ -36,14 +38,13 @@ export function MiniCard({
       <View style={styles.actionButton}>
         <Navigation size={18} color={primary} />
       </View>
-    </Pressable>
+    </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    // backgroundColor: "red",
-    borderRadius: 18,
+    borderRadius: 14,
     padding: 10,
     marginTop: 16,
 
@@ -63,7 +64,8 @@ const styles = StyleSheet.create({
   left: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
+    justifyContent: "center",
+    flex: 2,
     gap: 14,
   },
 
@@ -77,7 +79,7 @@ const styles = StyleSheet.create({
 
   textContainer: {
     flex: 1,
-    gap: 4,
+    gap: 2,
   },
 
   title: {

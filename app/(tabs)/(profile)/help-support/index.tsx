@@ -87,6 +87,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 120,
+    gap: 12,
   },
 
   card: {
@@ -125,19 +126,19 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
     color: "#111827",
   },
 
   description: {
-    fontSize: 14,
+    fontSize: 12,
     color: "#6B7280",
   },
 
   section: {
-    marginTop: 20,
-    gap: 12,
+    marginVertical: 20,
+    gap: 16,
   },
 
   resourcesTitle: {
