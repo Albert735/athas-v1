@@ -26,7 +26,15 @@ export function Collapsible({
           <Icon name={ChevronDown} size={18} />
         </View>
 
-        <Text variant="subtitle">{title}</Text>
+        <Text
+          style={{
+            fontSize: 14,
+            fontWeight: "600",
+            color: "#111827",
+          }}
+        >
+          {title}
+        </Text>
       </TouchableOpacity>
 
       {isOpen && (

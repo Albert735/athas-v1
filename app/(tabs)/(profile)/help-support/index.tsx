@@ -4,10 +4,12 @@ import { ScrollView } from "@/components/ui/scroll-view";
 import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
-import { ChevronDown, Headset, Mic, Mail, Info } from "lucide-react-native";
+import { Headset, Mic, Mail, Info } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { FAQData } from "@/data/faq";
 import { Collapsible } from "@/components/ui/collapsible";
+import { HS_CARD_DATA } from "@/data/hs-card-data";
+import { MiniCard } from "@/components/profile/Help-and-support/mini-card";
 
 export default function HelpSupport() {
   const icon = useColor("icon");
@@ -58,7 +60,18 @@ export default function HelpSupport() {
         </View>
 
         <View>
-          <Text>Campus Resources</Text>
+          <Text style={styles.resourcesTitle}>Campus Resources</Text>
+
+          <View>
+            {HS_CARD_DATA.map((item, index) => (
+              <MiniCard
+                key={index}
+                icon={item.icon}
+                title={item.title}
+                description={item.description}
+              />
+            ))}
+          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -125,5 +138,13 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 20,
     gap: 12,
+  },
+
+  resourcesTitle: {
+    fontSize: 14,
+    fontWeight: "bold",
+    color: "#111827",
+    marginTop: 20,
+    marginBottom: 12,
   },
 });
