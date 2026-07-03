@@ -75,9 +75,10 @@ export default function HomeScreen() {
             return (
               <Pressable
                 style={[styles.chip, isSelected && styles.chipSelected]}
-                onPress={() =>
-                  setSelectedQuickAction(isSelected ? null : item.id)
-                }
+                onPress={() => {
+                  (setSelectedQuickAction(isSelected ? null : item.id),
+                    router.push("/(tabs)/(nearby)"));
+                }}
               >
                 <Icon size={14} color={isSelected ? "#FFFFFF" : "#374151"} />
                 <Text
