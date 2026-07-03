@@ -6,6 +6,7 @@ import { useColor } from "@/hooks/useColor";
 import { Header } from "@/components/shared";
 import { closest } from "@/data/closest";
 import { ClosestCard } from "@/components/near-by";
+import { ScrollView } from "@/components/ui/scroll-view";
 
 export default function ViewAll() {
   const icon = useColor("icon");
@@ -14,28 +15,30 @@ export default function ViewAll() {
     <SafeAreaView style={styles.container}>
       <Header title="Near By" showBack={true} />
 
-      <View style={styles.header}>
-        <Text style={styles.title}>Find Facilities</Text>
+      <ScrollView>
+        <View style={styles.header}>
+          <Text style={styles.title}>Find Facilities</Text>
 
-        <SearchBar
-          placeholder="Search for anything..."
-          onSearch={(query) => console.log(query)}
-          loading={false}
-          rightIcon={<Mic size={18} color={icon} />}
-        />
-      </View>
-
-      <View style={styles.grid}>
-        {closest.map((item, index) => (
-          <ClosestCard
-            key={index}
-            place={item.place}
-            icon={item.icon as any}
-            located={item.located}
-            color={item.color}
+          <SearchBar
+            placeholder="Search for anything..."
+            onSearch={(query) => console.log(query)}
+            loading={false}
+            rightIcon={<Mic size={18} color={icon} />}
           />
-        ))}
-      </View>
+        </View>
+
+        <View style={styles.grid}>
+          {closest.map((item, index) => (
+            <ClosestCard
+              key={index}
+              place={item.place}
+              icon={item.icon as any}
+              located={item.located}
+              color={item.color}
+            />
+          ))}
+        </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
