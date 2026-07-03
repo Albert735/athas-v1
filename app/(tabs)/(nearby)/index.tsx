@@ -26,20 +26,16 @@ export default function NearByScreen() {
       </View>
 
       <View style={styles.gridContainer}>
-        <FlatList
-          data={facilities}
-          keyExtractor={(_, index) => index.toString()}
-          numColumns={4}
-          scrollEnabled={false}
-          columnWrapperStyle={styles.grid}
-          renderItem={({ item }) => (
+        <View style={styles.grid}>
+          {facilities.map((item, index) => (
             <FacilityCard
+              key={index}
               label={item.label}
               icon={item.icon as any}
               color={item.color}
             />
-          )}
-        />
+          ))}
+        </View>
       </View>
 
       <View style={styles.sectionContainer}>

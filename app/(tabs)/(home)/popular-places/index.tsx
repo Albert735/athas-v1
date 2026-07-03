@@ -13,7 +13,14 @@ export default function PopularPlaces() {
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Popular Places" showBack={true} />
-
+      <View style={styles.searchContainer}>
+        <SearchBar
+          placeholder="Search for anything..."
+          onSearch={(query) => console.log(query)}
+          loading={false}
+          rightIcon={<Mic size={18} color={icon} />}
+        />
+      </View>
       <FlatList
         data={popularPlaces}
         keyExtractor={(item) => item.id}
@@ -21,22 +28,10 @@ export default function PopularPlaces() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
-        ListHeaderComponent={
-          <View style={styles.searchContainer}>
-            <SearchBar
-              placeholder="Search for anything..."
-              onSearch={(query) => console.log(query)}
-              loading={false}
-              rightIcon={<Mic size={18} color={icon} />}
-            />
-          </View>
-        }
+        // ListHeaderComponent={}
         renderItem={({ item }) => (
           <Pressable
-            style={({ pressed }) => [
-              styles.card,
-              pressed && { opacity: 0.9 },
-            ]}
+            style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}
           >
             <View>
               <Image
@@ -54,9 +49,7 @@ export default function PopularPlaces() {
                 <View
                   style={[
                     styles.statusDot,
-                    item.isOpen
-                      ? styles.statusDotOpen
-                      : styles.statusDotClosed,
+                    item.isOpen ? styles.statusDotOpen : styles.statusDotClosed,
                   ]}
                 />
                 <Text
@@ -101,7 +94,8 @@ const styles = StyleSheet.create({
   },
 
   searchContainer: {
-    marginBottom: 4,
+    marginBottom: 16,
+    paddingHorizontal: 20,
   },
 
   row: {

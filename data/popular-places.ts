@@ -39,4 +39,12 @@ export const popularPlaces = [
     image: require("@/assets/images/restaurant-interior.jpg"),
     isOpen: true,
   },
+  {
+    id: "6",
+    name: "Student Union Building",
+    description: "Clubs, events, and student services",
+    distance: "2 min walk",
+    image: require("@/assets/images/restaurant-interior.jpg"),
+    isOpen: true,
+  },
 ];
