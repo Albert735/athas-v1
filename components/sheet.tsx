@@ -1,25 +1,27 @@
-import { ScrollView } from './ui/scroll-view';
+import { FlatList } from 'react-native';
 import { Text } from './ui/text';
 
 export default function SheetScreen() {
   return (
-    <ScrollView
-      contentInsetAdjustmentBehavior='automatic'
+    <FlatList
+      data={bnaComponents}
+      keyExtractor={(item, index) => index.toString()}
       contentContainerStyle={{
         padding: 16,
         paddingTop: 40,
         paddingBottom: 100,
       }}
-    >
-      <Text variant='heading' style={{ marginBottom: 16 }}>
-        BNA UI
-      </Text>
-      {bnaComponents.map((item, index) => (
-        <Text key={index} variant='title' style={{ marginVertical: 8 }}>
+      ListHeaderComponent={
+        <Text variant='heading' style={{ marginBottom: 16 }}>
+          BNA UI
+        </Text>
+      }
+      renderItem={({ item }) => (
+        <Text variant='title' style={{ marginVertical: 8 }}>
           {item}
         </Text>
-      ))}
-    </ScrollView>
+      )}
+    />
   );
 }
 

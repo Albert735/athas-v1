@@ -4,7 +4,7 @@
  * badges, an update button, and a support link.
  * On submit, navigates back to the sign-in screen.
  */
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, FlatList } from "react-native";
 
 import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
@@ -35,10 +35,14 @@ export function ResetPasswordForm() {
       </View>
 
       {/* Password requirement badges — rendered from the typed array */}
-      <View style={styles.passwordRequirements}>
-        {PASSWORD_REQUIREMENTS.map((req) => (
+      <FlatList
+        horizontal
+        data={PASSWORD_REQUIREMENTS}
+        keyExtractor={(item) => item.label}
+        scrollEnabled={false}
+        contentContainerStyle={styles.passwordRequirements}
+        renderItem={({ item: req }) => (
           <Badge
-            key={req.label}
             variant="outline"
             style={{
               paddingHorizontal: 16,
@@ -48,8 +52,8 @@ export function ResetPasswordForm() {
           >
             {req.label}
           </Badge>
-        ))}
-      </View>
+        )}
+      />
 
       {/* Confirm password input */}
       <View style={styles.field}>

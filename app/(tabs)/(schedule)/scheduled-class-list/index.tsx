@@ -5,7 +5,7 @@ import {
   Text,
   View,
   TouchableOpacity,
-  ScrollView,
+  FlatList,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Badge } from "@/components/ui/badge";
@@ -21,67 +21,68 @@ export default function ScheduledClassListScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <ScrollView
+      <FlatList
+        data={MOCK_UPCOMING_CLASS}
+        keyExtractor={(_, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
-      >
-        {/* Date Card */}
-        <View style={styles.dateRow}>
-          {weekDates.map((item) => {
-            const isSelected =
-              item.fullDate.toDateString() === selectedDate.toDateString();
+        ListHeaderComponent={
+          <>
+            {/* Date Card */}
+            <View style={styles.dateRow}>
+              {weekDates.map((item) => {
+                const isSelected =
+                  item.fullDate.toDateString() === selectedDate.toDateString();
 
-            return (
-              <Pressable
-                key={item.id}
-                onPress={() => setSelectedDate(item.fullDate)}
-                style={[styles.dateCard, isSelected && styles.dateCardActive]}
-              >
-                <Text style={[styles.day, isSelected && styles.textActive]}>
-                  {item.day}
-                </Text>
+                return (
+                  <Pressable
+                    key={item.id}
+                    onPress={() => setSelectedDate(item.fullDate)}
+                    style={[styles.dateCard, isSelected && styles.dateCardActive]}
+                  >
+                    <Text style={[styles.day, isSelected && styles.textActive]}>
+                      {item.day}
+                    </Text>
 
-                <Text style={[styles.date, isSelected && styles.textActive]}>
-                  {item.date}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                    <Text style={[styles.date, isSelected && styles.textActive]}>
+                      {item.date}
+                    </Text>
+                  </Pressable>
+                );
+              })}
+            </View>
 
-        {/* Active Class */}
-        <View style={styles.activeClassCardContainer}>
-          <View style={styles.activeClassCardHeader}>
-            <Text style={styles.sectionTitle}>Ongoing Now</Text>
+            {/* Active Class */}
+            <View style={styles.activeClassCardContainer}>
+              <View style={styles.activeClassCardHeader}>
+                <Text style={styles.sectionTitle}>Ongoing Now</Text>
 
-            <Badge>
-              <View style={styles.badgeContainer}>
-                <Dot size={12} color="#fff" fill="#000" />
-                <Text style={styles.badgeText}>Live</Text>
+                <Badge>
+                  <View style={styles.badgeContainer}>
+                    <Dot size={12} color="#fff" fill="#000" />
+                    <Text style={styles.badgeText}>Live</Text>
+                  </View>
+                </Badge>
               </View>
-            </Badge>
-          </View>
 
-          <ActiveClassCard />
-        </View>
+              <ActiveClassCard />
+            </View>
 
-        {/* Upcoming Schedule */}
-        <View style={styles.upcomingSection}>
-          <View style={styles.upcomingHeader}>
-            <Text style={styles.upcomingTitle}>Upcoming Schedule</Text>
+            {/* Upcoming Schedule */}
+            <View style={styles.upcomingHeader}>
+              <Text style={styles.upcomingTitle}>Upcoming Schedule</Text>
 
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See All</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.upcomingList}>
-            {MOCK_UPCOMING_CLASS.map((item, index) => (
-              <UpcomingClassCard key={index} {...item} />
-            ))}
-          </View>
-        </View>
-      </ScrollView>
+              <TouchableOpacity>
+                <Text style={styles.seeAllText}>See All</Text>
+              </TouchableOpacity>
+            </View>
+          </>
+        }
+        renderItem={({ item }) => (
+          <UpcomingClassCard {...item} />
+        )}
+        ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
+      />
     </SafeAreaView>
   );
 }

@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
@@ -26,16 +26,20 @@ export default function NearByScreen() {
       </View>
 
       <View style={styles.gridContainer}>
-        <View style={styles.grid}>
-          {facilities.map((item, index) => (
+        <FlatList
+          data={facilities}
+          keyExtractor={(_, index) => index.toString()}
+          numColumns={4}
+          scrollEnabled={false}
+          columnWrapperStyle={styles.grid}
+          renderItem={({ item }) => (
             <FacilityCard
-              key={index}
               label={item.label}
               icon={item.icon as any}
               color={item.color}
             />
-          ))}
-        </View>
+          )}
+        />
       </View>
 
       <View style={styles.sectionContainer}>
@@ -48,18 +52,20 @@ export default function NearByScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.closestList}>
-          {/* Horizontal scrollable list of nearby facilities */}
-          {closest.map((item, index) => (
+        <FlatList
+          data={closest}
+          keyExtractor={(_, index) => index.toString()}
+          scrollEnabled={false}
+          contentContainerStyle={styles.closestList}
+          renderItem={({ item }) => (
             <ClosestCard
-              key={index}
               place={item.place}
               icon={item.icon as any}
               located={item.located}
               color={item.color}
             />
-          ))}
-        </View>
+          )}
+        />
       </View>
     </SafeAreaView>
   );

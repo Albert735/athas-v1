@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Pressable, StyleSheet } from "react-native";
+import { View, Text, Pressable, StyleSheet, FlatList } from "react-native";
 import { Switch } from "@/components/ui/switch";
 import { Picker } from "@/components/ui/picker";
 import { Calendar } from "lucide-react-native";
@@ -40,31 +40,33 @@ export function DaySelector() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>OCCURRENCE DAYS</Text>
 
-        <View
-          style={[styles.daysContainer, !isEnabled && styles.disabledContainer]}
-        >
-          {DAYS_OF_WEEK.map((day) => {
-            const isSelected = selectedDays.includes(day.value);
+          <FlatList
+            horizontal
+            data={DAYS_OF_WEEK}
+            keyExtractor={(item) => item.value}
+            scrollEnabled={false}
+            contentContainerStyle={[styles.daysContainer, !isEnabled && styles.disabledContainer]}
+            renderItem={({ item: day }) => {
+              const isSelected = selectedDays.includes(day.value);
 
-            return (
-              <Pressable
-                key={day.value}
-                disabled={!isEnabled}
-                onPress={() => toggleDay(day.value)}
-                style={[
-                  styles.dayButton,
-                  isSelected && styles.selectedDayButton,
-                ]}
-              >
-                <Text
-                  style={[styles.dayText, isSelected && styles.selectedDayText]}
+              return (
+                <Pressable
+                  disabled={!isEnabled}
+                  onPress={() => toggleDay(day.value)}
+                  style={[
+                    styles.dayButton,
+                    isSelected && styles.selectedDayButton,
+                  ]}
                 >
-                  {day.short}
-                </Text>
-              </Pressable>
-            );
-          })}
-        </View>
+                  <Text
+                    style={[styles.dayText, isSelected && styles.selectedDayText]}
+                  >
+                    {day.short}
+                  </Text>
+                </Pressable>
+              );
+            }}
+          />
 
         <Text style={styles.counter}>
           {selectedDays.length} day

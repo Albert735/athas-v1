@@ -1,4 +1,4 @@
-import { View, StyleSheet, Pressable, Image } from "react-native";
+import { View, StyleSheet, Pressable, Image, FlatList } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Landmark, Map } from "lucide-react-native";
 import { Badge } from "@/components/ui/badge";
@@ -143,13 +143,17 @@ export default function ProfileSetupScreen() {
                 <Text style={styles.sectionTitle}>Academic Standing</Text>
               </View>
 
-              <View style={styles.chipContainer}>
-                {levels.map((level) => {
+              <FlatList
+                horizontal
+                data={levels}
+                keyExtractor={(item) => item}
+                scrollEnabled={false}
+                contentContainerStyle={styles.chipContainer}
+                renderItem={({ item: level }) => {
                   const selected = selectedLevel === level;
 
                   return (
                     <Pressable
-                      key={level}
                       onPress={() => setSelectedLevel(level)}
                     >
                       <Badge
@@ -170,8 +174,8 @@ export default function ProfileSetupScreen() {
                       </Badge>
                     </Pressable>
                   );
-                })}
-              </View>
+                }}
+              />
             </View>
           </View>
         </View>

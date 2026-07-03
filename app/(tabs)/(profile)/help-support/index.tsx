@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { Header } from "@/components/shared/screen/header";
@@ -52,26 +52,33 @@ export default function HelpSupport() {
 
         <View style={styles.section}>
           <Text style={styles.title}>Frequently Asked Questions</Text>
-          {FAQData.map((faq, index) => (
-            <Collapsible key={index} title={faq.question}>
-              <Text style={styles.description}>{faq.answer}</Text>
-            </Collapsible>
-          ))}
+          <FlatList
+            data={FAQData}
+            keyExtractor={(_, index) => index.toString()}
+            scrollEnabled={false}
+            renderItem={({ item }) => (
+              <Collapsible title={item.question}>
+                <Text style={styles.description}>{item.answer}</Text>
+              </Collapsible>
+            )}
+          />
         </View>
 
         <View>
           <Text style={styles.resourcesTitle}>Campus Resources</Text>
 
-          <View>
-            {HS_CARD_DATA.map((item, index) => (
+          <FlatList
+            data={HS_CARD_DATA}
+            keyExtractor={(_, index) => index.toString()}
+            scrollEnabled={false}
+            renderItem={({ item }) => (
               <MiniCard
-                key={index}
                 icon={item.icon}
                 title={item.title}
                 description={item.description}
               />
-            ))}
-          </View>
+            )}
+          />
         </View>
       </ScrollView>
     </SafeAreaView>

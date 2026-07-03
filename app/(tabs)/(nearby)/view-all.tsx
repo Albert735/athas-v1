@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
@@ -6,7 +6,6 @@ import { useColor } from "@/hooks/useColor";
 import { Header } from "@/components/shared";
 import { closest } from "@/data/closest";
 import { ClosestCard } from "@/components/near-by";
-import { ScrollView } from "@/components/ui/scroll-view";
 
 export default function ViewAll() {
   const icon = useColor("icon");
@@ -15,30 +14,32 @@ export default function ViewAll() {
     <SafeAreaView style={styles.container}>
       <Header title="Near By" showBack={true} />
 
-      <ScrollView>
-        <View style={styles.header}>
-          <Text style={styles.title}>Find Facilities</Text>
+      <FlatList
+        data={closest}
+        keyExtractor={(_, index) => index.toString()}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.grid}
+        ListHeaderComponent={
+          <View style={styles.header}>
+            <Text style={styles.title}>Find Facilities</Text>
 
-          <SearchBar
-            placeholder="Search for anything..."
-            onSearch={(query) => console.log(query)}
-            loading={false}
-            rightIcon={<Mic size={18} color={icon} />}
-          />
-        </View>
-
-        <View style={styles.grid}>
-          {closest.map((item, index) => (
-            <ClosestCard
-              key={index}
-              place={item.place}
-              icon={item.icon as any}
-              located={item.located}
-              color={item.color}
+            <SearchBar
+              placeholder="Search for anything..."
+              onSearch={(query) => console.log(query)}
+              loading={false}
+              rightIcon={<Mic size={18} color={icon} />}
             />
-          ))}
-        </View>
-      </ScrollView>
+          </View>
+        }
+        renderItem={({ item }) => (
+          <ClosestCard
+            place={item.place}
+            icon={item.icon as any}
+            located={item.located}
+            color={item.color}
+          />
+        )}
+      />
     </SafeAreaView>
   );
 }

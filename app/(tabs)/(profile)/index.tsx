@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 
@@ -83,11 +83,15 @@ export default function Profile() {
           </View>
 
           <View style={styles.preferencesCard}>
-            {preferences.map((item, index) => {
+          <FlatList
+            data={preferences}
+            keyExtractor={(item) => item.id}
+            scrollEnabled={false}
+            renderItem={({ item, index }) => {
               const Icon = item.icon;
 
               return (
-                <View key={item.id}>
+                <View>
                   <View style={styles.preferenceItem}>
                     <View style={styles.preferenceLeft}>
                       <View style={styles.iconContainer}>
@@ -116,7 +120,8 @@ export default function Profile() {
                   )}
                 </View>
               );
-            })}
+            }}
+          />
           </View>
         </View>
 
