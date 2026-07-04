@@ -1,4 +1,5 @@
 import {
+  LayoutDashboard,
   UtensilsCrossed,
   BookOpen,
   HeartPulse,
@@ -14,6 +15,11 @@ import {
 } from "lucide-react-native";
 
 export const quickActions = [
+  {
+    id: "0",
+    label: "All",
+    icon: LayoutDashboard,
+  },
   {
     id: "1",
     label: "Cafeteria",

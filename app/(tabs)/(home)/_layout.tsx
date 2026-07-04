@@ -1,44 +1,31 @@
-import { Stack } from "expo-router";
+import { Drawer } from "expo-router/drawer";
 import { Platform, useColorScheme } from "react-native";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import { useColor } from "@/hooks/useColor";
-import { Text } from "@/components/ui/text";
+import { DrawerContent } from "@/components/drawer/drawer-content";
 
 export default function HomeLayout() {
-  const theme = useColorScheme();
-  const text = useColor("text");
   const background = useColor("background");
 
   return (
-    <Stack
+    <Drawer
+      drawerContent={(props) => <DrawerContent {...props} />}
       screenOptions={{
         headerShown: false,
-        headerLargeTitle: false,
-        headerLargeTitleShadowVisible: false,
-        headerTransparent: true,
-        headerTintColor: text,
-        headerBlurEffect: isLiquidGlassAvailable()
-          ? undefined
-          : theme === "dark"
-            ? "systemMaterialDark"
-            : "systemMaterialLight",
-        headerStyle: {
+        drawerPosition: "left",
+        drawerType: "slide",
+        swipeEnabled: true,
+        overlayColor: "rgba(0,0,0,0.3)",
+        drawerStyle: {
+          width: "82%",
           backgroundColor: isLiquidGlassAvailable()
             ? "transparent"
             : background,
         },
       }}
     >
-      <Stack.Screen
-        name="index"
-        options={{
-          title: "Home",
-          headerTitle: () =>
-            Platform.OS === "android" ? (
-              <Text variant="heading">Home</Text>
-            ) : undefined,
-        }}
-      />
-    </Stack>
+      <Drawer.Screen name="index" />
+      <Drawer.Screen name="popular-places" />
+    </Drawer>
   );
 }

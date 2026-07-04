@@ -13,6 +13,7 @@ import { Dot } from "lucide-react-native";
 import { getWeekDates } from "@/utils/get-week-dates";
 import { useState } from "react";
 import { Pressable } from "react-native";
+import { Header } from "@/components/shared/screen/header";
 
 export default function ScheduledClassListScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -21,6 +22,7 @@ export default function ScheduledClassListScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
+      <Header title="My Schedule" showBack={false} />
       <FlatList
         data={MOCK_UPCOMING_CLASS}
         keyExtractor={(_, index) => index.toString()}
@@ -38,13 +40,18 @@ export default function ScheduledClassListScreen() {
                   <Pressable
                     key={item.id}
                     onPress={() => setSelectedDate(item.fullDate)}
-                    style={[styles.dateCard, isSelected && styles.dateCardActive]}
+                    style={[
+                      styles.dateCard,
+                      isSelected && styles.dateCardActive,
+                    ]}
                   >
                     <Text style={[styles.day, isSelected && styles.textActive]}>
                       {item.day}
                     </Text>
 
-                    <Text style={[styles.date, isSelected && styles.textActive]}>
+                    <Text
+                      style={[styles.date, isSelected && styles.textActive]}
+                    >
                       {item.date}
                     </Text>
                   </Pressable>
@@ -78,9 +85,7 @@ export default function ScheduledClassListScreen() {
             </View>
           </>
         }
-        renderItem={({ item }) => (
-          <UpcomingClassCard {...item} />
-        )}
+        renderItem={({ item }) => <UpcomingClassCard {...item} />}
         ItemSeparatorComponent={() => <View style={{ height: 12 }} />}
       />
     </SafeAreaView>
@@ -94,7 +99,7 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    paddingBottom: 40,
+    paddingBottom: 120,
   },
 
   activeClassCardContainer: {
@@ -125,13 +130,14 @@ const styles = StyleSheet.create({
   },
 
   upcomingSection: {
-    marginTop: 28,
+    marginTop: 36,
   },
 
   upcomingHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+    marginTop: 24,
   },
 
   upcomingTitle: {
@@ -152,6 +158,7 @@ const styles = StyleSheet.create({
   dateRow: {
     flexDirection: "row",
     justifyContent: "space-between",
+    marginVertical: 10,
   },
 
   dateCardActive: {

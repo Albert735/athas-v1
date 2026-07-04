@@ -17,12 +17,14 @@ import { quickActions } from "@/data/quick-actions";
 import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
+import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 export default function HomeScreen() {
   const [selectedQuickAction, setSelectedQuickAction] = useState<string | null>(
     null,
   );
   const icon = useColor("icon");
+  const navigation = useNavigation();
 
   // inside component — remove useBottomTabBarHeight entirely:
   const insets = useSafeAreaInsets();
@@ -47,7 +49,10 @@ export default function HomeScreen() {
             source={require("@/assets/images/icon.png")}
             style={styles.logo}
           />
-          <TouchableOpacity activeOpacity={0.7}>
+          <TouchableOpacity
+            activeOpacity={0.7}
+            onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+          >
             <Menu size={22} color="#111827" />
           </TouchableOpacity>
         </View>
