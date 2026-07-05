@@ -1,3 +1,4 @@
+// Trigger typegen
 import { Platform } from "react-native";
 import { useColor } from "@/hooks/useColor";
 import { isLiquidGlassAvailable } from "expo-glass-effect";

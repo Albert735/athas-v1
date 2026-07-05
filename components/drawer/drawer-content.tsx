@@ -51,16 +51,16 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     props.navigation.closeDrawer();
     switch (id) {
       case "saved":
-        router.push("/(tabs)/(nearby)");
+        router.push("/(drawer)/(tabs)/(nearby)");
         break;
       case "profile":
-        router.push("/(tabs)/(profile)");
+        router.push("/(drawer)/(tabs)/(profile)");
         break;
       case "reminders":
         router.push("/reminders");
         break;
       case "help":
-        router.push("/(tabs)/(profile)/help-support");
+        router.push("/(drawer)/(tabs)/(profile)/help-support");
         break;
     }
   };

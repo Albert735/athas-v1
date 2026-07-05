@@ -55,7 +55,7 @@ export function SignInForm() {
         style={styles.button}
         variant="default"
         onPress={() => {
-          router.replace("/(tabs)/(home)");
+          router.replace("/(drawer)/(tabs)/(home)");
         }}
       >
         Sign In

@@ -1,10 +1,9 @@
 import { Drawer } from "expo-router/drawer";
-import { Platform, useColorScheme } from "react-native";
-import { isLiquidGlassAvailable } from "expo-glass-effect";
-import { useColor } from "@/hooks/useColor";
 import { DrawerContent } from "@/components/drawer/drawer-content";
+import { useColor } from "@/hooks/useColor";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
 
-export default function HomeLayout() {
+export default function DrawerLayout() {
   const background = useColor("background");
 
   return (
@@ -24,8 +23,7 @@ export default function HomeLayout() {
         },
       }}
     >
-      <Drawer.Screen name="index" />
-      <Drawer.Screen name="popular-places/index" />
+      <Drawer.Screen name="(tabs)" />
     </Drawer>
   );
 }

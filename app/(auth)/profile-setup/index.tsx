@@ -183,7 +183,7 @@ export default function ProfileSetupScreen() {
         <Button
           style={styles.button}
           onPress={() => {
-            router.push("/(tabs)/(home)");
+            router.push("/(drawer)/(tabs)/(home)");
           }}
         >
           Complete Setup

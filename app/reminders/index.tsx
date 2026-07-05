@@ -64,7 +64,7 @@ export default function RemindersScreen() {
       {/* Header */}
       <View style={styles.header}>
         <TouchableOpacity
-          onPress={() => router.navigate("/(tabs)/(home)")}
+          onPress={() => router.navigate("/(drawer)/(tabs)/(home)")}
           activeOpacity={0.7}
         >
           <ChevronLeft size={22} color="#111827" />

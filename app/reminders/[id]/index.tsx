@@ -111,7 +111,7 @@ export default function ReminderDetailScreen() {
         <TouchableOpacity
           style={styles.navButton}
           activeOpacity={0.85}
-          onPress={() => router.navigate("/(tabs)/(map)")}
+          onPress={() => router.navigate("/(drawer)/(tabs)/(map)")}
         >
           <Navigation size={18} color="#FFFFFF" />
           <Text style={styles.navButtonText}>Start Navigation</Text>

@@ -28,7 +28,7 @@ export function ActiveClassCard() {
         variant="default"
         size="sm"
         onPress={() => {
-          router.push("/(tabs)/(map)");
+          router.push("/(drawer)/(tabs)/(map)");
         }}
       >
         Start Navigation

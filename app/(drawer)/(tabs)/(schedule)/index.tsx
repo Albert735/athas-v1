@@ -8,12 +8,12 @@ export default function ScheduleScreen() {
   const { classes } = useTimetable();
 
   const handleAddClass = () => {
-    router.push("/(tabs)/(schedule)/add-class");
+    router.push("/(drawer)/(tabs)/(schedule)/add-class");
   };
 
   // If there are classes, redirect to the scheduled-class-list route
   if (classes && classes.length > 0) {
-    return <Redirect href="/(tabs)/(schedule)/scheduled-class-list" />;
+    return <Redirect href="/(drawer)/(tabs)/(schedule)/scheduled-class-list" />;
   }
 
   return (
