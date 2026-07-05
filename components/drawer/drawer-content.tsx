@@ -22,6 +22,7 @@ import {
   User,
   MapPin,
 } from "lucide-react-native";
+import { usePathname } from "expo-router";
 
 const MENU_ITEMS = [
   {
@@ -55,11 +56,17 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       case "profile":
         router.push("/(tabs)/(profile)");
         break;
+      case "reminders":
+        router.push("/reminders");
+        break;
       case "help":
         router.push("/(tabs)/(profile)/help-support");
         break;
     }
   };
+
+  const pathname = usePathname();
+  console.log("current path:", pathname);
 
   const handleLogout = () => {
     props.navigation.closeDrawer();

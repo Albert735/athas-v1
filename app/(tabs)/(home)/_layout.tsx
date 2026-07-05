@@ -25,7 +25,7 @@ export default function HomeLayout() {
       }}
     >
       <Drawer.Screen name="index" />
-      <Drawer.Screen name="popular-places" />
+      <Drawer.Screen name="popular-places/index" />
     </Drawer>
   );
 }
