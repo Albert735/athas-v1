@@ -66,7 +66,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
   };
 
   const pathname = usePathname();
-  console.log("current path:", pathname);
+  // console.log("current path:", pathname);
 
   const handleLogout = () => {
     props.navigation.closeDrawer();

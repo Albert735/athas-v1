@@ -15,6 +15,12 @@ import { useState } from "react";
 import { Pressable } from "react-native";
 import { Header } from "@/components/shared/screen/header";
 
+/**
+ * ScheduledClassListScreen
+ * 
+ * Renders the weekly class calendar, highlights the live active class,
+ * and lists the upcoming schedule.
+ */
 export default function ScheduledClassListScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
 

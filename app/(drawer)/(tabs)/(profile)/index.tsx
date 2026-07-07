@@ -41,6 +41,12 @@ const initialPreferences = [
   },
 ];
 
+/**
+ * Profile Screen
+ * 
+ * Renders the user profile page containing the student ID card,
+ * search preferences, privacy & security settings, and support links.
+ */
 export default function Profile() {
   const [preferences, setPreferences] = useState(initialPreferences);
 

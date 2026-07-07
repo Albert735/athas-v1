@@ -16,6 +16,12 @@ import { popularPlaces } from "@/data/popular-places";
 import { useState } from "react";
 import { router } from "expo-router";
 
+/**
+ * NearByScreen
+ * 
+ * Allows users to search for facilities, filter by campus locations,
+ * and view details on nearby buildings and popular places.
+ */
 export default function NearByScreen() {
   const icon = useColor("icon");
   const [selectedQuickAction, setSelectedQuickAction] = useState<string | null>(
