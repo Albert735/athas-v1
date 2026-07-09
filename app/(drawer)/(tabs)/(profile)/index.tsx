@@ -1,4 +1,10 @@
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  FlatList,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useState } from "react";
 
@@ -43,7 +49,7 @@ const initialPreferences = [
 
 /**
  * Profile Screen
- * 
+ *
  * Renders the user profile page containing the student ID card,
  * search preferences, privacy & security settings, and support links.
  */
@@ -89,45 +95,47 @@ export default function Profile() {
           </View>
 
           <View style={styles.preferencesCard}>
-          <FlatList
-            data={preferences}
-            keyExtractor={(item) => item.id}
-            scrollEnabled={false}
-            renderItem={({ item, index }) => {
-              const Icon = item.icon;
+            <FlatList
+              data={preferences}
+              keyExtractor={(item) => item.id}
+              scrollEnabled={false}
+              renderItem={({ item, index }) => {
+                const Icon = item.icon;
 
-              return (
-                <View>
-                  <View style={styles.preferenceItem}>
-                    <View style={styles.preferenceLeft}>
-                      <View style={styles.iconContainer}>
-                        <Icon size={20} />
+                return (
+                  <View style={styles.preferenceItemContainer}>
+                    <View style={styles.preferenceItem}>
+                      <View style={styles.preferenceLeft}>
+                        <View style={styles.iconContainer}>
+                          <Icon size={20} />
+                        </View>
+
+                        <View>
+                          <Text style={styles.preferenceTitle}>
+                            {item.title}
+                          </Text>
+
+                          <Text style={styles.preferenceSubtitle}>
+                            {item.subtitle}
+                          </Text>
+                        </View>
                       </View>
 
-                      <View>
-                        <Text style={styles.preferenceTitle}>{item.title}</Text>
-
-                        <Text style={styles.preferenceSubtitle}>
-                          {item.subtitle}
-                        </Text>
-                      </View>
+                      <Checkbox
+                        checked={item.checked}
+                        onCheckedChange={(value) =>
+                          togglePreference(item.id, value as boolean)
+                        }
+                      />
                     </View>
 
-                    <Checkbox
-                      checked={item.checked}
-                      onCheckedChange={(value) =>
-                        togglePreference(item.id, value as boolean)
-                      }
-                    />
+                    {index !== preferences.length - 1 && (
+                      <View style={styles.divider} />
+                    )}
                   </View>
-
-                  {index !== preferences.length - 1 && (
-                    <View style={styles.divider} />
-                  )}
-                </View>
-              );
-            }}
-          />
+                );
+              }}
+            />
           </View>
         </View>
 
@@ -299,6 +307,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontWeight: "600",
     color: "#111827",
+  },
+
+  preferenceItemContainer: {
+    gap: 12,
+    // marginBottom: 12,
   },
 
   preferenceSubtitle: {

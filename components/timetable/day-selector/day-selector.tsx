@@ -40,33 +40,36 @@ export function DaySelector() {
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>OCCURRENCE DAYS</Text>
 
-          <FlatList
-            horizontal
-            data={DAYS_OF_WEEK}
-            keyExtractor={(item) => item.value}
-            scrollEnabled={false}
-            contentContainerStyle={[styles.daysContainer, !isEnabled && styles.disabledContainer]}
-            renderItem={({ item: day }) => {
-              const isSelected = selectedDays.includes(day.value);
+        <FlatList
+          horizontal
+          data={DAYS_OF_WEEK}
+          keyExtractor={(item) => item.value}
+          scrollEnabled={false}
+          contentContainerStyle={[
+            styles.daysContainer,
+            !isEnabled && styles.disabledContainer,
+          ]}
+          renderItem={({ item: day }) => {
+            const isSelected = selectedDays.includes(day.value);
 
-              return (
-                <Pressable
-                  disabled={!isEnabled}
-                  onPress={() => toggleDay(day.value)}
-                  style={[
-                    styles.dayButton,
-                    isSelected && styles.selectedDayButton,
-                  ]}
+            return (
+              <Pressable
+                disabled={!isEnabled}
+                onPress={() => toggleDay(day.value)}
+                style={[
+                  styles.dayButton,
+                  isSelected && styles.selectedDayButton,
+                ]}
+              >
+                <Text
+                  style={[styles.dayText, isSelected && styles.selectedDayText]}
                 >
-                  <Text
-                    style={[styles.dayText, isSelected && styles.selectedDayText]}
-                  >
-                    {day.short}
-                  </Text>
-                </Pressable>
-              );
-            }}
-          />
+                  {day.short}
+                </Text>
+              </Pressable>
+            );
+          }}
+        />
 
         <Text style={styles.counter}>
           {selectedDays.length} day
@@ -165,6 +168,7 @@ const styles = StyleSheet.create({
   },
 
   daysContainer: {
+    width: "100%",
     flexDirection: "row",
     justifyContent: "space-between",
   },

@@ -44,6 +44,7 @@ export default function RootLayout() {
         <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+          <Stack.Screen name="building/[id]/index" options={{ headerShown: false }} />
 
           <Stack.Screen
             name="sheet"
