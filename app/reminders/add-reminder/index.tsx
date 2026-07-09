@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import {
   ChevronLeft,
   HelpCircle,
@@ -22,9 +22,11 @@ import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 
 export default function AddReminderScreen() {
-  const [note, setNote] = useState("");
+  const { building } = useLocalSearchParams<{ building?: string }>();
+  const [note, setNote] = useState(building ? `Visit ${building}` : "");
   const [alertNearby, setAlertNearby] = useState(true);
   const icon = useColor("icon");
+  const selectedBuilding = building || "Mensah Sarbah Hall";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -82,7 +84,7 @@ export default function AddReminderScreen() {
             <View style={styles.mapPlaceholder} />
             <View style={styles.locationPill}>
               <MapPin size={13} color="#374151" />
-              <Text style={styles.locationText}>Mensah Sarbah Hall</Text>
+              <Text style={styles.locationText}>{selectedBuilding}</Text>
             </View>
           </View>
         </View>

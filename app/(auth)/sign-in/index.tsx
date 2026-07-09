@@ -112,7 +112,7 @@ export default function LogInScreen() {
           <View style={styles.footer}>
             {/* Sign-up prompt */}
             <Text variant="caption" style={{ fontSize: 12 }}>
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Text
                 variant="caption"
                 style={styles.signupText}

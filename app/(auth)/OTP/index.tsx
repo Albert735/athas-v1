@@ -34,7 +34,7 @@ export default function OTPScreen() {
               <Text style={styles.title}>Verify Your Identity</Text>
 
               <Text style={styles.subtitle}>
-                We've sent a 6-digit verification code to your registered
+                We&apos;ve sent a 6-digit verification code to your registered
                 academic email
               </Text>
             </View>

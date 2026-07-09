@@ -46,7 +46,7 @@ export default function OnboardingScreen() {
         }}
       >
         <Text variant="title">Welcome Back!</Text>
-        <Text variant="body">You've already completed the onboarding.</Text>
+        <Text variant="body">You&apos;ve already completed the onboarding.</Text>
       </View>
     );
   }

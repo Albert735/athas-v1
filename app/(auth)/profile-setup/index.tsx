@@ -59,7 +59,7 @@ export default function ProfileSetupScreen() {
               </View>
 
               <Text style={styles.description}>
-                We'll use this to prioritize academic buildings and resources
+                We&apos;ll use this to prioritize academic buildings and resources
                 relevant to your field on your map.
               </Text>
 

@@ -54,7 +54,7 @@ export function OTPForm() {
       {/* Resend code prompt */}
       <View style={styles.footerContainer}>
         <Text style={styles.footer}>
-          If you didn't receive a code?{" "}
+          If you didn&apos;t receive a code?{" "}
           <Text style={styles.footerHighligh}> Send it again</Text>
         </Text>
       </View>

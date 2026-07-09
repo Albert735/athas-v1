@@ -44,7 +44,7 @@ export default function ForgottenPasswordScreen() {
               <Text style={styles.title}>Forgotten Access?</Text>
 
               <Text style={styles.subtitle}>
-                Enter your institutional email address and we'll send a secure
+                Enter your institutional email address and we&apos;ll send a secure
                 link to reset your credentials.
               </Text>
             </View>

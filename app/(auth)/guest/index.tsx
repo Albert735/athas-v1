@@ -36,7 +36,7 @@ export default function GuestScreen() {
           <Text style={styles.title}>Explore the Athas Landscape</Text>
 
           <Text style={styles.subtitle}>
-            Whether you're here for a tour, a walk, or simply exploring, our
+            Whether you&apos;re here for a tour, a walk, or simply exploring, our
             digital guides ensure you never miss a landmark.
           </Text>
         </View>
@@ -64,7 +64,7 @@ export default function GuestScreen() {
                 <Text style={styles.infoTitle}>Guest Wi-Fi</Text>
 
                 <Text style={styles.infoSubtitle}>
-                  Select "Athas-Guest" {"\n"}on arrival.
+                  Select &quot;Athas-Guest&quot; {"\n"}on arrival.
                 </Text>
               </View>
             </View>

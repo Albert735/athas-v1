@@ -6,6 +6,7 @@ import { useColor } from "@/hooks/useColor";
 import { Mic, MapPin } from "lucide-react-native";
 import { popularPlaces } from "@/data/popular-places";
 import { Image } from "expo-image";
+import { router } from "expo-router";
 
 export default function PopularPlaces() {
   const icon = useColor("icon");
@@ -31,6 +32,7 @@ export default function PopularPlaces() {
         // ListHeaderComponent={}
         renderItem={({ item }) => (
           <Pressable
+            onPress={() => router.push(`/building/${item.id}`)}
             style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}
           >
             <View>
