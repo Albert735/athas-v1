@@ -1,13 +1,13 @@
-import { View } from '@/components/ui/view';
-import { useBottomTabOverflow } from '@/hooks/useBottomTabOverflow';
-import { useColor } from '@/hooks/useColor';
-import type { PropsWithChildren, ReactElement } from 'react';
+import { View } from "@/components/ui/view";
+import { useBottomTabOverflow } from "@/hooks/useBottomTabOverflow";
+import { useColor } from "@/hooks/useColor";
+import type { PropsWithChildren, ReactElement } from "react";
 import Animated, {
   interpolate,
   useAnimatedRef,
   useAnimatedStyle,
   useScrollViewOffset,
-} from 'react-native-reanimated';
+} from "react-native-reanimated";
 
 type Props = PropsWithChildren<{
   headerHeight?: number;
@@ -19,7 +19,7 @@ export function ParallaxScrollView({
   headerHeight = 250,
   headerImage,
 }: Props) {
-  const backgroundColor = useColor('background');
+  const backgroundColor = useColor("background");
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
   const scrollOffset = useScrollViewOffset(scrollRef);
   const bottom = useBottomTabOverflow();
@@ -30,14 +30,14 @@ export function ParallaxScrollView({
           translateY: interpolate(
             scrollOffset.value,
             [-headerHeight, 0, headerHeight],
-            [-headerHeight / 2, 0, headerHeight * 0.75]
+            [-headerHeight / 2, 0, headerHeight * 0.75],
           ),
         },
         {
           scale: interpolate(
             scrollOffset.value,
             [-headerHeight, 0, headerHeight],
-            [2, 1, 1]
+            [2, 1, 1],
           ),
         },
       ],
@@ -60,7 +60,7 @@ export function ParallaxScrollView({
           style={[
             {
               backgroundColor,
-              overflow: 'hidden',
+              overflow: "hidden",
               height: headerHeight,
             },
             headerAnimatedStyle,
@@ -71,10 +71,9 @@ export function ParallaxScrollView({
         <View
           style={{
             flex: 1,
-            padding: 32,
+            padding: 20,
             gap: 16,
-            overflow: 'hidden',
-            backgroundColor,
+            overflow: "hidden",
           }}
         >
           {children}
