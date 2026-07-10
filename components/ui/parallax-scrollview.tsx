@@ -12,12 +12,14 @@ import Animated, {
 type Props = PropsWithChildren<{
   headerHeight?: number;
   headerImage: ReactElement;
+  headerOverlay?: ReactElement; // NEW: fixed content pinned above the scroll (e.g. back button/title)
 }>;
 
 export function ParallaxScrollView({
   children,
   headerHeight = 250,
   headerImage,
+  headerOverlay,
 }: Props) {
   const backgroundColor = useColor("background");
   const scrollRef = useAnimatedRef<Animated.ScrollView>();
@@ -45,11 +47,7 @@ export function ParallaxScrollView({
   });
 
   return (
-    <View
-      style={{
-        flex: 1,
-      }}
-    >
+    <View style={{ flex: 1 }}>
       <Animated.ScrollView
         ref={scrollRef}
         scrollEventThrottle={16}
@@ -71,7 +69,6 @@ export function ParallaxScrollView({
         <View
           style={{
             flex: 1,
-            padding: 20,
             gap: 16,
             overflow: "hidden",
           }}
@@ -79,6 +76,20 @@ export function ParallaxScrollView({
           {children}
         </View>
       </Animated.ScrollView>
+
+      {headerOverlay && (
+        <View
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+          }}
+          pointerEvents="box-none"
+        >
+          {headerOverlay}
+        </View>
+      )}
     </View>
   );
 }
