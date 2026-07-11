@@ -23,6 +23,7 @@ import {
   MapPin,
 } from "lucide-react-native";
 import { usePathname } from "expo-router";
+import { ModeToggle } from "../ui/mode-toggle";
 
 const MENU_ITEMS = [
   {
@@ -90,6 +91,10 @@ export function DrawerContent(props: DrawerContentComponentProps) {
         <View style={styles.profileBadge}>
           <MapPin size={11} color="#6B7280" />
           <Text style={styles.profileBadgeText}>On Campus</Text>
+        </View>
+        <View style={styles.modeToggle}>
+          <Text style={styles.menuLabel}>Toggle mode</Text>
+          <ModeToggle />
         </View>
       </View>
 
@@ -207,6 +212,15 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: "#6B7280",
     fontWeight: "500",
+  },
+  modeToggle: {
+    flexDirection: "row",
+    alignItems: "center",
+    alignSelf: "flex-start",
+    paddingHorizontal: 10,
+
+    width: "100%",
+    justifyContent: "space-between",
   },
   scroll: {
     flex: 1,
