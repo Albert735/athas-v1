@@ -53,6 +53,9 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       case "saved":
         router.push("/(drawer)/(tabs)/(nearby)");
         break;
+      case "notifications":
+        router.push("/notifications");
+        break;
       case "profile":
         router.push("/(drawer)/(tabs)/(profile)");
         break;

@@ -8,8 +8,12 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Plus, ChevronLeft, Bell, MapPin, Clock } from "lucide-react-native";
+import { Plus, Bell, MapPin, Clock } from "lucide-react-native";
 import { useState } from "react";
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/shared/screen/header";
+import { Brain, FlaskConical, BookOpen } from "lucide-react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const FILTERS = ["All", "Upcoming", "Completed"];
 
@@ -19,7 +23,7 @@ const REMINDERS = [
     title: "Meeting at Student Hub",
     location: "NNB, Room 2",
     time: "10:45 AM",
-    icon: "⚙",
+    icon: <Brain size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -27,7 +31,7 @@ const REMINDERS = [
     title: "Pick up Lab Results",
     location: "GCB",
     time: "10:45 AM",
-    icon: "🧪",
+    icon: <FlaskConical size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -35,7 +39,7 @@ const REMINDERS = [
     title: "Study",
     location: "JQB",
     time: "10:45 AM",
-    icon: "📖",
+    icon: <BookOpen size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -43,7 +47,7 @@ const REMINDERS = [
     title: "Meeting Course Rep",
     location: "LOT1",
     time: "10:45 AM",
-    icon: "🚶",
+    icon: <MaterialIcons name="directions-walk" size={24} color="black" />,
     completed: true,
   },
 ];
@@ -62,16 +66,12 @@ export default function RemindersScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity
-          onPress={() => router.navigate("/(drawer)/(tabs)/(home)")}
-          activeOpacity={0.7}
-        >
-          <ChevronLeft size={22} color="#111827" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Reminder</Text>
-        <View style={{ width: 22 }} />
-      </View>
+      <Header
+        title="Reminder"
+        showBack={true}
+        onBack={() => router.back()}
+        variant="solid"
+      />
 
       {/* Filters */}
       <View style={styles.filters}>
@@ -110,10 +110,11 @@ export default function RemindersScreen() {
           showsVerticalScrollIndicator={false}
           renderItem={({ item }) => (
             <Pressable
-              style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}
-              onPress={() =>
-                router.push(`/reminders/${item.id}`)
-              }
+              style={({ pressed }) => [
+                styles.card,
+                pressed && { opacity: 0.9 },
+              ]}
+              onPress={() => router.push(`/reminders/${item.id}`)}
             >
               <View style={styles.cardIcon}>
                 <Text style={styles.cardIconText}>{item.icon}</Text>
@@ -134,16 +135,12 @@ export default function RemindersScreen() {
 
       {/* Add Button */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.addButton}
-          activeOpacity={0.85}
-          onPress={() =>
-            router.push("/reminders/add-reminder")
-          }
+        <Button
+          icon={Plus}
+          onPress={() => router.push("/reminders/add-reminder")}
         >
-          <Plus size={18} color="#FFFFFF" />
           <Text style={styles.addButtonText}>Add to Reminder</Text>
-        </TouchableOpacity>
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -203,10 +200,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F7F7F7",
     borderRadius: 14,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
     padding: 14,
   },
   cardIcon: {
@@ -259,7 +254,7 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 20,
-    borderTopWidth: 1,
+    // borderTopWidth: 1,
     borderTopColor: "#E5E7EB",
   },
   addButton: {

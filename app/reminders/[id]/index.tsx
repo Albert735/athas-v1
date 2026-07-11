@@ -7,13 +7,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  ChevronLeft,
-  HelpCircle,
-  MapPin,
-  Clock,
-  Navigation,
-} from "lucide-react-native";
+import { MapPin, Clock, Navigation } from "lucide-react-native";
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/shared/screen/header";
+import { Brain, FlaskConical, BookOpen } from "lucide-react-native";
+import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 
 const REMINDERS = [
   {
@@ -21,7 +19,7 @@ const REMINDERS = [
     title: "Meeting at Student Hub",
     location: "NNB, Room 2",
     time: "10:45 AM",
-    icon: "⚙",
+    icon: <Brain size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -29,7 +27,7 @@ const REMINDERS = [
     title: "Pick up Lab Results",
     location: "GCB",
     time: "10:45 AM",
-    icon: "🧪",
+    icon: <FlaskConical size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -37,7 +35,7 @@ const REMINDERS = [
     title: "Study",
     location: "JQB",
     time: "10:45 AM",
-    icon: "📖",
+    icon: <BookOpen size={20} color="#374151" />,
     completed: false,
   },
   {
@@ -45,7 +43,7 @@ const REMINDERS = [
     title: "Meeting Course Rep",
     location: "LOT1",
     time: "10:45 AM",
-    icon: "🚶",
+    icon: <MaterialIcons name="directions-walk" size={24} color="black" />,
     completed: true,
   },
 ];
@@ -65,15 +63,7 @@ export default function ReminderDetailScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7}>
-          <ChevronLeft size={22} color="#111827" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Reminder</Text>
-        <TouchableOpacity activeOpacity={0.7}>
-          <HelpCircle size={22} color="#9CA3AF" />
-        </TouchableOpacity>
-      </View>
+      <Header title="Reminder" variant="solid" />
 
       <ScrollView
         style={styles.scroll}
@@ -108,14 +98,12 @@ export default function ReminderDetailScreen() {
 
       {/* Start Navigation */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.navButton}
-          activeOpacity={0.85}
+        <Button
+          icon={Navigation}
           onPress={() => router.navigate("/(drawer)/(tabs)/(map)")}
         >
-          <Navigation size={18} color="#FFFFFF" />
           <Text style={styles.navButtonText}>Start Navigation</Text>
-        </TouchableOpacity>
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -216,8 +204,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
   },
   navButton: {
     flexDirection: "row",
