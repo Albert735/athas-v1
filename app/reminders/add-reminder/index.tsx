@@ -9,19 +9,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import {
-  ChevronLeft,
-  HelpCircle,
-  MapPin,
-  Calendar,
-  Bell,
-  Mic,
-} from "lucide-react-native";
+import { MapPin, Calendar, Bell, Mic } from "lucide-react-native";
 import { useState } from "react";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
+import { Header } from "@/components/shared/screen/header";
 
 export default function AddReminderScreen() {
   const { building } = useLocalSearchParams<{ building?: string }>();
@@ -34,7 +28,7 @@ export default function AddReminderScreen() {
   const showToast = () => {
     toast({
       title: "Success!",
-      description: "Your changes have been saved.",
+      description: "Reminder has been created successfully!",
       variant: "success",
     });
   };
@@ -42,15 +36,7 @@ export default function AddReminderScreen() {
   return (
     <SafeAreaView style={styles.container}>
       {/* Header */}
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => router.back()} activeOpacity={0.7}>
-          <ChevronLeft size={22} color="#111827" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Reminder</Text>
-        <TouchableOpacity activeOpacity={0.7}>
-          <HelpCircle size={22} color="#9CA3AF" />
-        </TouchableOpacity>
-      </View>
+      <Header title="Reminder" variant="solid" />
 
       <ScrollView
         style={styles.scroll}
