@@ -12,6 +12,7 @@ import React, { useEffect } from "react";
 import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
+import { ToastProvider } from "@/components/ui/toast";
 
 // SplashScreen.setOptions({
 //   duration: 200,
@@ -39,6 +40,7 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
+       <ToastProvider>
         <StatusBar style={colorScheme === "dark" ? "light" : "dark"} animated />
 
         <Stack screenOptions={{ headerShown: false }}>
@@ -88,6 +90,7 @@ export default function RootLayout() {
           />
           <Stack.Screen name="+not-found" />
         </Stack>
+       </ToastProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );

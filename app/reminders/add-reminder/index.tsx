@@ -20,6 +20,8 @@ import {
 import { useState } from "react";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
+import { Button } from "@/components/ui/button";
+import { useToast } from "@/components/ui/toast";
 
 export default function AddReminderScreen() {
   const { building } = useLocalSearchParams<{ building?: string }>();
@@ -27,6 +29,15 @@ export default function AddReminderScreen() {
   const [alertNearby, setAlertNearby] = useState(true);
   const icon = useColor("icon");
   const selectedBuilding = building || "Mensah Sarbah Hall";
+  const { toast } = useToast();
+
+  const showToast = () => {
+    toast({
+      title: "Success!",
+      description: "Your changes have been saved.",
+      variant: "success",
+    });
+  };
 
   return (
     <SafeAreaView style={styles.container}>
@@ -124,13 +135,14 @@ export default function AddReminderScreen() {
 
       {/* Create Button */}
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.createButton}
-          activeOpacity={0.85}
-          onPress={() => router.back()}
+        <Button
+          onPress={() => {
+            router.back();
+            showToast();
+          }}
         >
-          <Text style={styles.createButtonText}>Create Reminder</Text>
-        </TouchableOpacity>
+          Create Reminder
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -253,8 +265,6 @@ const styles = StyleSheet.create({
   },
   footer: {
     padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
   },
   createButton: {
     height: 54,
