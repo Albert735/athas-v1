@@ -39,7 +39,7 @@ export function ParallaxScrollView({
           scale: interpolate(
             scrollOffset.value,
             [-headerHeight, 0, headerHeight],
-            [2, 1, 1],
+            [2, 1.05, 1],
           ),
         },
       ],
