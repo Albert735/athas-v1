@@ -1,10 +1,11 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, Pressable } from "react-native";
 
 import type { Notification } from "@/api/types/notification";
 
 import { NotificationIcon } from "./notification-icon";
 
 import { formatNotificationTime } from "@/utils/format-notification-time";
+import { router } from "expo-router";
 
 interface Props {
   notification: Notification;
@@ -12,8 +13,21 @@ interface Props {
 
 export function NotificationCard({ notification }: Props) {
   return (
-    <View
+    <Pressable
       style={[styles.card, notification.status === "unread" && styles.unread]}
+      onPress={() =>
+        router.push({
+          pathname: "/notifications/notification-details",
+          params: {
+            id: notification.id,
+            title: notification.title,
+            message: notification.message,
+            type: notification.type,
+            status: notification.status,
+            createdAt: notification.createdAt,
+          },
+        })
+      }
     >
       <View style={styles.icon}>
         <NotificationIcon type={notification.type} />
@@ -29,7 +43,7 @@ export function NotificationCard({ notification }: Props) {
 
         <Text style={styles.message}>{notification.message}</Text>
       </View>
-    </View>
+    </Pressable>
   );
 }
 
@@ -38,7 +52,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
     padding: 16,
-    borderRadius: 16,
+    borderRadius: 24,
     borderWidth: 1,
     borderColor: "#E5E7EB",
     backgroundColor: "#fff",

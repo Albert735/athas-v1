@@ -40,57 +40,69 @@ export default function RootLayout() {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
-       <ToastProvider>
-        <StatusBar style={colorScheme === "dark" ? "light" : "dark"} animated />
+        <ToastProvider>
+          <StatusBar
+            style={colorScheme === "dark" ? "light" : "dark"}
+            animated
+          />
 
-        <Stack screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-          <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
-          <Stack.Screen name="building/[id]/index" options={{ headerShown: false }} />
-          <Stack.Screen name="notifications/index" options={{ headerShown: false }} />
+          <Stack screenOptions={{ headerShown: false }}>
+            <Stack.Screen name="(auth)" options={{ headerShown: false }} />
+            <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+            <Stack.Screen
+              name="building/[id]/index"
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="notifications/index"
+              options={{ headerShown: false }}
+            />
+            {/* <Stack.Screen
+              name="notifications/notification-details/index"
+              options={{ headerShown: false }}
+            /> */}
 
-
-          <Stack.Screen
-            name="sheet"
-            options={{
-              headerShown: false,
-              sheetGrabberVisible: true,
-              sheetAllowedDetents: [0.4, 0.7, 1],
-              contentStyle: {
-                backgroundColor: isLiquidGlassAvailable()
-                  ? "transparent"
-                  : colorScheme === "dark"
-                    ? Colors.dark.card
-                    : Colors.light.card,
-              },
-              headerTransparent: Platform.OS === "ios" ? true : false,
-              headerLargeTitle: false,
-              title: "",
-              presentation:
-                Platform.OS === "ios"
-                  ? isLiquidGlassAvailable() && osName !== "iPadOS"
-                    ? "formSheet"
-                    : "modal"
-                  : "modal",
-              sheetInitialDetentIndex: 0,
-              headerStyle: {
-                backgroundColor:
-                  Platform.OS === "ios"
+            <Stack.Screen
+              name="sheet"
+              options={{
+                headerShown: false,
+                sheetGrabberVisible: true,
+                sheetAllowedDetents: [0.4, 0.7, 1],
+                contentStyle: {
+                  backgroundColor: isLiquidGlassAvailable()
                     ? "transparent"
                     : colorScheme === "dark"
                       ? Colors.dark.card
                       : Colors.light.card,
-              },
-              headerBlurEffect: isLiquidGlassAvailable()
-                ? undefined
-                : colorScheme === "dark"
-                  ? "dark"
-                  : "light",
-            }}
-          />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-       </ToastProvider>
+                },
+                headerTransparent: Platform.OS === "ios" ? true : false,
+                headerLargeTitle: false,
+                title: "",
+                presentation:
+                  Platform.OS === "ios"
+                    ? isLiquidGlassAvailable() && osName !== "iPadOS"
+                      ? "formSheet"
+                      : "modal"
+                    : "modal",
+                sheetInitialDetentIndex: 0,
+                headerStyle: {
+                  backgroundColor:
+                    Platform.OS === "ios"
+                      ? "transparent"
+                      : colorScheme === "dark"
+                        ? Colors.dark.card
+                        : Colors.light.card,
+                },
+                headerBlurEffect: isLiquidGlassAvailable()
+                  ? undefined
+                  : colorScheme === "dark"
+                    ? "dark"
+                    : "light",
+              }}
+            />
+            <Stack.Screen name="+not-found" />
+          </Stack>
+        </ToastProvider>
       </ThemeProvider>
     </GestureHandlerRootView>
   );
