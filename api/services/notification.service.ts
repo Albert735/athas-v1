@@ -5,7 +5,8 @@ export async function getNotifications(): Promise<Notification[]> {
     {
       id: "1",
       title: "Payment failed",
-      message: "Your payment could not be completed. Try again.",
+      message:
+        "Your payment could not be completed. Try again. Do not use vpn when using this application",
       type: "warning",
       status: "unread",
       createdAt: "2026-07-18T14:20:00",
