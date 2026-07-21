@@ -7,7 +7,7 @@ import { Clock, Navigation } from "lucide-react-native";
 import { Button } from "../ui/button";
 
 interface Props {
-  building: (typeof buildingData)[0];
+  building: (typeof buildingData)[1];
 }
 
 export default function MapDetailsCard({ building }: Props) {

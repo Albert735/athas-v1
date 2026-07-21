@@ -11,11 +11,12 @@ import { buildingData } from "@/data/buildings";
 
 const { width, height } = Dimensions.get("window");
 
-const SELECTED_BUILDING = "Engineering School";
+const SELECTED_BUILDING = "Balme Library";
 
 export default function Map() {
   const icon = useColor("icon");
-  const [selectedBuilding, setSelectedBuilding] = useState(buildingData[0]);
+  const [selectedBuilding, setSelectedBuilding] = useState(buildingData[2]);
+
   return (
     <View style={styles.root}>
       <View style={styles.map} />
@@ -24,7 +25,7 @@ export default function Map() {
 
         <View style={styles.searchRow}>
           <SearchBar
-            placeholder="Engineering School"
+            placeholder="Balme Library"
             onSearch={(query) => console.log(query)}
             loading={false}
             rightIcon={<Mic size={18} color={icon} />}
