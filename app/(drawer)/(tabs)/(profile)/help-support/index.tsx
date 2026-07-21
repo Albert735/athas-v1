@@ -50,6 +50,20 @@ export default function HelpSupport() {
           </Pressable>
         </View>
 
+        <FlatList
+          data={HS_CARD_DATA}
+          keyExtractor={(_, index) => index.toString()}
+          scrollEnabled={false}
+          style={styles.cardContainer}
+          renderItem={({ item }) => (
+            <MiniCard
+              icon={item.icon}
+              title={item.title}
+              description={item.description}
+            />
+          )}
+        />
+
         <View style={styles.section}>
           <Text style={styles.title}>Frequently Asked Questions</Text>
           <FlatList
@@ -60,23 +74,6 @@ export default function HelpSupport() {
               <Collapsible title={item.question}>
                 <Text style={styles.description}>{item.answer}</Text>
               </Collapsible>
-            )}
-          />
-        </View>
-
-        <View>
-          <Text style={styles.resourcesTitle}>Campus Resources</Text>
-
-          <FlatList
-            data={HS_CARD_DATA}
-            keyExtractor={(_, index) => index.toString()}
-            scrollEnabled={false}
-            renderItem={({ item }) => (
-              <MiniCard
-                icon={item.icon}
-                title={item.title}
-                description={item.description}
-              />
             )}
           />
         </View>
@@ -98,8 +95,8 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#F9FAFB",
-    borderRadius: 12,
+    backgroundColor: "#F7F7F7",
+    borderRadius: 30,
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 32,
@@ -107,8 +104,13 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     alignItems: "flex-start",
     gap: 12,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
+  },
+
+  cardContainer: {
+    gap: 12,
+    backgroundColor: "#F7F7F7",
+    borderRadius: 30,
+    marginVertical: 20,
   },
 
   buttonContainer: {
@@ -120,16 +122,14 @@ const styles = StyleSheet.create({
 
   cardButton: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
-    borderRadius: 12,
+    backgroundColor: "#F7F7F7",
+    borderRadius: 30,
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 32,
     flexDirection: "column",
     alignItems: "flex-start",
     gap: 12,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
   },
 
   title: {

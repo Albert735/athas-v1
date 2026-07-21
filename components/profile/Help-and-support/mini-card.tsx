@@ -45,15 +45,11 @@ export function MiniCard({
 const styles = StyleSheet.create({
   container: {
     borderRadius: 14,
-    padding: 10,
-    marginTop: 16,
-
+    paddingHorizontal: 20,
+    paddingVertical: 20,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
   },
 
   pressed: {
@@ -63,45 +59,27 @@ const styles = StyleSheet.create({
 
   left: {
     flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    flex: 2,
-    gap: 14,
+    gap: 16,
   },
 
   iconContainer: {
-    padding: 10,
-    borderRadius: 10,
-    backgroundColor: "#F3F8FF",
-    justifyContent: "center",
-    alignItems: "center",
+    // backgroundColor: "green",
   },
 
   textContainer: {
-    flex: 1,
     gap: 2,
   },
 
   title: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
-    marginBottom: 4,
   },
 
   description: {
-    fontSize: 13,
+    fontSize: 12,
     color: "#6B7280",
-    lineHeight: 18,
   },
 
-  actionButton: {
-    width: 34,
-    height: 34,
-    padding: 12,
-    borderRadius: 10,
-    backgroundColor: "#EFF6FF",
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  actionButton: {},
 });

@@ -12,12 +12,12 @@ export function Collapsible({
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <View>
+    <View style={{ marginBottom: 16 }}>
       <TouchableOpacity
         style={{
           flexDirection: "row",
           alignItems: "center",
-          gap: 6,
+          gap: 16,
         }}
         onPress={() => setIsOpen((value) => !value)}
         activeOpacity={0.8}
@@ -41,7 +41,7 @@ export function Collapsible({
         <View
           style={{
             marginTop: 6,
-            marginLeft: 24,
+            marginLeft: 34,
           }}
         >
           {children}

@@ -74,7 +74,7 @@ export default function Profile() {
           <View style={styles.info}>
             <Text style={styles.name}>Lamine Yamal</Text>
 
-            <Text style={styles.major}>Computer Science Student</Text>
+            <Text style={styles.major}>B.Sc. in Computer Science</Text>
 
             <Badge style={styles.badge}>
               <Text style={styles.batch}>Class of 2027</Text>
@@ -82,18 +82,8 @@ export default function Profile() {
           </View>
         </View>
 
-        {/* ID CARD */}
-        <View style={styles.spacing}>
-          <IDCard />
-        </View>
-
         {/* MAP PREFERENCES */}
         <View style={styles.preferences}>
-          <View style={styles.prefHeader}>
-            <Text style={styles.prefTitle}>Map Preferences</Text>
-            <Text style={styles.prefSubtitle}>ONBOARDING CHOICES</Text>
-          </View>
-
           <View style={styles.preferencesCard}>
             <FlatList
               data={preferences}
@@ -107,7 +97,7 @@ export default function Profile() {
                     <View style={styles.preferenceItem}>
                       <View style={styles.preferenceLeft}>
                         <View style={styles.iconContainer}>
-                          <Icon size={20} />
+                          <Icon size={18} />
                         </View>
 
                         <View>
@@ -129,9 +119,9 @@ export default function Profile() {
                       />
                     </View>
 
-                    {index !== preferences.length - 1 && (
+                    {/* {index !== preferences.length - 1 && (
                       <View style={styles.divider} />
-                    )}
+                    )} */}
                   </View>
                 );
               }}
@@ -146,10 +136,10 @@ export default function Profile() {
             onPress={() => router.push("/privacy-security")}
           >
             <View style={styles.settingLeft}>
-              <ShieldCheck size={22} color="#111827" />
+              <ShieldCheck size={18} color="#111827" />
               <Text style={styles.settingTitle}>Privacy & Security</Text>
             </View>
-            <ChevronRight />
+            <ChevronRight size={18} color="#111827" />
           </TouchableOpacity>
 
           {/* <View style={styles.divider} /> */}
@@ -159,10 +149,10 @@ export default function Profile() {
             onPress={() => router.push("/help-support")}
           >
             <View style={styles.settingLeft}>
-              <Info size={22} color="#111827" />
+              <Info size={18} color="#111827" />
               <Text style={styles.settingTitle}>Help & Support</Text>
             </View>
-            <ChevronRight />
+            <ChevronRight size={18} color="#111827" />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -189,15 +179,15 @@ const styles = StyleSheet.create({
 
   /* HEADER */
   card: {
-    flexDirection: "row",
+    flexDirection: "column",
     alignItems: "center",
   },
 
   avatar: {
-    width: 88,
-    height: 88,
-    borderRadius: 44,
-    backgroundColor: "#F59E0B",
+    width: 100,
+    height: 100,
+    borderRadius: 400,
+    backgroundColor: "#A855F7",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -209,7 +199,10 @@ const styles = StyleSheet.create({
   },
 
   info: {
-    marginLeft: 18,
+    marginTop: 18,
+    alignItems: "center",
+    justifyContent: "center",
+    width: "100%",
   },
 
   name: {
@@ -226,7 +219,6 @@ const styles = StyleSheet.create({
 
   badge: {
     marginTop: 12,
-    alignSelf: "flex-start",
     backgroundColor: "#111827",
     borderRadius: 999,
     paddingHorizontal: 12,
@@ -253,28 +245,10 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
 
-  prefTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#111827",
-  },
-
-  prefSubtitle: {
-    fontSize: 11,
-    fontWeight: "700",
-    letterSpacing: 1,
-    backgroundColor: "#EDEDED",
-    borderRadius: 999,
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-  },
-
   preferencesCard: {
     backgroundColor: "#F7F7F7",
     padding: 10,
-    borderRadius: 20,
-    borderColor: "#E5E7EB",
-    overflow: "hidden",
+    borderRadius: 30,
     gap: 12,
   },
 
@@ -283,35 +257,29 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 10,
-    backgroundColor: "#fff",
-    borderRadius: 16,
   },
 
   preferenceLeft: {
     flexDirection: "row",
     alignItems: "center",
-    flex: 1,
   },
 
   iconContainer: {
     width: 46,
     height: 46,
     borderRadius: 14,
-    backgroundColor: "#fff",
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 14,
   },
 
   preferenceTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
   },
 
   preferenceItemContainer: {
     gap: 12,
-    // marginBottom: 12,
   },
 
   preferenceSubtitle: {
@@ -320,16 +288,12 @@ const styles = StyleSheet.create({
     color: "#6B7280",
   },
 
-  divider: {
-    height: StyleSheet.hairlineWidth,
-    backgroundColor: "#E5E7EB",
-    marginLeft: 76,
-  },
-
   /* SETTINGS */
   settingsCard: {
     marginTop: 32,
-    gap: 12,
+    backgroundColor: "#F7F7F7",
+    padding: 10,
+    borderRadius: 30,
   },
 
   settingItem: {
@@ -337,8 +301,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     padding: 18,
-    backgroundColor: "#F5F5F5",
-    borderRadius: 14,
   },
 
   settingLeft: {
@@ -348,7 +310,7 @@ const styles = StyleSheet.create({
   },
 
   settingTitle: {
-    fontSize: 15,
+    fontSize: 14,
     fontWeight: "600",
     color: "#111827",
   },
