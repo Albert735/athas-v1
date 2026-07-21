@@ -201,14 +201,21 @@ export default function BuildingDetailsScreen() {
         />
 
         <Text style={styles.description}>
-          Lorem Ipsum is simply dummy text of the printing and typesetting
-          industry. Lorem Ipsum has been the industry&apos;s standard dummy text
-          ever since the 1500s, when an unknown printer took a galley of type
-          and scrambled it to make a type specimen book.
+          The main hub for Faculty of Computing and Information Technology
+          (FCIT). Student Affairs, lecture halls, and academic resources.
         </Text>
 
         <View style={styles.operationalHoursContainer}>
-          <Text style={styles.sectionTitle}>Operational Hours</Text>
+          <Text
+            style={{
+              fontSize: 16,
+              fontWeight: "600",
+              color: "#111",
+              marginBottom: 4,
+            }}
+          >
+            Operational Hours
+          </Text>
           <Text style={styles.subText}>Monday – Saturday</Text>
 
           <View style={styles.operationalHours}>
@@ -221,7 +228,7 @@ export default function BuildingDetailsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Facilities & Amenities</Text>
+          {/* <Text style={styles.sectionTitle}>Facilities & Amenities</Text> */}
 
           <View style={styles.sectionList}>
             {facilities.map((item) => (
@@ -249,7 +256,7 @@ export default function BuildingDetailsScreen() {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Accessibility</Text>
+          {/* <Text style={styles.sectionTitle}>Accessibility</Text> */}
 
           <View style={styles.sectionList}>
             {accessibility.map((item) => (
@@ -273,7 +280,8 @@ export default function BuildingDetailsScreen() {
             Our building concierge is available for floor plans, technical
             support, and general inquiries.
           </Text>
-          <Button style={styles.btn} variant="default" onPress={() => {}}>
+
+          <Button variant="default" onPress={() => {}}>
             Contact Building Concierge
           </Button>
         </View>
@@ -372,10 +380,12 @@ const styles = StyleSheet.create({
   },
   sectionList: {
     gap: 12,
+    // backgroundColor: "red",
   },
   sectionTitle: {
     fontWeight: "600",
     fontSize: 16,
+    textAlign: "center",
   },
   subText: {
     fontSize: 14,
@@ -405,8 +415,8 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     gap: 12,
     padding: 15,
+    borderRadius: 30,
     backgroundColor: "#F7F7F7",
-    borderRadius: 12,
   },
   facilityIcon: {
     width: 40,
@@ -437,7 +447,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     padding: 15,
     backgroundColor: "#F7F7F7",
-    borderRadius: 12,
+    borderRadius: 30,
   },
   wifiContent: {
     flexDirection: "row",
@@ -455,7 +465,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 12,
     padding: 15,
-    borderRadius: 12,
   },
   accessibilityIcon: {
     width: 40,
@@ -482,8 +491,6 @@ const styles = StyleSheet.create({
   // Need assistance
   needAssistance: {
     flexDirection: "column",
-    justifyContent: "center",
-    alignItems: "center",
     gap: 12,
     marginBottom: 50,
   },
@@ -491,8 +498,5 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textAlign: "center",
     color: "#666",
-  },
-  btn: {
-    width: "100%",
   },
 });
