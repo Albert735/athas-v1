@@ -35,14 +35,10 @@ export function ResetPasswordForm() {
       </View>
 
       {/* Password requirement badges — rendered from the typed array */}
-      <FlatList
-        horizontal
-        data={PASSWORD_REQUIREMENTS}
-        keyExtractor={(item) => item.label}
-        scrollEnabled={false}
-        contentContainerStyle={styles.passwordRequirements}
-        renderItem={({ item: req }) => (
+      <View style={styles.passwordRequirements}>
+        {PASSWORD_REQUIREMENTS.map((req) => (
           <Badge
+            key={req.label}
             variant="outline"
             style={{
               paddingHorizontal: 16,
@@ -52,8 +48,8 @@ export function ResetPasswordForm() {
           >
             {req.label}
           </Badge>
-        )}
-      />
+        ))}
+      </View>
 
       {/* Confirm password input */}
       <View style={styles.field}>
