@@ -85,7 +85,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
           <User size={24} color="#FFFFFF" />
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>Albert Awuley</Text>
+          <Text style={styles.profileName}>Lamine Yamal</Text>
           <Text style={styles.profileSub}>University of Ghana</Text>
         </View>
         <View style={styles.profileBadge}>
@@ -288,7 +288,7 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 16,
     backgroundColor: "rgba(254,242,242,0.8)",
-    borderRadius: 14,
+    borderRadius: 200,
     borderWidth: 1,
     borderColor: "rgba(254,202,202,0.8)",
   },
