@@ -10,7 +10,7 @@ export function useNotifications() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<NotificationFilter>("All");
 
-  const fetch = useCallback(async () => {
+  const loadNotifications = useCallback(async () => {
     setLoading(true);
     try {
       const data = await getNotifications();
@@ -23,8 +23,8 @@ export function useNotifications() {
   }, []);
 
   useEffect(() => {
-    fetch();
-  }, [fetch]);
+    loadNotifications();
+  }, [loadNotifications]);
 
   const filtered = notifications.filter((item) => {
     if (filter === "Unread") return item.status === "unread";
@@ -35,9 +35,7 @@ export function useNotifications() {
 
   const markAsRead = useCallback((id: string) => {
     setNotifications((prev) =>
-      prev.map((n) =>
-        n.id === id ? { ...n, status: "read" as const } : n,
-      ),
+      prev.map((n) => (n.id === id ? { ...n, status: "read" as const } : n)),
     );
   }, []);
 
@@ -47,7 +45,7 @@ export function useNotifications() {
     loading,
     filter,
     setFilter,
-    refresh: fetch,
+    refresh: loadNotifications,
     markAsRead,
   };
 }

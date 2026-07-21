@@ -7,7 +7,7 @@ import { NotificationIcon } from "@/components/notifications/notification-icon";
 import { formatNotificationTime } from "@/utils/format-notification-time";
 import type { Notification } from "@/api/types/notification";
 
-export default function NotificationDetails({ route }: any) {
+export default function NotificationDetails() {
   const params = useLocalSearchParams<{
     id?: string;
     title?: string;
@@ -15,50 +15,27 @@ export default function NotificationDetails({ route }: any) {
     type?: string;
     status?: string;
     createdAt?: string;
-    notification?: string;
   }>();
 
-  let notification: Notification | null = null;
-
-  // 1. Try to read individual query params first (recommended for Expo Router)
-  if (params.title && params.message) {
-    notification = {
-      id: params.id || "",
-      title: params.title,
-      message: params.message,
-      type: (params.type as any) || "system",
-      status: (params.status as any) || "read",
-      createdAt: params.createdAt || new Date().toISOString(),
-    };
-  }
-
-  // 2. Fallback to route.params or serialized/in-memory notification object
-  if (!notification) {
-    const rawNotification =
-      params.notification || route?.params?.notification || route?.params;
-    if (rawNotification) {
-      if (typeof rawNotification === "string") {
-        try {
-          notification = JSON.parse(rawNotification);
-        } catch {
-          notification = null;
-        }
-      } else {
-        notification = rawNotification as Notification;
-      }
-    }
-  }
-
-  if (!notification) {
+  if (!params.title || !params.message) {
     return (
       <SafeAreaView style={styles.container}>
-        <Header title="Notification Details" />
+        <Header title="Notification Details" showBack />
         <View style={styles.center}>
           <Text style={styles.errorText}>Notification details not found.</Text>
         </View>
       </SafeAreaView>
     );
   }
+
+  const notification = {
+    id: params.id || "",
+    title: params.title,
+    message: params.message,
+    type: (params.type as any) || "system",
+    status: (params.status as any) || "read",
+    createdAt: params.createdAt || new Date().toISOString(),
+  };
 
   return (
     <SafeAreaView style={styles.container}>

@@ -15,18 +15,18 @@ interface Props {
 export function NotificationIcon({ type }: Props) {
   switch (type) {
     case "warning":
-      return <AlertTriangle size={20} />;
+      return <AlertTriangle size={20} color="#F59E0B" />;
 
     case "security":
-      return <ShieldCheck size={20} />;
+      return <ShieldCheck size={20} color="#3B82F6" />;
 
     case "system":
-      return <Settings size={20} />;
+      return <Settings size={20} color="#6B7280" />;
 
     case "reminder":
-      return <Clock size={20} />;
+      return <Clock size={20} color="#8B5CF6" />;
 
     default:
-      return <Bell size={20} />;
+      return <Bell size={20} color="#111827" />;
   }
 }
