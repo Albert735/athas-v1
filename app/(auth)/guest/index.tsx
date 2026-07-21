@@ -36,8 +36,8 @@ export default function GuestScreen() {
           <Text style={styles.title}>Explore the Athas Landscape</Text>
 
           <Text style={styles.subtitle}>
-            Whether you&apos;re here for a tour, a walk, or simply exploring, our
-            digital guides ensure you never miss a landmark.
+            Whether you&apos;re here for a tour, a walk, or simply exploring,
+            our digital guides ensure you never miss a landmark.
           </Text>
         </View>
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: "#000",
-    borderRadius: 15,
+    borderRadius: 24,
     paddingHorizontal: 20,
     paddingVertical: 15,
     gap: 16,
