@@ -59,8 +59,8 @@ export default function ProfileSetupScreen() {
               </View>
 
               <Text style={styles.description}>
-                We&apos;ll use this to prioritize academic buildings and resources
-                relevant to your field on your map.
+                We&apos;ll use this to prioritize academic buildings and
+                resources relevant to your field on your map.
               </Text>
 
               {/* School Combobox */}
@@ -143,17 +143,13 @@ export default function ProfileSetupScreen() {
                 <Text style={styles.sectionTitle}>Academic Standing</Text>
               </View>
 
-              <FlatList
-                horizontal
-                data={levels}
-                keyExtractor={(item) => item}
-                scrollEnabled={false}
-                contentContainerStyle={styles.chipContainer}
-                renderItem={({ item: level }) => {
+              <View style={styles.chipContainer}>
+                {levels.map((level) => {
                   const selected = selectedLevel === level;
 
                   return (
                     <Pressable
+                      key={level}
                       onPress={() => setSelectedLevel(level)}
                     >
                       <Badge
@@ -174,8 +170,8 @@ export default function ProfileSetupScreen() {
                       </Badge>
                     </Pressable>
                   );
-                }}
-              />
+                })}
+              </View>
             </View>
           </View>
         </View>
