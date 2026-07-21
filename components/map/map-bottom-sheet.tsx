@@ -9,28 +9,34 @@ type SheetState = "details" | "directions" | "navigating";
 
 interface Props {
   building: (typeof buildingData)[0];
+  onStateChange?: (state: SheetState) => void;
 }
 
-export default function MapBottomSheet({ building }: Props) {
+export default function MapBottomSheet({ building, onStateChange }: Props) {
   const [state, setState] = useState<SheetState>("details");
+
+  const updateState = (newState: SheetState) => {
+    setState(newState);
+    onStateChange?.(newState);
+  };
 
   return (
     <BottomSheetWrapper>
       {state === "details" && (
         <MapDetailsCard
           building={building}
-          onDirections={() => setState("directions")}
+          onDirections={() => updateState("directions")}
         />
       )}
       {state === "directions" && (
         <MapDirectionsCard
           building={building}
-          onStart={() => setState("navigating")}
-          onBack={() => setState("details")}
+          onStart={() => updateState("navigating")}
+          onBack={() => updateState("details")}
         />
       )}
       {state === "navigating" && (
-        <MapNavigationCard onExit={() => setState("details")} />
+        <MapNavigationCard onExit={() => updateState("details")} />
       )}
     </BottomSheetWrapper>
   );

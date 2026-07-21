@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { Navigation, CornerUpRight, X } from "lucide-react-native";
+import { CornerUpRight, X } from "lucide-react-native";
 import { Button } from "../ui/button";
+import { getManeuverIcon } from "@/utils/navigation";
 
 interface Props {
   onExit?: () => void;
@@ -16,9 +17,15 @@ export default function MapNavigationCard({ onExit }: Props) {
         </View>
         <View style={styles.instructionInfo}>
           <Text style={styles.turnDistance}>In 50m</Text>
-          <Text style={styles.instructionText}>Turn right toward Main Gate</Text>
+          <Text style={styles.instructionText}>
+            Turn right toward Main Gate
+          </Text>
         </View>
-        <TouchableOpacity style={styles.closeButton} onPress={onExit} activeOpacity={0.7}>
+        <TouchableOpacity
+          style={styles.closeButton}
+          onPress={onExit}
+          activeOpacity={0.7}
+        >
           <X size={20} color="#6B7280" />
         </TouchableOpacity>
       </View>
