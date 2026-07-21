@@ -1,11 +1,11 @@
-import Feather from "@expo/vector-icons/Feather";
-
 type ManeuverType =
   | "turn-left"
   | "turn-right"
   | "straight"
   | "arrive"
   | "depart";
+
+const iconName = getManeuverIcon("turn-left");
 
 export function getManeuverIcon(maneuver: ManeuverType): string {
   switch (maneuver) {
@@ -23,3 +23,4 @@ export function getManeuverIcon(maneuver: ManeuverType): string {
       return "arrow-up";
   }
 }
+console.log("icon name:", iconName);

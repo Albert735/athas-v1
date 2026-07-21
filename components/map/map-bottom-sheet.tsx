@@ -1,6 +1,5 @@
 import { buildingData } from "@/data/buildings";
 import { useState } from "react";
-import { BottomSheetWrapper } from "@/components/ui/bottom-sheet";
 import MapDetailsCard from "@/components/map/map-details-card";
 import MapDirectionsCard from "@/components/map/map-directions-card";
 import MapNavigationCard from "@/components/map/map-navigation-card";
@@ -21,7 +20,7 @@ export default function MapBottomSheet({ building, onStateChange }: Props) {
   };
 
   return (
-    <BottomSheetWrapper>
+    <>
       {state === "details" && (
         <MapDetailsCard
           building={building}
@@ -38,6 +37,6 @@ export default function MapBottomSheet({ building, onStateChange }: Props) {
       {state === "navigating" && (
         <MapNavigationCard onExit={() => updateState("details")} />
       )}
-    </BottomSheetWrapper>
+    </>
   );
 }

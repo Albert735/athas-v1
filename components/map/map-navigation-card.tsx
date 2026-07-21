@@ -1,25 +1,29 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { CornerUpRight, X } from "lucide-react-native";
-import { Button } from "../ui/button";
+import { X } from "lucide-react-native";
+import Feather from "@expo/vector-icons/Feather";
 import { getManeuverIcon } from "@/utils/navigation";
+import { MOCK_STEPS } from "@/data/navigation-steps";
+import { useState } from "react";
+import { TouchableOpacity as RNTouchable } from "react-native";
 
 interface Props {
   onExit?: () => void;
 }
 
 export default function MapNavigationCard({ onExit }: Props) {
+  const [stepIndex, setStepIndex] = useState(0);
+  const currentStep = MOCK_STEPS[stepIndex];
+  const iconName = getManeuverIcon(currentStep.maneuver);
+
   return (
     <View style={styles.sheet}>
-      {/* Live turn instruction header */}
       <View style={styles.navHeader}>
         <View style={styles.iconCircle}>
-          <CornerUpRight size={24} color="#FFFFFF" />
+          <Feather size={24} color="#FFFFFF" />
         </View>
         <View style={styles.instructionInfo}>
-          <Text style={styles.turnDistance}>In 50m</Text>
-          <Text style={styles.instructionText}>
-            Turn right toward Main Gate
-          </Text>
+          <Text style={styles.turnDistance}>{currentStep.distance}</Text>
+          <Text style={styles.instructionText}>{currentStep.instruction}</Text>
         </View>
         <TouchableOpacity
           style={styles.closeButton}
@@ -30,16 +34,15 @@ export default function MapNavigationCard({ onExit }: Props) {
         </TouchableOpacity>
       </View>
 
-      {/* Navigation Progress bar / Details */}
       <View style={styles.progressRow}>
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Remaining</Text>
-          <Text style={styles.statValue}>4 mins</Text>
+          <Text style={styles.statValue}>{currentStep.duration}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.statBox}>
           <Text style={styles.statLabel}>Distance</Text>
-          <Text style={styles.statValue}>320 m</Text>
+          <Text style={styles.statValue}>{currentStep.distance}</Text>
         </View>
         <View style={styles.divider} />
         <View style={styles.statBox}>
@@ -48,11 +51,14 @@ export default function MapNavigationCard({ onExit }: Props) {
         </View>
       </View>
 
-      {/* End route button */}
       <View style={styles.footer}>
-        <Button variant="destructive" size="lg" onPress={onExit}>
-          End Navigation
-        </Button>
+        <TouchableOpacity
+          style={styles.endButton}
+          onPress={onExit}
+          activeOpacity={0.85}
+        >
+          <Text style={styles.endButtonText}>End Navigation</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -135,4 +141,16 @@ const styles = StyleSheet.create({
     backgroundColor: "#E5E7EB",
   },
   footer: {},
+  endButton: {
+    height: 54,
+    backgroundColor: "#EF4444",
+    borderRadius: 14,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  endButtonText: {
+    fontSize: 15,
+    fontWeight: "600",
+    color: "#FFFFFF",
+  },
 });
