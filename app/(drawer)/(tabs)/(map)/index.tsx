@@ -10,6 +10,10 @@ const { width, height } = Dimensions.get("window");
 
 export default function Map() {
   const icon = useColor("icon");
+  const [selectedBuilding, setSelectedBuilding] = useState<
+    typeof SELECTED_BUILDING | null
+  >(SELECTED_BUILDING);
+
   return (
     <View style={styles.root}>
       <View style={styles.map} />
@@ -25,6 +29,8 @@ export default function Map() {
           />
         </View>
       </SafeAreaView>
+
+      {showCard && <MapDetailsCard />}
     </View>
   );
 }
