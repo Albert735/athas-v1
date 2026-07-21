@@ -5,15 +5,17 @@ import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
+import { useState } from "react";
+import MapDetailsCard from "@/components/map/map-details-card";
+import { buildingData } from "@/data/buildings";
 
 const { width, height } = Dimensions.get("window");
 
+const SELECTED_BUILDING = "Engineering School";
+
 export default function Map() {
   const icon = useColor("icon");
-  const [selectedBuilding, setSelectedBuilding] = useState<
-    typeof SELECTED_BUILDING | null
-  >(SELECTED_BUILDING);
-
+  const [selectedBuilding, setSelectedBuilding] = useState(buildingData[0]);
   return (
     <View style={styles.root}>
       <View style={styles.map} />
@@ -30,7 +32,7 @@ export default function Map() {
         </View>
       </SafeAreaView>
 
-      {showCard && <MapDetailsCard />}
+      {selectedBuilding && <MapDetailsCard building={selectedBuilding} />}
     </View>
   );
 }
