@@ -6,7 +6,7 @@ import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
 import { useState } from "react";
-import MapDetailsCard from "@/components/map/map-details-card";
+import MapBottomSheet from "@/components/map/map-bottom-sheet";
 import { buildingData } from "@/data/buildings";
 
 const { width, height } = Dimensions.get("window");
@@ -33,7 +33,7 @@ export default function Map() {
         </View>
       </SafeAreaView>
 
-      {selectedBuilding && <MapDetailsCard building={selectedBuilding} />}
+      {selectedBuilding && <MapBottomSheet building={selectedBuilding} />}
     </View>
   );
 }
@@ -41,7 +41,6 @@ export default function Map() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
   },
   map: {
     position: "absolute",
@@ -49,7 +48,7 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: "#D1D5DB",
+    backgroundColor: "red",
   },
   overlay: {
     position: "absolute",

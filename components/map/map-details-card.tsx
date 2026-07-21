@@ -7,10 +7,11 @@ import { Clock, Navigation } from "lucide-react-native";
 import { Button } from "../ui/button";
 
 interface Props {
-  building: (typeof buildingData)[1];
+  building: (typeof buildingData)[number];
+  onDirections?: () => void;
 }
 
-export default function MapDetailsCard({ building }: Props) {
+export default function MapDetailsCard({ building, onDirections }: Props) {
   return (
     <View style={styles.sheet}>
       <View style={styles.imageWrapper}>
@@ -77,7 +78,12 @@ export default function MapDetailsCard({ building }: Props) {
 
       {/* Direction button */}
       <View style={styles.footer}>
-        <Button variant="default" size="lg" icon={Navigation}>
+        <Button
+          variant="default"
+          size="lg"
+          icon={Navigation}
+          onPress={onDirections}
+        >
           Direction
         </Button>
       </View>
