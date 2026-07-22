@@ -88,7 +88,7 @@ export function DaySelector() {
             placeholder="Select start time"
             style={{
               backgroundColor: "#FFFFFF",
-              borderRadius: 10,
+              borderRadius: 30,
             }}
           />
         </View>
@@ -104,7 +104,7 @@ export function DaySelector() {
             placeholder="Select end time"
             style={{
               backgroundColor: "#FFFFFF",
-              borderRadius: 10,
+              borderRadius: 30,
             }}
           />
         </View>
@@ -123,7 +123,7 @@ export function DaySelector() {
           placeholder="Select repeat pattern"
           style={{
             backgroundColor: "#FFFFFF",
-            borderRadius: 10,
+            borderRadius: 30,
           }}
         />
       </View>
@@ -134,9 +134,10 @@ export function DaySelector() {
 const styles = StyleSheet.create({
   container: {
     gap: 24,
-    backgroundColor: "#F4F4F4",
-    padding: 15,
-    borderRadius: 20,
+    backgroundColor: "#F3F4F6",
+    paddingVertical: 20,
+    paddingHorizontal: 20,
+    borderRadius: 30,
   },
 
   switchRow: {

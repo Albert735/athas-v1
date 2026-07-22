@@ -16,11 +16,21 @@ import { useColor } from "@/hooks/useColor";
 import { DaySelector } from "@/components/timetable/day-selector";
 import { Plus } from "lucide-react-native";
 import { router } from "expo-router";
+import { useToast } from "@/components/ui/toast";
 
 const SPACING = 20;
 
 export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
+  const { toast } = useToast();
+
+  const showToast = () => {
+    toast({
+      title: "Success!",
+      description: "Class has been created successfully!",
+      variant: "success",
+    });
+  };
 
   return (
     <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
@@ -55,7 +65,10 @@ export default function AddClassScreen() {
               variant="default"
               icon={Plus}
               onPress={() => {
-                router.replace("/(drawer)/(tabs)/(schedule)/scheduled-class-list");
+                router.replace(
+                  "/(drawer)/(tabs)/(schedule)/scheduled-class-list",
+                );
+                showToast();
               }}
             >
               Add Schedule

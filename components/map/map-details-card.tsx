@@ -78,12 +78,7 @@ export default function MapDetailsCard({ building, onDirections }: Props) {
 
       {/* Direction button */}
       <View style={styles.footer}>
-        <Button
-          variant="default"
-          size="lg"
-          icon={Navigation}
-          onPress={onDirections}
-        >
+        <Button variant="default" icon={Navigation} onPress={onDirections}>
           Direction
         </Button>
       </View>

@@ -14,10 +14,12 @@ import { getWeekDates } from "@/utils/get-week-dates";
 import { useState } from "react";
 import { Pressable } from "react-native";
 import { Header } from "@/components/shared/screen/header";
+import { Plus } from "lucide-react-native";
+import { router } from "expo-router";
 
 /**
  * ScheduledClassListScreen
- * 
+ *
  * Renders the weekly class calendar, highlights the live active class,
  * and lists the upcoming schedule.
  */
@@ -28,7 +30,19 @@ export default function ScheduledClassListScreen() {
 
   return (
     <SafeAreaView style={styles.screen}>
-      <Header title="My Schedule" showBack={false} />
+      <Header
+        title="My Schedule"
+        showBack={false}
+        rightAction={
+          <Pressable
+            onPress={() =>
+              router.replace("/(drawer)/(tabs)/(schedule)/add-class")
+            }
+          >
+            <Plus size={22} color="#111" />
+          </Pressable>
+        }
+      />
       <FlatList
         data={MOCK_UPCOMING_CLASS}
         keyExtractor={(_, index) => index.toString()}

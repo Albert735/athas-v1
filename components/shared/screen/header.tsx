@@ -9,6 +9,8 @@ type Props = {
   title: string;
   showBack?: boolean;
   onBack?: () => void;
+  showAddButton?: boolean;
+  onAdd?: () => void;
   /** 'transparent' for overlaying images (e.g. parallax headers), 'solid' for plain page headers */
   variant?: "transparent" | "solid";
   rightAction?: ReactNode;
