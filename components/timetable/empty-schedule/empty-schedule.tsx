@@ -3,20 +3,12 @@ import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react-native";
 
-type Props = {
-  onAddClass: () => void;
-};
-
-export function EmptySchedule({ onAddClass }: Props) {
+export function EmptySchedule() {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>No Classes Yet</Text>
 
       <Text style={styles.subtitle}>You do not have any schedule yet </Text>
-
-      <Button style={styles.btn} icon={Plus} onPress={onAddClass}>
-        Add Class
-      </Button>
     </View>
   );
 }

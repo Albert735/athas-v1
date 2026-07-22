@@ -1,16 +1,15 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { MapPin, Navigation } from "lucide-react-native";
+import { MapPin, ChevronRight } from "lucide-react-native";
+import { router } from "expo-router";
+import type { ScheduledClass } from "@/types/class";
 
-export type UpcomingClassCardProps = {
-  course: string;
-  time: string;
-  room: string;
-  building: string;
+export type UpcomingClassCardProps = ScheduledClass & {
   onNavigate?: () => void;
 };
 
 export function UpcomingClassCard({
+  id,
   course,
   time,
   room,
@@ -18,7 +17,17 @@ export function UpcomingClassCard({
   onNavigate,
 }: UpcomingClassCardProps) {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => {
+        router.push({
+          pathname: "/(schedule)/[Id]",
+          params: {
+            Id: id,
+          },
+        });
+      }}
+    >
       <View style={styles.mainContent}>
         {/* Time Section */}
         <View style={styles.timeContainer}>
@@ -55,9 +64,9 @@ export function UpcomingClassCard({
 
       {/* Navigation Button */}
       <TouchableOpacity style={styles.navigationButton} onPress={onNavigate}>
-        <Navigation size={22} color="#000" />
+        <ChevronRight size={22} color="#000" />
       </TouchableOpacity>
-    </View>
+    </TouchableOpacity>
   );
 }
 
@@ -66,15 +75,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    padding: 16,
-    borderRadius: 16,
-    backgroundColor: "#F7F7F7",
+    paddingVertical: 4,
   },
 
   mainContent: {
     flexDirection: "row",
     flex: 1,
-    gap: 14,
+    gap: 8,
   },
 
   timeContainer: {

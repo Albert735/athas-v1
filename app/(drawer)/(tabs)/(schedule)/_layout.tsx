@@ -10,7 +10,7 @@ export default function ScheduleLayout() {
       <Stack.Screen name="index" />
       <Stack.Screen name="add-class/index" />
       <Stack.Screen name="scheduled-class-list/index" />
+      <Stack.Screen name="[Id]/index" />
     </Stack>
   );
 }
-

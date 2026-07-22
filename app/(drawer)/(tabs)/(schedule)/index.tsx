@@ -3,6 +3,9 @@ import { EmptySchedule } from "@/components/timetable/empty-schedule/empty-sched
 import { useTimetable } from "@/hooks/useTimetable";
 import { router, Redirect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { Header } from "@/components/shared/screen/header";
+import { Plus } from "lucide-react-native";
+import { Pressable } from "react-native";
 
 export default function ScheduleScreen() {
   const { classes } = useTimetable();
@@ -18,7 +21,16 @@ export default function ScheduleScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
-      <EmptySchedule onAddClass={handleAddClass} />
+      <Header
+        title="Schedule"
+        showBack={false}
+        rightAction={
+          <Pressable onPress={handleAddClass}>
+            <Plus size={22} color="#111" />
+          </Pressable>
+        }
+      />
+      <EmptySchedule />
     </SafeAreaView>
   );
 }

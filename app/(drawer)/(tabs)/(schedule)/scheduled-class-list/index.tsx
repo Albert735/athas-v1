@@ -97,7 +97,7 @@ export default function ScheduledClassListScreen() {
 
             {/* Upcoming Schedule */}
             <View style={styles.upcomingHeader}>
-              <Text style={styles.upcomingTitle}>Upcoming Schedule</Text>
+              {/* <Text style={styles.upcomingTitle}>Upcoming Schedule</Text> */}
 
               <TouchableOpacity>
                 <Text style={styles.seeAllText}>See All</Text>
@@ -119,7 +119,8 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    paddingBottom: 120,
+    // paddingBottom: 120,
+    // flex: 1,
   },
 
   activeClassCardContainer: {
