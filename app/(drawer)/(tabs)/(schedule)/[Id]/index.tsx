@@ -7,7 +7,7 @@ import { useLocalSearchParams } from "expo-router";
 import { MOCK_UPCOMING_CLASS } from "@/data/upcoming-class";
 
 export default function ScheduledClassDetails() {
-  const { Id } = useLocalSearchParams();
+  const { Id } = useLocalSearchParams<{ Id: string }>();
 
   const selectedClass = MOCK_UPCOMING_CLASS.find((item) => item.id === Id);
 

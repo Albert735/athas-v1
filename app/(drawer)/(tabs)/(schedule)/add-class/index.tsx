@@ -17,12 +17,14 @@ import { DaySelector } from "@/components/timetable/day-selector";
 import { Plus } from "lucide-react-native";
 import { router } from "expo-router";
 import { useToast } from "@/components/ui/toast";
+import { useTimetable } from "@/hooks/useTimetable";
 
 const SPACING = 20;
 
 export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
   const { toast } = useToast();
+  const { addClass } = useTimetable();
 
   const showToast = () => {
     toast({
