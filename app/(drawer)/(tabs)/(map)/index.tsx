@@ -14,7 +14,7 @@ type SheetState = "details" | "directions" | "navigating";
 
 export default function Map() {
   const icon = useColor("icon");
-  const [selectedBuilding] = useState(buildingData[0]);
+  const [selectedBuilding] = useState(buildingData[1]);
   const [mapState, setMapState] = useState<SheetState>("details");
   const [stepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];

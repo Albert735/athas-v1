@@ -1,10 +1,10 @@
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { X } from "lucide-react-native";
-import Feather from "@expo/vector-icons/Feather";
+import { MaterialIcons } from "@expo/vector-icons";
 import { getManeuverIcon } from "@/utils/navigation";
 import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useState } from "react";
-import { TouchableOpacity as RNTouchable } from "react-native";
+import { Button } from "../ui/button";
 
 interface Props {
   onExit?: () => void;
@@ -19,7 +19,7 @@ export default function MapNavigationCard({ onExit }: Props) {
     <View style={styles.sheet}>
       <View style={styles.navHeader}>
         <View style={styles.iconCircle}>
-          <Feather size={24} color="#FFFFFF" />
+          <MaterialIcons name={iconName as any} size={24} color="white" />
         </View>
         <View style={styles.instructionInfo}>
           <Text style={styles.turnDistance}>{currentStep.distance}</Text>
@@ -52,13 +52,9 @@ export default function MapNavigationCard({ onExit }: Props) {
       </View>
 
       <View style={styles.footer}>
-        <TouchableOpacity
-          style={styles.endButton}
-          onPress={onExit}
-          activeOpacity={0.85}
-        >
-          <Text style={styles.endButtonText}>End Navigation</Text>
-        </TouchableOpacity>
+        <Button onPress={onExit} variant={"default"}>
+          <Text style={styles.endButtonText}>Exit</Text>
+        </Button>
       </View>
     </View>
   );
@@ -85,7 +81,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#10B981",
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },

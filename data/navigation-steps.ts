@@ -16,7 +16,7 @@ export interface NavigationStep {
 export const MOCK_STEPS: NavigationStep[] = [
   {
     id: "1",
-    maneuver: "depart",
+    maneuver: "turn-left",
     instruction: "Head north on Main Street",
     distance: "50 metres",
     duration: "1 minute",

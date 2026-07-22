@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet } from "react-native";
-import Feather from "@expo/vector-icons/Feather";
+import { MaterialIcons } from "@expo/vector-icons";
 import { getManeuverIcon } from "@/utils/navigation";
 import type { NavigationStep } from "@/data/navigation-steps";
 
@@ -13,7 +13,7 @@ export function MapTurnInstruction({ step }: Props) {
   return (
     <View style={styles.card}>
       <View style={styles.iconCircle}>
-        <Feather size={20} color="#FFFFFF" />
+        <MaterialIcons name={iconName as any} size={24} color="white" />
       </View>
       <View style={styles.info}>
         <Text style={styles.instruction}>{step.instruction}</Text>
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#10B981",
+    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },

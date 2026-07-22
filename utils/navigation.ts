@@ -1,26 +1,28 @@
-type ManeuverType =
+export type ManeuverType =
   | "turn-left"
   | "turn-right"
   | "straight"
   | "arrive"
   | "depart";
 
-const iconName = getManeuverIcon("turn-left");
-
 export function getManeuverIcon(maneuver: ManeuverType): string {
   switch (maneuver) {
     case "turn-left":
-      return "corner-down-left";
+      return "turn-left";
+
     case "turn-right":
-      return "corner-down-right";
+      return "turn-right";
+
     case "straight":
-      return "arrow-up";
+      return "arrow-up-bold";
+
     case "arrive":
-      return "map-pin";
+      return "map-marker-check";
+
     case "depart":
       return "navigation";
+
     default:
-      return "arrow-up";
+      return "navigation";
   }
 }
-console.log("icon name:", iconName);

@@ -134,7 +134,7 @@ export default function MapDirectionsCard({
 
       {/* Action button */}
       <View style={styles.footer}>
-        <Button variant="default" size="lg" icon={Navigation} onPress={onStart}>
+        <Button variant="default" onPress={onStart}>
           Start Navigation
         </Button>
       </View>
