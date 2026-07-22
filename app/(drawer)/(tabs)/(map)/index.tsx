@@ -14,7 +14,9 @@ type SheetState = "details" | "directions" | "navigating";
 
 export default function Map() {
   const icon = useColor("icon");
-  const [selectedBuilding] = useState(buildingData[1]);
+  const [selectedBuilding, setSelectedBuilding] = useState<
+    (typeof buildingData)[0] | null
+  >(null);
   const [mapState, setMapState] = useState<SheetState>("details");
   const [stepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];
@@ -30,7 +32,12 @@ export default function Map() {
             <View style={styles.searchRow}>
               <SearchBar
                 placeholder="Search for a building..."
-                onSearch={(query) => console.log(query)}
+                onSearch={(query) => {
+                  const found = buildingData.find((b) =>
+                    b.name.toLowerCase().includes(query.toLowerCase()),
+                  );
+                  if (found) setSelectedBuilding(found);
+                }}
                 loading={false}
                 rightIcon={<Mic size={18} color={icon} />}
               />
@@ -45,13 +52,12 @@ export default function Map() {
         )}
       </SafeAreaView>
 
-      {selectedBuilding ? (
+      {selectedBuilding && (
         <MapBottomSheet
           building={selectedBuilding}
           onStateChange={setMapState}
+          onClose={() => setSelectedBuilding(null)}
         />
-      ) : (
-        <></>
       )}
     </View>
   );

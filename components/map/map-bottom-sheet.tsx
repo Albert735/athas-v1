@@ -9,6 +9,7 @@ type SheetState = "details" | "directions" | "navigating";
 interface Props {
   building: (typeof buildingData)[1];
   onStateChange?: (state: SheetState) => void;
+  onClose?: () => void;
 }
 
 export default function MapBottomSheet({ building, onStateChange }: Props) {
