@@ -10,9 +10,14 @@ import { router } from "expo-router";
 
 export default function PopularPlaces() {
   const icon = useColor("icon");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const backgroundColor = useColor("background");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Header title="Popular Places" showBack={true} />
       <View style={styles.searchContainer}>
         <SearchBar
@@ -29,11 +34,14 @@ export default function PopularPlaces() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
-        // ListHeaderComponent={}
         renderItem={({ item }) => (
           <Pressable
             onPress={() => router.push(`/building/${item.id}`)}
-            style={({ pressed }) => [styles.card, pressed && { opacity: 0.9 }]}
+            style={({ pressed }) => [
+              styles.card,
+              { backgroundColor: cardColor, borderColor },
+              pressed && { opacity: 0.9 },
+            ]}
           >
             <View>
               <Image
@@ -68,13 +76,20 @@ export default function PopularPlaces() {
             </View>
 
             <View style={styles.cardBody}>
-              <Text style={styles.cardName}>{item.name}</Text>
-              <Text style={styles.cardDescription} numberOfLines={2}>
+              <Text style={[styles.cardName, { color: textColor }]}>
+                {item.name}
+              </Text>
+              <Text
+                style={[styles.cardDescription, { color: mutedColor }]}
+                numberOfLines={2}
+              >
                 {item.description}
               </Text>
               <View style={styles.cardFooter}>
                 <MapPin size={12} color={icon} />
-                <Text style={styles.cardDistance}>{item.distance}</Text>
+                <Text style={[styles.cardDistance, { color: mutedColor }]}>
+                  {item.distance}
+                </Text>
               </View>
             </View>
           </Pressable>
@@ -88,37 +103,29 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   listContent: {
     paddingHorizontal: 20,
     paddingBottom: 120,
     gap: 16,
   },
-
   searchContainer: {
     marginBottom: 16,
     paddingHorizontal: 20,
   },
-
   row: {
     justifyContent: "space-between",
     gap: 12,
   },
-
   card: {
     flex: 1,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
   },
-
   cardImage: {
     width: "100%",
     height: 110,
   },
-
   statusBadge: {
     position: "absolute",
     top: 8,
@@ -130,68 +137,52 @@ const styles = StyleSheet.create({
     paddingVertical: 4,
     borderRadius: 20,
   },
-
   statusOpen: {
     backgroundColor: "rgba(209, 250, 229, 0.95)",
   },
-
   statusClosed: {
     backgroundColor: "rgba(254, 226, 226, 0.95)",
   },
-
   statusDot: {
     width: 6,
     height: 6,
     borderRadius: 3,
   },
-
   statusDotOpen: {
     backgroundColor: "#059669",
   },
-
   statusDotClosed: {
     backgroundColor: "#DC2626",
   },
-
   statusText: {
     fontSize: 11,
     fontWeight: "600",
   },
-
   statusTextOpen: {
     color: "#065F46",
   },
-
   statusTextClosed: {
     color: "#991B1B",
   },
-
   cardBody: {
     padding: 12,
     gap: 4,
   },
-
   cardName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
-
   cardDescription: {
     fontSize: 12,
-    color: "#6B7280",
     lineHeight: 17,
   },
-
   cardFooter: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     marginTop: 6,
   },
-
   cardDistance: {
     fontSize: 12,
-    color: "#9CA3AF",
   },
 });

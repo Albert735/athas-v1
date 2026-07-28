@@ -9,9 +9,11 @@ import { ClosestCard } from "@/components/near-by";
 
 export default function ViewAll() {
   const icon = useColor("icon");
+  const textColor = useColor("text");
+  const backgroundColor = useColor("background");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Header title="Near By" showBack={true} />
 
       <FlatList
@@ -21,8 +23,9 @@ export default function ViewAll() {
         contentContainerStyle={styles.grid}
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.title}>Find Facilities</Text>
-
+            <Text style={[styles.title, { color: textColor }]}>
+              Find Facilities
+            </Text>
             <SearchBar
               placeholder="Search for anything..."
               onSearch={(query) => console.log(query)}
@@ -48,19 +51,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-
   header: {
     paddingHorizontal: 16,
     gap: 16,
     marginTop: 16,
   },
-
   title: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#111",
   },
-
   grid: {
     marginHorizontal: 16,
     gap: 16,

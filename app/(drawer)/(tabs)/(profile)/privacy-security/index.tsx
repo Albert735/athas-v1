@@ -31,6 +31,7 @@ export default function PrivacySecurity() {
   const primaryColor = useColor("primary");
   const iconColor = useColor("icon");
   const successColor = useColor("green");
+  const orangeColor = useColor("orange");
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
@@ -43,15 +44,27 @@ export default function PrivacySecurity() {
         </Text>
 
         {/* ── ACCOUNT SECURITY ── */}
-        <View style={[styles.preferencesCard, { backgroundColor: cardColor, borderColor }]}>
+        <View
+          style={[
+            styles.preferencesCard,
+            { backgroundColor: cardColor, borderColor },
+          ]}
+        >
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: "rgba(0, 153, 255, 0.1)" },
+                ]}
+              >
                 <Lock size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Password & Security</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Password & Security
+                </Text>
                 <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Last updated 3 months ago
                 </Text>
@@ -63,12 +76,19 @@ export default function PrivacySecurity() {
 
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "rgba(16, 185, 129, 0.1)" }]}>
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: "rgba(16, 185, 129, 0.1)" },
+                ]}
+              >
                 <ShieldCheck size={20} color={successColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Two-Factor Authentication</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Two-Factor Authentication
+                </Text>
                 <Text style={[styles.cardSubtitle, { color: successColor }]}>
                   Currently Enabled
                 </Text>
@@ -82,7 +102,12 @@ export default function PrivacySecurity() {
         {/* ── LOCATION PRIVACY ── */}
 
         <View style={styles.locationPreferences}>
-          <View style={[styles.toggleCard, { backgroundColor: cardColor, borderColor }]}>
+          <View
+            style={[
+              styles.toggleCard,
+              { backgroundColor: cardColor, borderColor },
+            ]}
+          >
             <View style={styles.toggleRow}>
               <View style={styles.row}>
                 <MapPin size={20} color={primaryColor} />
@@ -93,7 +118,9 @@ export default function PrivacySecurity() {
               </View>
 
               <View style={styles.toggleTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Live Campus Tracking</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Live Campus Tracking
+                </Text>
                 <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Share your location in real-time with authorized campus
                   security and friends
@@ -102,10 +129,15 @@ export default function PrivacySecurity() {
             </View>
           </View>
 
-          <View style={[styles.toggleCard, { backgroundColor: cardColor, borderColor }]}>
+          <View
+            style={[
+              styles.toggleCard,
+              { backgroundColor: cardColor, borderColor },
+            ]}
+          >
             <View style={styles.toggleRow}>
               <View style={styles.row}>
-                <History size={20} color={useColor("orange") || "#EA580C"} />
+                <History size={20} color={orangeColor} />
                 <Switch
                   value={isRouteHistoryEnabled}
                   onValueChange={setIsRouteHistoryEnabled}
@@ -113,7 +145,9 @@ export default function PrivacySecurity() {
               </View>
 
               <View style={styles.toggleTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Route History Storage</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Route History Storage
+                </Text>
                 <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Save your frequent routes to optimize future pathfinding
                   suggestions
@@ -140,16 +174,30 @@ export default function PrivacySecurity() {
 
         {/* ── APP PERMISSIONS ── */}
 
-        <View style={[styles.permissionsCard, { backgroundColor: cardColor, borderColor }]}>
+        <View
+          style={[
+            styles.permissionsCard,
+            { backgroundColor: cardColor, borderColor },
+          ]}
+        >
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: "rgba(0, 153, 255, 0.1)" },
+                ]}
+              >
                 <LocateFixed size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Location</Text>
-                <Text style={[styles.cardSubtitle, { color: textMuted }]}>Always allowed</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Location
+                </Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
+                  Always allowed
+                </Text>
               </View>
             </View>
 
@@ -158,13 +206,22 @@ export default function PrivacySecurity() {
 
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+              <View
+                style={[
+                  styles.iconCircle,
+                  { backgroundColor: "rgba(0, 153, 255, 0.1)" },
+                ]}
+              >
                 <Bell size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>Notifications</Text>
-                <Text style={[styles.cardSubtitle, { color: textMuted }]}>Alerts and Badges</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>
+                  Notifications
+                </Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
+                  Alerts and Badges
+                </Text>
               </View>
             </View>
 

@@ -9,100 +9,95 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { SearchBar } from "@/components/ui/searchbar";
-import { Mic, MapPin, Navigation, Plus } from "lucide-react-native";
+import { Mic, MapPin, Navigation } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
 import { quickActions } from "@/data/quick-actions";
 import { popularPlaces } from "@/data/popular-places";
 import { useState } from "react";
 import { router } from "expo-router";
 
-/**
- * NearByScreen
- * 
- * Allows users to search for facilities, filter by campus locations,
- * and view details on nearby buildings and popular places.
- */
 export default function NearByScreen() {
   const icon = useColor("icon");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const backgroundColor = useColor("background");
+
   const [selectedQuickAction, setSelectedQuickAction] = useState<string | null>(
     null,
   );
 
   return (
-    <SafeAreaView style={styles.container}>
-      <>
-        {/* Header */}
-        {/* <View style={styles.header}>
-          <Image
-            source={require("@/assets/images/icon.png")}
-            style={styles.logo}
-          />
-          <TouchableOpacity activeOpacity={0.7}>
-            <View style={styles.menuButton}>
-              <View style={styles.menuLine} />
-              <View style={[styles.menuLine, { width: 16 }]} />
-            </View>
-          </TouchableOpacity>
-        </View> */}
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      {/* Title */}
+      <View style={styles.titleRow}>
+        <Text style={[styles.titleText, { color: textColor }]}>
+          Find Facilities
+        </Text>
+      </View>
 
-        <View style={{ padding: 20, paddingBottom: 10 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>
-            Find Facilities
-          </Text>
-        </View>
+      {/* Search */}
+      <View style={styles.searchRow}>
+        <SearchBar
+          placeholder="Search for buildings..."
+          onSearch={(query) => console.log(query)}
+          loading={false}
+          rightIcon={<Mic size={18} color={icon} />}
+        />
+      </View>
 
-        {/* Search */}
-        <View style={styles.searchRow}>
-          <SearchBar
-            placeholder="Search for buildings..."
-            onSearch={(query) => console.log(query)}
-            loading={false}
-            rightIcon={<Mic size={18} color={icon} />}
-          />
-        </View>
-
-        {/* Chips */}
-        <View style={styles.chipsWrapper}>
-          <FlatList
-            horizontal
-            data={quickActions}
-            keyExtractor={(item) => item.id}
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.chipsContent}
-            renderItem={({ item }) => {
-              const isSelected = selectedQuickAction === item.id;
-              const Icon = item.icon;
-              return (
-                <Pressable
-                  style={[styles.chip, isSelected && styles.chipSelected]}
-                  onPress={() =>
-                    setSelectedQuickAction(isSelected ? null : item.id)
-                  }
+      {/* Chips */}
+      <View style={styles.chipsWrapper}>
+        <FlatList
+          horizontal
+          data={quickActions}
+          keyExtractor={(item) => item.id}
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.chipsContent}
+          renderItem={({ item }) => {
+            const isSelected = selectedQuickAction === item.id;
+            const Icon = item.icon;
+            return (
+              <Pressable
+                style={[
+                  styles.chip,
+                  { backgroundColor: cardColor, borderColor },
+                  isSelected && styles.chipSelected,
+                ]}
+                onPress={() =>
+                  setSelectedQuickAction(isSelected ? null : item.id)
+                }
+              >
+                <Icon size={14} color={isSelected ? "#FFFFFF" : icon} />
+                <Text
+                  style={[
+                    styles.chipText,
+                    { color: mutedColor },
+                    isSelected && styles.chipTextSelected,
+                  ]}
                 >
-                  <Icon size={14} color={isSelected ? "#FFFFFF" : "#374151"} />
-                  <Text
-                    style={[
-                      styles.chipText,
-                      isSelected && styles.chipTextSelected,
-                    ]}
-                  >
-                    {item.label}
-                  </Text>
-                </Pressable>
-              );
-            }}
-          />
-        </View>
-      </>
+                  {item.label}
+                </Text>
+              </Pressable>
+            );
+          }}
+        />
+      </View>
+
+      {/* Places List */}
       <FlatList
         data={popularPlaces}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
-        // ListHeaderComponent={}
         renderItem={({ item }) => (
           <Pressable
-            style={({ pressed }) => [styles.card, pressed && { opacity: 0.95 }]}
+            style={({ pressed }) => [
+              styles.card,
+              { backgroundColor: cardColor, borderColor },
+              pressed && { opacity: 0.95 },
+            ]}
           >
             {/* Image + badge */}
             <View>
@@ -123,14 +118,7 @@ export default function NearByScreen() {
                     item.isOpen ? styles.statusDotOpen : styles.statusDotClosed,
                   ]}
                 />
-                <Text
-                  style={[
-                    styles.statusText,
-                    item.isOpen
-                      ? styles.statusTextOpen
-                      : styles.statusTextClosed,
-                  ]}
-                >
+                <Text style={styles.statusText}>
                   {item.isOpen ? "Open Now" : "Closed"}
                 </Text>
               </View>
@@ -139,12 +127,20 @@ export default function NearByScreen() {
             {/* Card body */}
             <View style={styles.cardBody}>
               <View style={styles.cardInfo}>
-                <Text style={styles.cardName}>{item.name}</Text>
+                <Text style={[styles.cardName, { color: textColor }]}>
+                  {item.name}
+                </Text>
                 <View style={styles.cardMeta}>
-                  <MapPin size={12} color="#9CA3AF" />
-                  <Text style={styles.cardLocation}>LOT 1</Text>
-                  <Text style={styles.cardDot}>•</Text>
-                  <Text style={styles.cardDistance}>{item.distance}</Text>
+                  <MapPin size={12} color={icon} />
+                  <Text style={[styles.cardLocation, { color: mutedColor }]}>
+                    LOT 1
+                  </Text>
+                  <Text style={[styles.cardDot, { color: borderColor }]}>
+                    •
+                  </Text>
+                  <Text style={[styles.cardDistance, { color: mutedColor }]}>
+                    {item.distance}
+                  </Text>
                 </View>
               </View>
 
@@ -167,33 +163,14 @@ export default function NearByScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // backgroundColor: "#F9FAFB",
   },
-  listContent: {
-    paddingBottom: 100,
-  },
-  header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+  titleRow: {
     paddingHorizontal: 20,
-    paddingTop: 12,
-    marginBottom: 14,
+    paddingVertical: 10,
   },
-  logo: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
-  },
-  menuButton: {
-    gap: 5,
-    alignItems: "flex-end",
-  },
-  menuLine: {
-    width: 22,
-    height: 2,
-    borderRadius: 2,
-    backgroundColor: "#111827",
+  titleText: {
+    fontSize: 20,
+    fontWeight: "700",
   },
   searchRow: {
     paddingHorizontal: 20,
@@ -215,29 +192,28 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
   },
   chipSelected: {
-    backgroundColor: "#111827",
+    backgroundColor: "#0099FF",
     borderColor: "#111827",
   },
   chipText: {
     fontSize: 13,
     fontWeight: "500",
-    color: "#374151",
   },
   chipTextSelected: {
     color: "#FFFFFF",
   },
+  listContent: {
+    paddingTop: 8,
+    paddingBottom: 100,
+  },
   card: {
     marginHorizontal: 20,
     marginBottom: 14,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
   },
   cardImage: {
     width: "100%",
@@ -275,11 +251,6 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     letterSpacing: 0.5,
-  },
-  statusTextOpen: {
-    color: "#FFFFFF",
-  },
-  statusTextClosed: {
     color: "#FFFFFF",
   },
   cardBody: {
@@ -296,7 +267,6 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111827",
   },
   cardMeta: {
     flexDirection: "row",
@@ -305,15 +275,12 @@ const styles = StyleSheet.create({
   },
   cardLocation: {
     fontSize: 12,
-    color: "#6B7280",
   },
   cardDot: {
     fontSize: 12,
-    color: "#D1D5DB",
   },
   cardDistance: {
     fontSize: 12,
-    color: "#6B7280",
   },
   goButton: {
     flexDirection: "row",
@@ -326,30 +293,6 @@ const styles = StyleSheet.create({
   },
   goButtonText: {
     fontSize: 14,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
-  footer: {
-    position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
-    backgroundColor: "#F9FAFB",
-    borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 54,
-    backgroundColor: "#111827",
-    borderRadius: 14,
-  },
-  addButtonText: {
-    fontSize: 15,
     fontWeight: "600",
     color: "#FFFFFF",
   },
