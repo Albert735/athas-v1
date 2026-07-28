@@ -63,7 +63,7 @@ export function BottomSheetModal({
     <Modal
       visible={isVisible}
       transparent
-      animationType="slide"
+      animationType="fade"
       onRequestClose={onClose}
     >
       <TouchableWithoutFeedback onPress={onClose}>
@@ -105,8 +105,8 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
     paddingHorizontal: 20,
     paddingBottom: 32,
     paddingTop: 12,

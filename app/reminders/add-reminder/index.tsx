@@ -16,10 +16,12 @@ import { useColor } from "@/hooks/useColor";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { Header } from "@/components/shared/screen/header";
+import { DatePicker } from "@/components/ui/date-picker";
 
 export default function AddReminderScreen() {
   const { building } = useLocalSearchParams<{ building?: string }>();
   const [note, setNote] = useState(building ? `Visit ${building}` : "");
+  const [dateTime, setDateTime] = useState<Date | undefined>();
   const [alertNearby, setAlertNearby] = useState(true);
   const icon = useColor("icon");
   const selectedBuilding = building || "Mensah Sarbah Hall";
@@ -88,18 +90,14 @@ export default function AddReminderScreen() {
 
         {/* Set Alert */}
         <View style={styles.field}>
-          <View style={styles.alertRow}>
-            <View style={styles.alertLeft}>
-              <Calendar size={18} color="#6B7280" />
-              <View>
-                <Text style={styles.alertLabel}>SET ALERT</Text>
-                <Text style={styles.alertValue}>Today, 2:30 PM</Text>
-              </View>
-            </View>
-            <TouchableOpacity activeOpacity={0.7}>
-              <Text style={styles.editText}>Edit</Text>
-            </TouchableOpacity>
-          </View>
+          <DatePicker
+            label="Date"
+            mode="datetime"
+            value={dateTime}
+            onChange={setDateTime}
+            placeholder="Select date and time"
+            timeFormat="12"
+          />
         </View>
 
         {/* Alert Nearby */}
@@ -112,7 +110,6 @@ export default function AddReminderScreen() {
             <Switch
               value={alertNearby}
               onValueChange={setAlertNearby}
-              trackColor={{ false: "#E5E7EB", true: "#111827" }}
               thumbColor="#FFFFFF"
             />
           </View>
@@ -186,7 +183,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    borderRadius: 12,
+    borderRadius: 30,
     paddingHorizontal: 16,
     paddingVertical: 14,
     fontSize: 15,
@@ -194,7 +191,7 @@ const styles = StyleSheet.create({
     minHeight: 100,
   },
   mapPreview: {
-    borderRadius: 14,
+    borderRadius: 30,
     overflow: "hidden",
     borderWidth: 1,
     borderColor: "#E5E7EB",
@@ -224,7 +221,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#FFFFFF",
     borderWidth: 1,
     borderColor: "#E5E7EB",
-    borderRadius: 12,
+    borderRadius: 20,
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
