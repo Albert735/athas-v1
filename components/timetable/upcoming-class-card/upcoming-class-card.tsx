@@ -21,7 +21,7 @@ export function UpcomingClassCard({
       style={styles.container}
       onPress={() => {
         router.push({
-          pathname: "/(schedule)/[Id]",
+          pathname: "/(schedule)/[Id]" as any,
           params: {
             Id: id,
           },

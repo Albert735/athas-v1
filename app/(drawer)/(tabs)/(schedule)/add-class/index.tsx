@@ -24,7 +24,7 @@ const SPACING = 20;
 export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
   const { toast } = useToast();
-  const { addClass } = useTimetable();
+  const { setClasses } = useTimetable();
 
   const showToast = () => {
     toast({
