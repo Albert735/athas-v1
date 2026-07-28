@@ -26,16 +26,22 @@ export default function HomeScreen() {
   const icon = useColor("icon");
   const navigation = useNavigation();
 
-  // inside component — remove useBottomTabBarHeight entirely:
   const insets = useSafeAreaInsets();
   const bottomInset = insets.bottom + 60;
 
   const { height } = Dimensions.get("window");
   const MAP_HEIGHT = height * 0.56;
 
-  // derive sheet top from mapContainer height instead of positioning from bottom
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const textMuted = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+  const primaryForeground = useColor("primaryForeground");
+
   return (
-    <View style={styles.root}>
+    <View style={[styles.root, { backgroundColor }]}>
       {/* Map — top half, sits behind everything */}
       <View style={[styles.mapContainer, { height: MAP_HEIGHT }]}>
         {/* Replace with your Mapbox component */}
@@ -53,7 +59,7 @@ export default function HomeScreen() {
             activeOpacity={0.7}
             onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
           >
-            <Menu size={22} color="#111827" />
+            <Menu size={22} color={textColor} />
           </TouchableOpacity>
         </View>
 
@@ -79,17 +85,22 @@ export default function HomeScreen() {
             const Icon = item.icon;
             return (
               <Pressable
-                style={[styles.chip, isSelected && styles.chipSelected]}
+                style={[
+                  styles.chip,
+                  { backgroundColor: cardColor, borderColor },
+                  isSelected && { backgroundColor: primaryColor, borderColor: primaryColor }
+                ]}
                 onPress={() => {
-                  (setSelectedQuickAction(isSelected ? null : item.id),
-                    router.push("/(drawer)/(tabs)/(nearby)"));
+                  setSelectedQuickAction(isSelected ? null : item.id);
+                  router.push("/(drawer)/(tabs)/(nearby)");
                 }}
               >
-                <Icon size={14} color={isSelected ? "#FFFFFF" : "#374151"} />
+                <Icon size={14} color={isSelected ? primaryForeground : icon} />
                 <Text
                   style={[
                     styles.chipText,
-                    isSelected && styles.chipTextSelected,
+                    { color: textColor },
+                    isSelected && { color: primaryForeground },
                   ]}
                 >
                   {item.label}
@@ -101,15 +112,15 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       {/* Bottom sheet area */}
-      <View style={[styles.sheet, { top: MAP_HEIGHT - 20 }]}>
+      <View style={[styles.sheet, { top: MAP_HEIGHT - 20, backgroundColor }]}>
         {/* Section Header */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Popular places on campus</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>Popular places on campus</Text>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => router.push("/popular-places")}
           >
-            <Text style={styles.seeAll}>See All</Text>
+            <Text style={[styles.seeAll, { color: textMuted }]}>See All</Text>
           </TouchableOpacity>
         </View>
 
@@ -127,6 +138,7 @@ export default function HomeScreen() {
               onPress={() => router.push(`/building/${item.id}`)}
               style={({ pressed }) => [
                 styles.card,
+                { backgroundColor: cardColor, borderColor },
                 pressed && { opacity: 0.9 },
               ]}
             >
@@ -165,13 +177,13 @@ export default function HomeScreen() {
               </View>
 
               <View style={styles.cardBody}>
-                <Text style={styles.cardName}>{item.name}</Text>
-                <Text style={styles.cardDescription} numberOfLines={2}>
+                <Text style={[styles.cardName, { color: textColor }]}>{item.name}</Text>
+                <Text style={[styles.cardDescription, { color: textMuted }]} numberOfLines={2}>
                   {item.description}
                 </Text>
                 <View style={styles.cardFooter}>
-                  <MapPin size={12} color={icon} />
-                  <Text style={styles.cardDistance}>{item.distance}</Text>
+                  <MapPin size={12} color={primaryColor} />
+                  <Text style={[styles.cardDistance, { color: textMuted }]}>{item.distance}</Text>
                 </View>
               </View>
             </Pressable>
@@ -185,7 +197,6 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   root: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
   },
 
   // Map fills top half
@@ -194,7 +205,7 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#D1D5DB",
+    backgroundColor: "#0D1E36",
   },
 
   // Search + chips float over the map
@@ -239,12 +250,6 @@ const styles = StyleSheet.create({
     paddingVertical: 8,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
-  },
-  chipSelected: {
-    backgroundColor: "#111827",
-    borderColor: "#111827",
   },
 
   chipInner: {
@@ -255,12 +260,7 @@ const styles = StyleSheet.create({
 
   chipText: {
     fontSize: 13,
-    color: "#374151",
     fontWeight: "500",
-  },
-
-  chipTextSelected: {
-    color: "#FFFFFF",
   },
 
   // Bottom sheet sits on top of lower half
@@ -268,11 +268,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    // bottom: 0, // extends to bottom of screen
     paddingTop: 30,
-    backgroundColor: "#F9FAFB",
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
   sectionHeader: {
     flexDirection: "row",
@@ -285,12 +283,10 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 18,
     fontWeight: "700",
-    color: "#111827",
   },
 
   seeAll: {
     fontSize: 13,
-    color: "#6B7280",
     fontWeight: "500",
   },
 
@@ -301,11 +297,9 @@ const styles = StyleSheet.create({
 
   card: {
     width: 220,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     overflow: "hidden",
     borderWidth: 1,
-    borderColor: "#E5E7EB",
   },
 
   cardImage: {
@@ -359,12 +353,10 @@ const styles = StyleSheet.create({
   cardName: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
 
   cardDescription: {
     fontSize: 12,
-    color: "#6B7280",
     lineHeight: 17,
   },
 
@@ -377,6 +369,5 @@ const styles = StyleSheet.create({
 
   cardDistance: {
     fontSize: 12,
-    color: "#9CA3AF",
   },
 });

@@ -6,30 +6,29 @@ import {
   View,
   TouchableOpacity,
   FlatList,
+  Pressable,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Badge } from "@/components/ui/badge";
-import { Dot } from "lucide-react-native";
+import { Dot, Plus } from "lucide-react-native";
 import { getWeekDates } from "@/utils/get-week-dates";
 import { useState } from "react";
-import { Pressable } from "react-native";
 import { Header } from "@/components/shared/screen/header";
-import { Plus } from "lucide-react-native";
 import { router } from "expo-router";
+import { useColor } from "@/hooks/useColor";
 
-/**
- * ScheduledClassListScreen
- *
- * Renders the weekly class calendar, highlights the live active class,
- * and lists the upcoming schedule.
- */
 export default function ScheduledClassListScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
-
   const weekDates = getWeekDates();
 
+  const backgroundColor = useColor("background");
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const iconColor = useColor("icon");
+
   return (
-    <SafeAreaView style={styles.screen}>
+    <SafeAreaView style={[styles.screen, { backgroundColor }]}>
       <Header
         title="My Schedule"
         showBack={false}
@@ -39,7 +38,7 @@ export default function ScheduledClassListScreen() {
               router.replace("/(drawer)/(tabs)/(schedule)/add-class")
             }
           >
-            <Plus size={22} color="#111" />
+            <Plus size={22} color={iconColor} />
           </Pressable>
         }
       />
@@ -50,7 +49,7 @@ export default function ScheduledClassListScreen() {
         contentContainerStyle={styles.content}
         ListHeaderComponent={
           <>
-            {/* Date Card */}
+            {/* Date Row */}
             <View style={styles.dateRow}>
               {weekDates.map((item) => {
                 const isSelected =
@@ -62,15 +61,25 @@ export default function ScheduledClassListScreen() {
                     onPress={() => setSelectedDate(item.fullDate)}
                     style={[
                       styles.dateCard,
+                      { backgroundColor: cardColor },
                       isSelected && styles.dateCardActive,
                     ]}
                   >
-                    <Text style={[styles.day, isSelected && styles.textActive]}>
+                    <Text
+                      style={[
+                        styles.day,
+                        { color: mutedColor },
+                        isSelected && styles.textActive,
+                      ]}
+                    >
                       {item.day}
                     </Text>
-
                     <Text
-                      style={[styles.date, isSelected && styles.textActive]}
+                      style={[
+                        styles.date,
+                        { color: textColor },
+                        isSelected && styles.textActive,
+                      ]}
                     >
                       {item.date}
                     </Text>
@@ -82,8 +91,9 @@ export default function ScheduledClassListScreen() {
             {/* Active Class */}
             <View style={styles.activeClassCardContainer}>
               <View style={styles.activeClassCardHeader}>
-                <Text style={styles.sectionTitle}>Ongoing Now</Text>
-
+                <Text style={[styles.sectionTitle, { color: textColor }]}>
+                  Ongoing Now
+                </Text>
                 <Badge>
                   <View style={styles.badgeContainer}>
                     <Dot size={12} color="#fff" fill="#000" />
@@ -91,16 +101,15 @@ export default function ScheduledClassListScreen() {
                   </View>
                 </Badge>
               </View>
-
               <ActiveClassCard />
             </View>
 
-            {/* Upcoming Schedule */}
+            {/* Upcoming Header */}
             <View style={styles.upcomingHeader}>
-              {/* <Text style={styles.upcomingTitle}>Upcoming Schedule</Text> */}
-
               <TouchableOpacity>
-                <Text style={styles.seeAllText}>See All</Text>
+                <Text style={[styles.seeAllText, { color: mutedColor }]}>
+                  See All
+                </Text>
               </TouchableOpacity>
             </View>
           </>
@@ -117,97 +126,63 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 20,
   },
-
-  content: {
-    // paddingBottom: 120,
-    // flex: 1,
-  },
-
+  content: {},
   activeClassCardContainer: {
     marginTop: 24,
   },
-
   activeClassCardHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     marginBottom: 12,
   },
-
   sectionTitle: {
     fontSize: 16,
     fontWeight: "600",
   },
-
   badgeContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
-
   badgeText: {
     fontSize: 10,
     color: "#fff",
   },
-
-  upcomingSection: {
-    marginTop: 36,
-  },
-
   upcomingHeader: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
     marginTop: 24,
   },
-
-  upcomingTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111",
-  },
-
   seeAllText: {
     fontSize: 14,
-    color: "#666",
-  },
-
-  upcomingList: {
-    marginTop: 16,
-    gap: 12,
   },
   dateRow: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginVertical: 10,
   },
-
-  dateCardActive: {
-    backgroundColor: "#000",
-  },
-  textActive: {
-    color: "#fff",
-  },
-
   dateCard: {
     width: 40,
     height: 56,
     borderRadius: 14,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
-
+  dateCardActive: {
+    backgroundColor: "#111827",
+  },
+  textActive: {
+    color: "#FFFFFF",
+  },
   day: {
     fontSize: 10,
-    color: "#6B7280",
     marginBottom: 4,
     textTransform: "uppercase",
   },
-
   date: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
 });

@@ -13,9 +13,14 @@ import { MiniCard } from "@/components/profile/Help-and-support/mini-card";
 
 export default function HelpSupport() {
   const icon = useColor("icon");
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const textMuted = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Header title="Help & Support" showBack />
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <SearchBar
@@ -24,28 +29,28 @@ export default function HelpSupport() {
           loading={false}
           rightIcon={<Mic size={18} color={icon} />}
         />
-        <Pressable style={styles.card}>
+        <Pressable style={[styles.card, { backgroundColor: cardColor, borderColor }]}>
           <Headset size={24} color={icon} />
-          <Text style={styles.title}>Live Concierge</Text>
-          <Text style={styles.description}>
+          <Text style={[styles.title, { color: textColor }]}>Live Concierge</Text>
+          <Text style={[styles.description, { color: textMuted }]}>
             Instant human assistance for navigation issues
           </Text>
         </Pressable>
 
         <View style={styles.buttonContainer}>
-          <Pressable style={styles.cardButton}>
+          <Pressable style={[styles.cardButton, { backgroundColor: cardColor, borderColor }]}>
             <Mail size={24} color={icon} />
             <View>
-              <Text style={styles.title}>Email Desk</Text>
-              <Text style={styles.description}>Fast Response</Text>
+              <Text style={[styles.title, { color: textColor }]}>Email Desk</Text>
+              <Text style={[styles.description, { color: textMuted }]}>Fast Response</Text>
             </View>
           </Pressable>
 
-          <Pressable style={styles.cardButton}>
+          <Pressable style={[styles.cardButton, { backgroundColor: cardColor, borderColor }]}>
             <Info size={24} color={icon} />
             <View>
-              <Text style={styles.title}>Report Map Error</Text>
-              <Text style={styles.description}>Submit Feedback</Text>
+              <Text style={[styles.title, { color: textColor }]}>Report Map Error</Text>
+              <Text style={[styles.description, { color: textMuted }]}>Submit Feedback</Text>
             </View>
           </Pressable>
         </View>
@@ -54,7 +59,7 @@ export default function HelpSupport() {
           data={HS_CARD_DATA}
           keyExtractor={(_, index) => index.toString()}
           scrollEnabled={false}
-          style={styles.cardContainer}
+          style={[styles.cardContainer, { backgroundColor: cardColor, borderColor }]}
           renderItem={({ item }) => (
             <MiniCard
               icon={item.icon}
@@ -65,14 +70,14 @@ export default function HelpSupport() {
         />
 
         <View style={styles.section}>
-          <Text style={styles.title}>Frequently Asked Questions</Text>
+          <Text style={[styles.title, { color: textColor }]}>Frequently Asked Questions</Text>
           <FlatList
             data={FAQData}
             keyExtractor={(_, index) => index.toString()}
             scrollEnabled={false}
             renderItem={({ item }) => (
               <Collapsible title={item.question}>
-                <Text style={styles.description}>{item.answer}</Text>
+                <Text style={[styles.description, { color: textMuted }]}>{item.answer}</Text>
               </Collapsible>
             )}
           />
@@ -95,8 +100,8 @@ const styles = StyleSheet.create({
   },
 
   card: {
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
+    borderWidth: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 32,
@@ -108,8 +113,8 @@ const styles = StyleSheet.create({
 
   cardContainer: {
     gap: 12,
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
+    borderWidth: 1,
     marginVertical: 20,
   },
 
@@ -122,8 +127,8 @@ const styles = StyleSheet.create({
 
   cardButton: {
     flex: 1,
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
+    borderWidth: 1,
     paddingTop: 20,
     paddingHorizontal: 20,
     paddingBottom: 32,
@@ -135,12 +140,10 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#111827",
   },
 
   description: {
     fontSize: 12,
-    color: "#6B7280",
   },
 
   section: {
@@ -151,7 +154,6 @@ const styles = StyleSheet.create({
   resourcesTitle: {
     fontSize: 14,
     fontWeight: "bold",
-    color: "#111827",
     marginTop: 20,
     marginBottom: 12,
   },

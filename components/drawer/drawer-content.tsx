@@ -4,11 +4,10 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  Platform,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
-import { router } from "expo-router";
+import { router, usePathname } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
 import { useColorScheme } from "react-native";
 import {
@@ -22,8 +21,8 @@ import {
   User,
   MapPin,
 } from "lucide-react-native";
-import { usePathname } from "expo-router";
 import { ModeToggle } from "../ui/mode-toggle";
+import { useColor } from "@/hooks/useColor";
 
 const MENU_ITEMS = [
   {
@@ -48,6 +47,12 @@ export function DrawerContent(props: DrawerContentComponentProps) {
   const theme = useColorScheme();
   const glassAvailable = isLiquidGlassAvailable();
 
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const iconColor = useColor("icon");
+
   const handlePress = (id: string) => {
     props.navigation.closeDrawer();
     switch (id) {
@@ -69,31 +74,45 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     }
   };
 
-  const pathname = usePathname();
-  // console.log("current path:", pathname);
-
   const handleLogout = () => {
     props.navigation.closeDrawer();
     router.replace("/(auth)/sign-in");
   };
 
   const content = (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* Profile */}
-      <View style={styles.profile}>
-        <View style={styles.avatar}>
-          <User size={24} color="#FFFFFF" />
+      <View style={[styles.profile, { borderBottomColor: borderColor }]}>
+        <View style={[styles.avatar, { backgroundColor: cardColor }]}>
+          <User size={24} color={textColor} />
         </View>
         <View style={styles.profileInfo}>
-          <Text style={styles.profileName}>Lamine Yamal</Text>
-          <Text style={styles.profileSub}>University of Ghana</Text>
+          <Text style={[styles.profileName, { color: textColor }]}>
+            Lamine Yamal
+          </Text>
+          <Text style={[styles.profileSub, { color: iconColor }]}>
+            University of Ghana
+          </Text>
         </View>
-        <View style={styles.profileBadge}>
-          <MapPin size={11} color="#6B7280" />
-          <Text style={styles.profileBadgeText}>On Campus</Text>
+
+        {/* On Campus badge */}
+        <View
+          style={[
+            styles.profileBadge,
+            { backgroundColor: cardColor, borderColor },
+          ]}
+        >
+          <MapPin size={11} color={iconColor} />
+          <Text style={[styles.profileBadgeText, { color: iconColor }]}>
+            On Campus
+          </Text>
         </View>
+
+        {/* Mode toggle */}
         <View style={styles.modeToggle}>
-          <Text style={styles.menuLabel}>Toggle mode</Text>
+          <Text style={[styles.menuLabel, { color: iconColor }]}>
+            Toggle mode
+          </Text>
           <ModeToggle />
         </View>
       </View>
@@ -102,29 +121,35 @@ export function DrawerContent(props: DrawerContentComponentProps) {
       <ScrollView style={styles.scroll} showsVerticalScrollIndicator={false}>
         {MENU_ITEMS.map((section) => (
           <View key={section.section} style={styles.section}>
-            <Text style={styles.sectionLabel}>{section.section}</Text>
+            <Text style={[styles.sectionLabel, { color: iconColor }]}>
+              {section.section}
+            </Text>
             {section.items.map((item) => {
               const Icon = item.icon;
               return (
                 <TouchableOpacity
                   key={item.id}
-                  style={styles.menuItem}
+                  style={[styles.menuItem, { borderBottomColor: borderColor }]}
                   activeOpacity={0.7}
                   onPress={() => handlePress(item.id)}
                 >
                   <View style={styles.menuItemLeft}>
-                    <View style={styles.menuIcon}>
-                      <Icon size={18} color="#374151" />
+                    <View
+                      style={[styles.menuIcon, { backgroundColor: cardColor }]}
+                    >
+                      <Icon size={18} color={textColor} />
                     </View>
-                    <Text style={styles.menuLabel}>{item.label}</Text>
+                    <Text style={[styles.menuLabel, { color: textColor }]}>
+                      {item.label}
+                    </Text>
                   </View>
                   <View style={styles.menuItemRight}>
                     {item.badge ? (
-                      <View style={styles.badge}>
-                        <Text style={styles.badgeText}>{item.badge}</Text>
+                      <View style={styles.notifBadge}>
+                        <Text style={styles.notifBadgeText}>{item.badge}</Text>
                       </View>
                     ) : null}
-                    <ChevronRight size={16} color="#D1D5DB" />
+                    <ChevronRight size={16} color={iconColor} />
                   </View>
                 </TouchableOpacity>
               );
@@ -156,11 +181,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     );
   }
 
-  return (
-    <View style={[styles.glass, { backgroundColor: "#F9FAFB" }]}>
-      {content}
-    </View>
-  );
+  return <View style={[styles.glass, { backgroundColor }]}>{content}</View>;
 }
 
 const styles = StyleSheet.create({
@@ -169,20 +190,17 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "transparent",
   },
   profile: {
     paddingHorizontal: 20,
     paddingVertical: 24,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(229,231,235,0.6)",
     gap: 10,
+    borderBottomWidth: 1,
   },
   avatar: {
     width: 52,
     height: 52,
     borderRadius: 26,
-    backgroundColor: "#111827",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -192,35 +210,29 @@ const styles = StyleSheet.create({
   profileName: {
     fontSize: 17,
     fontWeight: "700",
-    color: "#111827",
   },
   profileSub: {
     fontSize: 13,
-    color: "#6B7280",
   },
   profileBadge: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     alignSelf: "flex-start",
-    backgroundColor: "#F3F4F6",
     paddingHorizontal: 10,
-    paddingVertical: 4,
+    paddingVertical: 5,
     borderRadius: 20,
   },
   profileBadgeText: {
     fontSize: 12,
-    color: "#6B7280",
     fontWeight: "500",
   },
   modeToggle: {
     flexDirection: "row",
     alignItems: "center",
-    alignSelf: "flex-start",
-    paddingHorizontal: 10,
-
-    width: "100%",
     justifyContent: "space-between",
+    width: "100%",
+    paddingTop: 8,
   },
   scroll: {
     flex: 1,
@@ -232,7 +244,6 @@ const styles = StyleSheet.create({
   sectionLabel: {
     fontSize: 11,
     fontWeight: "600",
-    color: "#9CA3AF",
     letterSpacing: 0.8,
     marginBottom: 8,
   },
@@ -241,8 +252,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "space-between",
     paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(243,244,246,0.8)",
   },
   menuItemLeft: {
     flexDirection: "row",
@@ -253,21 +262,19 @@ const styles = StyleSheet.create({
     width: 38,
     height: 38,
     borderRadius: 11,
-    backgroundColor: "rgba(243,244,246,0.8)",
     alignItems: "center",
     justifyContent: "center",
   },
   menuLabel: {
     fontSize: 15,
     fontWeight: "500",
-    color: "#111827",
   },
   menuItemRight: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
   },
-  badge: {
+  notifBadge: {
     backgroundColor: "#EF4444",
     borderRadius: 10,
     minWidth: 20,
@@ -276,7 +283,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingHorizontal: 6,
   },
-  badgeText: {
+  notifBadgeText: {
     fontSize: 11,
     fontWeight: "700",
     color: "#FFFFFF",
@@ -287,14 +294,13 @@ const styles = StyleSheet.create({
     gap: 10,
     margin: 20,
     padding: 16,
-    backgroundColor: "rgba(254,242,242,0.8)",
-    borderRadius: 200,
     borderWidth: 1,
-    borderColor: "rgba(254,202,202,0.8)",
+    borderColor: "rgba(161, 161, 170, 0.5)",
+    borderRadius: 200,
   },
   logoutText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#EF4444",
+    color: "#fff",
   },
 });

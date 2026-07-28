@@ -22,6 +22,7 @@ import { IDCard } from "@/components/profile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { router } from "expo-router";
 import { ScrollView } from "@/components/ui/scroll-view";
+import { useColor } from "@/hooks/useColor";
 
 const initialPreferences = [
   {
@@ -56,6 +57,14 @@ const initialPreferences = [
 export default function Profile() {
   const [preferences, setPreferences] = useState(initialPreferences);
 
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const textMuted = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+  const iconColor = useColor("icon");
+
   const togglePreference = (id: string, value: boolean) => {
     setPreferences((prev) =>
       prev.map((item) => (item.id === id ? { ...item, checked: value } : item)),
@@ -63,7 +72,7 @@ export default function Profile() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* PROFILE HEADER */}
         <View style={styles.card}>
@@ -72,19 +81,19 @@ export default function Profile() {
           </View>
 
           <View style={styles.info}>
-            <Text style={styles.name}>Lamine Yamal</Text>
+            <Text style={[styles.name, { color: textColor }]}>Lamine Yamal</Text>
 
-            <Text style={styles.major}>B.Sc. in Computer Science</Text>
+            <Text style={[styles.major, { color: textMuted }]}>B.Sc. in Computer Science</Text>
 
-            <Badge style={styles.badge}>
-              <Text style={styles.batch}>Class of 2027</Text>
+            <Badge style={{ ...styles.badge, backgroundColor: cardColor, borderColor }}>
+              <Text style={[styles.batch, { color: textColor }]}>Class of 2027</Text>
             </Badge>
           </View>
         </View>
 
         {/* MAP PREFERENCES */}
         <View style={styles.preferences}>
-          <View style={styles.preferencesCard}>
+          <View style={[styles.preferencesCard, { backgroundColor: cardColor, borderColor }]}>
             <FlatList
               data={preferences}
               keyExtractor={(item) => item.id}
@@ -97,15 +106,15 @@ export default function Profile() {
                     <View style={styles.preferenceItem}>
                       <View style={styles.preferenceLeft}>
                         <View style={styles.iconContainer}>
-                          <Icon size={18} />
+                          <Icon size={18} color={primaryColor} />
                         </View>
 
                         <View>
-                          <Text style={styles.preferenceTitle}>
+                          <Text style={[styles.preferenceTitle, { color: textColor }]}>
                             {item.title}
                           </Text>
 
-                          <Text style={styles.preferenceSubtitle}>
+                          <Text style={[styles.preferenceSubtitle, { color: textMuted }]}>
                             {item.subtitle}
                           </Text>
                         </View>
@@ -118,10 +127,6 @@ export default function Profile() {
                         }
                       />
                     </View>
-
-                    {/* {index !== preferences.length - 1 && (
-                      <View style={styles.divider} />
-                    )} */}
                   </View>
                 );
               }}
@@ -130,29 +135,27 @@ export default function Profile() {
         </View>
 
         {/* SETTINGS */}
-        <View style={styles.settingsCard}>
+        <View style={[styles.settingsCard, { backgroundColor: cardColor, borderColor }]}>
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => router.push("/privacy-security")}
           >
             <View style={styles.settingLeft}>
-              <ShieldCheck size={18} color="#111827" />
-              <Text style={styles.settingTitle}>Privacy & Security</Text>
+              <ShieldCheck size={18} color={textColor} />
+              <Text style={[styles.settingTitle, { color: textColor }]}>Privacy & Security</Text>
             </View>
-            <ChevronRight size={18} color="#111827" />
+            <ChevronRight size={18} color={iconColor} />
           </TouchableOpacity>
-
-          {/* <View style={styles.divider} /> */}
 
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => router.push("/help-support")}
           >
             <View style={styles.settingLeft}>
-              <Info size={18} color="#111827" />
-              <Text style={styles.settingTitle}>Help & Support</Text>
+              <Info size={18} color={textColor} />
+              <Text style={[styles.settingTitle, { color: textColor }]}>Help & Support</Text>
             </View>
-            <ChevronRight size={18} color="#111827" />
+            <ChevronRight size={18} color={iconColor} />
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -208,25 +211,22 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "700",
-    color: "#111827",
   },
 
   major: {
     marginTop: 4,
     fontSize: 14,
-    color: "#6B7280",
   },
 
   badge: {
     marginTop: 12,
-    backgroundColor: "#111827",
     borderRadius: 999,
+    borderWidth: 1,
     paddingHorizontal: 12,
     paddingVertical: 4,
   },
 
   batch: {
-    color: "#fff",
     fontSize: 10,
     fontWeight: "700",
     letterSpacing: 0.5,
@@ -246,10 +246,10 @@ const styles = StyleSheet.create({
   },
 
   preferencesCard: {
-    backgroundColor: "#F7F7F7",
     padding: 10,
     borderRadius: 30,
     gap: 12,
+    borderWidth: 1,
   },
 
   preferenceItem: {
@@ -275,7 +275,6 @@ const styles = StyleSheet.create({
   preferenceTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
 
   preferenceItemContainer: {
@@ -285,15 +284,14 @@ const styles = StyleSheet.create({
   preferenceSubtitle: {
     marginTop: 2,
     fontSize: 12,
-    color: "#6B7280",
   },
 
   /* SETTINGS */
   settingsCard: {
     marginTop: 32,
-    backgroundColor: "#F7F7F7",
     padding: 10,
     borderRadius: 30,
+    borderWidth: 1,
   },
 
   settingItem: {
@@ -312,6 +310,5 @@ const styles = StyleSheet.create({
   settingTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
 });

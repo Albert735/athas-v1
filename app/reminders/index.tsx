@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/shared/screen/header";
 import { Brain, FlaskConical, BookOpen } from "lucide-react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+import { useColor } from "@/hooks/useColor";
 
 const FILTERS = ["All", "Upcoming", "Completed"];
 
@@ -23,7 +24,7 @@ const REMINDERS = [
     title: "Meeting at Student Hub",
     location: "NNB, Room 2",
     time: "10:45 AM",
-    icon: <Brain size={20} color="#374151" />,
+    icon: <Brain size={20} color="#0099FF" />,
     completed: false,
   },
   {
@@ -31,7 +32,7 @@ const REMINDERS = [
     title: "Pick up Lab Results",
     location: "GCB",
     time: "10:45 AM",
-    icon: <FlaskConical size={20} color="#374151" />,
+    icon: <FlaskConical size={20} color="#0099FF" />,
     completed: false,
   },
   {
@@ -39,7 +40,7 @@ const REMINDERS = [
     title: "Study",
     location: "JQB",
     time: "10:45 AM",
-    icon: <BookOpen size={20} color="#374151" />,
+    icon: <BookOpen size={20} color="#0099FF" />,
     completed: false,
   },
   {
@@ -47,7 +48,7 @@ const REMINDERS = [
     title: "Meeting Course Rep",
     location: "LOT1",
     time: "10:45 AM",
-    icon: <MaterialIcons name="directions-walk" size={24} color="black" />,
+    icon: <MaterialIcons name="directions-walk" size={24} color="#0099FF" />,
     completed: true,
   },
 ];
@@ -63,8 +64,16 @@ export default function RemindersScreen() {
 
   const isEmpty = REMINDERS.length === 0;
 
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const textMuted = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+  const primaryForeground = useColor("primaryForeground");
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* Header */}
       <Header
         title="Reminder"
@@ -80,11 +89,19 @@ export default function RemindersScreen() {
           return (
             <Pressable
               key={filter}
-              style={[styles.filterChip, isActive && styles.filterChipActive]}
+              style={[
+                styles.filterChip,
+                { backgroundColor: cardColor, borderColor },
+                isActive && { backgroundColor: primaryColor, borderColor: primaryColor }
+              ]}
               onPress={() => setActiveFilter(filter)}
             >
               <Text
-                style={[styles.filterText, isActive && styles.filterTextActive]}
+                style={[
+                  styles.filterText,
+                  { color: textColor },
+                  isActive && { color: primaryForeground }
+                ]}
               >
                 {filter}
               </Text>
@@ -96,10 +113,10 @@ export default function RemindersScreen() {
       {isEmpty ? (
         /* Empty State */
         <View style={styles.empty}>
-          <View style={styles.emptyIcon}>
-            <Bell size={32} color="#9CA3AF" />
+          <View style={[styles.emptyIcon, { backgroundColor: cardColor }]}>
+            <Bell size={32} color={textMuted} />
           </View>
-          <Text style={styles.emptyText}>No reminder added yet</Text>
+          <Text style={[styles.emptyText, { color: textMuted }]}>No reminder added yet</Text>
         </View>
       ) : (
         /* List */
@@ -112,20 +129,21 @@ export default function RemindersScreen() {
             <Pressable
               style={({ pressed }) => [
                 styles.card,
+                { backgroundColor: cardColor, borderColor },
                 pressed && { opacity: 0.9 },
               ]}
               onPress={() => router.push(`/reminders/${item.id}`)}
             >
-              <View style={styles.cardIcon}>
+              <View style={[styles.cardIcon, { backgroundColor: backgroundColor }]}>
                 <Text style={styles.cardIconText}>{item.icon}</Text>
               </View>
               <View style={styles.cardInfo}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>{item.title}</Text>
                 <View style={styles.cardMeta}>
-                  <MapPin size={11} color="#9CA3AF" />
-                  <Text style={styles.cardMetaText}>{item.location}</Text>
-                  <Clock size={11} color="#9CA3AF" />
-                  <Text style={styles.cardMetaText}>{item.time}</Text>
+                  <MapPin size={11} color={textMuted} />
+                  <Text style={[styles.cardMetaText, { color: textMuted }]}>{item.location}</Text>
+                  <Clock size={11} color={textMuted} />
+                  <Text style={[styles.cardMetaText, { color: textMuted }]}>{item.time}</Text>
                 </View>
               </View>
             </Pressable>
@@ -134,7 +152,7 @@ export default function RemindersScreen() {
       )}
 
       {/* Add Button */}
-      <View style={styles.footer}>
+      <View style={[styles.footer, { borderTopColor: borderColor }]}>
         <Button
           icon={Plus}
           onPress={() => router.push("/reminders/add-reminder")}
@@ -149,21 +167,6 @@ export default function RemindersScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
   },
   filters: {
     flexDirection: "row",
@@ -176,20 +179,10 @@ const styles = StyleSheet.create({
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#FFFFFF",
-  },
-  filterChipActive: {
-    backgroundColor: "#111827",
-    borderColor: "#111827",
   },
   filterText: {
     fontSize: 13,
     fontWeight: "500",
-    color: "#374151",
-  },
-  filterTextActive: {
-    color: "#FFFFFF",
   },
   listContent: {
     paddingHorizontal: 20,
@@ -200,7 +193,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#F7F7F7",
+    borderWidth: 1,
     borderRadius: 14,
     padding: 14,
   },
@@ -208,7 +201,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 12,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -222,7 +214,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
   cardMeta: {
     flexDirection: "row",
@@ -231,7 +222,6 @@ const styles = StyleSheet.create({
   },
   cardMetaText: {
     fontSize: 12,
-    color: "#9CA3AF",
   },
   empty: {
     flex: 1,
@@ -243,28 +233,15 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
   emptyText: {
     fontSize: 15,
-    color: "#9CA3AF",
     fontWeight: "500",
   },
   footer: {
     padding: 20,
-    // borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
-  },
-  addButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 8,
-    height: 54,
-    backgroundColor: "#111827",
-    borderRadius: 14,
   },
   addButtonText: {
     fontSize: 15,

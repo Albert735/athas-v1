@@ -1,17 +1,15 @@
-import { View, StyleSheet, Pressable, type ViewStyle } from "react-native";
+import { View, StyleSheet, Pressable, useColorScheme } from "react-native";
 import { Text } from "@/components/ui/text";
 import { ArrowLeft } from "lucide-react-native";
 import { router } from "expo-router";
 import { BlurView } from "expo-blur";
 import type { ReactNode } from "react";
+import { useColor } from "@/hooks/useColor";
 
 type Props = {
   title: string;
   showBack?: boolean;
   onBack?: () => void;
-  showAddButton?: boolean;
-  onAdd?: () => void;
-  /** 'transparent' for overlaying images (e.g. parallax headers), 'solid' for plain page headers */
   variant?: "transparent" | "solid";
   rightAction?: ReactNode;
 };
@@ -24,7 +22,8 @@ export function Header({
   rightAction,
 }: Props) {
   const isTransparent = variant === "transparent";
-  const iconColor = isTransparent ? "#FFF" : "#111";
+  const textColor = useColor("text");
+  const iconColor = isTransparent ? "#FFF" : textColor;
 
   return (
     <View style={styles.container}>
@@ -43,7 +42,7 @@ export function Header({
       <Text
         style={[
           styles.title,
-          isTransparent ? styles.titleTransparent : styles.titleSolid,
+          isTransparent ? styles.titleTransparent : { color: textColor },
         ]}
         numberOfLines={1}
       >
@@ -112,9 +111,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 18,
     fontWeight: "600",
-  },
-  titleSolid: {
-    color: "#111",
   },
   titleTransparent: {
     color: "#FFF",

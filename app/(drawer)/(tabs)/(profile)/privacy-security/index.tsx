@@ -17,65 +17,75 @@ import {
 import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { ScrollView } from "@/components/ui/scroll-view";
+import { useColor } from "@/hooks/useColor";
 
 export default function PrivacySecurity() {
   const [isLiveTrackingEnabled, setIsLiveTrackingEnabled] = useState(false);
   const [isRouteHistoryEnabled, setIsRouteHistoryEnabled] = useState(false);
 
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const textMuted = useColor("textMuted");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+  const iconColor = useColor("icon");
+  const successColor = useColor("green");
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Header title="Privacy & Security" showBack />
 
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* INTRO */}
-        <Text style={styles.description}>
+        <Text style={[styles.description, { color: textMuted }]}>
           Control your digital presence and safeguard your campus experience.
         </Text>
 
         {/* ── ACCOUNT SECURITY ── */}
-        <View style={styles.preferencesCard}>
+        <View style={[styles.preferencesCard, { backgroundColor: cardColor, borderColor }]}>
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "#EFF6FF" }]}>
-                <Lock size={20} color="#2563EB" />
+              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+                <Lock size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={styles.cardTitle}>Password & Security</Text>
-                <Text style={styles.cardSubtitle}>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Password & Security</Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Last updated 3 months ago
                 </Text>
               </View>
             </View>
 
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "#F0FDF4" }]}>
-                <ShieldCheck size={20} color="#16A34A" />
+              <View style={[styles.iconCircle, { backgroundColor: "rgba(16, 185, 129, 0.1)" }]}>
+                <ShieldCheck size={20} color={successColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={styles.cardTitle}>Two-Factor Authentication</Text>
-                <Text style={[styles.cardSubtitle, { color: "#16A34A" }]}>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Two-Factor Authentication</Text>
+                <Text style={[styles.cardSubtitle, { color: successColor }]}>
                   Currently Enabled
                 </Text>
               </View>
             </View>
 
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
         </View>
 
         {/* ── LOCATION PRIVACY ── */}
 
         <View style={styles.locationPreferences}>
-          <View style={styles.toggleCard}>
+          <View style={[styles.toggleCard, { backgroundColor: cardColor, borderColor }]}>
             <View style={styles.toggleRow}>
               <View style={styles.row}>
-                <MapPin size={20} color="#2563EB" />
+                <MapPin size={20} color={primaryColor} />
                 <Switch
                   value={isLiveTrackingEnabled}
                   onValueChange={setIsLiveTrackingEnabled}
@@ -83,8 +93,8 @@ export default function PrivacySecurity() {
               </View>
 
               <View style={styles.toggleTextWrap}>
-                <Text style={styles.cardTitle}>Live Campus Tracking</Text>
-                <Text style={styles.cardSubtitle}>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Live Campus Tracking</Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Share your location in real-time with authorized campus
                   security and friends
                 </Text>
@@ -92,10 +102,10 @@ export default function PrivacySecurity() {
             </View>
           </View>
 
-          <View style={styles.toggleCard}>
+          <View style={[styles.toggleCard, { backgroundColor: cardColor, borderColor }]}>
             <View style={styles.toggleRow}>
               <View style={styles.row}>
-                <History size={20} color="#EA580C" />
+                <History size={20} color={useColor("orange") || "#EA580C"} />
                 <Switch
                   value={isRouteHistoryEnabled}
                   onValueChange={setIsRouteHistoryEnabled}
@@ -103,8 +113,8 @@ export default function PrivacySecurity() {
               </View>
 
               <View style={styles.toggleTextWrap}>
-                <Text style={styles.cardTitle}>Route History Storage</Text>
-                <Text style={styles.cardSubtitle}>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Route History Storage</Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
                   Save your frequent routes to optimize future pathfinding
                   suggestions
                 </Text>
@@ -130,41 +140,41 @@ export default function PrivacySecurity() {
 
         {/* ── APP PERMISSIONS ── */}
 
-        <View style={styles.permissionsCard}>
+        <View style={[styles.permissionsCard, { backgroundColor: cardColor, borderColor }]}>
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "#EFF6FF" }]}>
-                <LocateFixed size={20} color="#2563EB" />
+              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+                <LocateFixed size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={styles.cardTitle}>Location</Text>
-                <Text style={styles.cardSubtitle}>Always allowed</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Location</Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>Always allowed</Text>
               </View>
             </View>
 
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.card} activeOpacity={0.7}>
             <View style={styles.cardLeft}>
-              <View style={[styles.iconCircle, { backgroundColor: "#EFF6FF" }]}>
-                <Bell size={20} color="#2563EB" />
+              <View style={[styles.iconCircle, { backgroundColor: "rgba(0, 153, 255, 0.1)" }]}>
+                <Bell size={20} color={primaryColor} />
               </View>
 
               <View style={styles.cardTextWrap}>
-                <Text style={styles.cardTitle}>Notifications</Text>
-                <Text style={styles.cardSubtitle}>Alerts and Badges</Text>
+                <Text style={[styles.cardTitle, { color: textColor }]}>Notifications</Text>
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>Alerts and Badges</Text>
               </View>
             </View>
 
-            <ChevronRight size={20} color="#9CA3AF" />
+            <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
         </View>
 
         {/* ── DATA MANAGEMENT ── */}
         <View style={styles.dataSection}>
-          <Text style={styles.dataCaption}>
+          <Text style={[styles.dataCaption, { color: textMuted }]}>
             Request a full copy of your data or permanently deactivate your
             account.
           </Text>
@@ -208,28 +218,18 @@ const styles = StyleSheet.create({
 
   description: {
     fontSize: 14,
-    color: "#6B7280",
     lineHeight: 22,
     marginBottom: 28,
   },
 
-  /* Section headings */
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "700",
-    color: "#111827",
-    marginBottom: 14,
-  },
-
   preferencesCard: {
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
+    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 16,
     gap: 16,
   },
 
-  /* Tappable row cards (Account Security & Permissions) */
   card: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -264,21 +264,18 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 14,
     fontWeight: "600",
-    color: "#111827",
   },
 
   cardSubtitle: {
     fontSize: 12,
-    color: "#6B7280",
     marginTop: 2,
     lineHeight: 18,
   },
 
-  /* Toggle cards (Location Privacy) */
   toggleCard: {
     flexDirection: "column",
+    borderWidth: 1,
     gap: 8,
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
     paddingHorizontal: 18,
     paddingVertical: 18,
@@ -302,14 +299,13 @@ const styles = StyleSheet.create({
   },
 
   permissionsCard: {
-    backgroundColor: "#F7F7F7",
     borderRadius: 30,
+    borderWidth: 1,
     paddingHorizontal: 16,
     paddingVertical: 16,
     gap: 16,
   },
 
-  /* Data Management footer */
   dataSection: {
     marginTop: 32,
     alignItems: "center",
@@ -317,7 +313,6 @@ const styles = StyleSheet.create({
 
   dataCaption: {
     fontSize: 13,
-    color: "#9CA3AF",
     textAlign: "center",
     lineHeight: 20,
     marginBottom: 16,
