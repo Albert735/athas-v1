@@ -22,28 +22,44 @@ export default function ScheduledClassDetails() {
 
   if (!selectedClass) {
     return (
-      <SafeAreaView style={[styles.screen, { backgroundColor }]} edges={["top", "bottom"]}>
+      <SafeAreaView
+        style={[styles.screen, { backgroundColor }]}
+        edges={["top", "bottom"]}
+      >
         <Header title="Class Details" />
         <View style={styles.container}>
-          <Text style={[styles.error, { color: useColor("red") }]}>Class not found</Text>
+          <Text style={[styles.error, { color: useColor("red") }]}>
+            Class not found
+          </Text>
         </View>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={[styles.screen, { backgroundColor }]} edges={["top", "bottom"]}>
+    <SafeAreaView
+      style={[styles.screen, { backgroundColor }]}
+      edges={["top", "bottom"]}
+    >
       <Header title="Class Details" />
 
       <View style={styles.container}>
         {/* Course Header */}
-        <View style={[styles.heroCard, { backgroundColor: cardColor, borderColor }]}>
-          <Text style={[styles.course, { color: textColor }]}>{selectedClass.course}</Text>
+        <View
+          style={[styles.heroCard, { backgroundColor: cardColor, borderColor }]}
+        >
+          <Text style={[styles.course, { color: textColor }]}>
+            {selectedClass.course}
+          </Text>
 
-          <Text style={[styles.code, { color: textMuted }]}>{selectedClass.code}</Text>
+          <Text style={[styles.code, { color: textMuted }]}>
+            {selectedClass.code}
+          </Text>
 
           <View style={[styles.status, { backgroundColor: primaryColor }]}>
-            <Text style={[styles.statusText, { color: primaryForeground }]}>UPCOMING</Text>
+            <Text style={[styles.statusText, { color: primaryForeground }]}>
+              UPCOMING
+            </Text>
           </View>
         </View>
 
@@ -54,7 +70,9 @@ export default function ScheduledClassDetails() {
           <View>
             <Text style={[styles.label, { color: textMuted }]}>Time</Text>
 
-            <Text style={[styles.value, { color: textColor }]}>{selectedClass.time}</Text>
+            <Text style={[styles.value, { color: textColor }]}>
+              {selectedClass.time}
+            </Text>
           </View>
         </View>
 
@@ -79,7 +97,9 @@ export default function ScheduledClassDetails() {
             <View>
               <Text style={[styles.label, { color: textMuted }]}>Lecturer</Text>
 
-              <Text style={[styles.value, { color: textColor }]}>{selectedClass.lecturer}</Text>
+              <Text style={[styles.value, { color: textColor }]}>
+                {selectedClass.lecturer}
+              </Text>
             </View>
           </View>
         )}
@@ -93,7 +113,9 @@ export default function ScheduledClassDetails() {
         >
           <Navigation size={20} color={primaryForeground} />
 
-          <Text style={[styles.navigateText, { color: primaryForeground }]}>Navigate to Class</Text>
+          <Text style={[styles.navigateText, { color: primaryForeground }]}>
+            Navigate to Class
+          </Text>
         </Pressable>
       </View>
     </SafeAreaView>
@@ -161,7 +183,7 @@ const styles = StyleSheet.create({
   navigateButton: {
     marginTop: 20,
     height: 54,
-    borderRadius: 18,
+    borderRadius: 30,
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",

@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { MapPin, ChevronRight } from "lucide-react-native";
 import { router } from "expo-router";
 import type { ScheduledClass } from "@/types/class";
+import { useColor } from "@/hooks/useColor";
 
 export type UpcomingClassCardProps = ScheduledClass & {
   onNavigate?: () => void;
@@ -16,46 +17,44 @@ export function UpcomingClassCard({
   building,
   onNavigate,
 }: UpcomingClassCardProps) {
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const iconColor = useColor("icon");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => {
         router.push({
           pathname: "/(schedule)/[Id]" as any,
-          params: {
-            Id: id,
-          },
+          params: { Id: id },
         });
       }}
     >
       <View style={styles.mainContent}>
         {/* Time Section */}
         <View style={styles.timeContainer}>
-          <Text style={styles.time}>{time}</Text>
-
-          <View style={styles.statusBadge}>
-            <Text style={styles.statusText}>UPCOMING</Text>
+          <Text style={[styles.time, { color: textColor }]}>{time}</Text>
+          <View style={[styles.statusBadge, { backgroundColor: cardColor }]}>
+            <Text style={[styles.statusText, { color: mutedColor }]}>
+              UPCOMING
+            </Text>
           </View>
         </View>
-        <View
-          style={{
-            height: 40,
-            width: "0.5%",
-            backgroundColor: "#E5E7EB", // light gray
-            marginVertical: 6,
-          }}
-        />
+
+        {/* Divider */}
+        <View style={[styles.divider, { backgroundColor: borderColor }]} />
 
         {/* Details Section */}
         <View style={styles.detailsContainer}>
-          <Text style={styles.course} numberOfLines={1}>
+          <Text style={[styles.course, { color: textColor }]} numberOfLines={1}>
             {course}
           </Text>
-
           <View style={styles.locationContainer}>
-            <MapPin size={14} color="#666" />
-
-            <Text style={styles.location}>
+            <MapPin size={14} color={iconColor} />
+            <Text style={[styles.location, { color: mutedColor }]}>
               {room} • {building}
             </Text>
           </View>
@@ -64,7 +63,7 @@ export function UpcomingClassCard({
 
       {/* Navigation Button */}
       <TouchableOpacity style={styles.navigationButton} onPress={onNavigate}>
-        <ChevronRight size={22} color="#000" />
+        <ChevronRight size={22} color={iconColor} />
       </TouchableOpacity>
     </TouchableOpacity>
   );
@@ -77,63 +76,53 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingVertical: 4,
   },
-
   mainContent: {
     flexDirection: "row",
     flex: 1,
     gap: 8,
   },
-
   timeContainer: {
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
     minWidth: 80,
   },
-
   time: {
     fontSize: 12,
     fontWeight: "500",
-    color: "#111",
     textAlign: "center",
   },
-
   statusBadge: {
-    backgroundColor: "#F4F4F4",
     paddingHorizontal: 8,
     paddingVertical: 4,
     borderRadius: 8,
   },
-
   statusText: {
     fontSize: 10,
     fontWeight: "600",
-    color: "#666",
   },
-
+  divider: {
+    height: 40,
+    width: 1,
+    marginVertical: 6,
+  },
   detailsContainer: {
     flex: 1,
     justifyContent: "center",
     gap: 8,
   },
-
   course: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#111",
   },
-
   locationContainer: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
-
   location: {
     fontSize: 13,
-    color: "#666",
   },
-
   navigationButton: {
     padding: 8,
   },

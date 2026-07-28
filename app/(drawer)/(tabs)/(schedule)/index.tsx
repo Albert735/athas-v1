@@ -6,9 +6,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
 import { Plus } from "lucide-react-native";
 import { Pressable } from "react-native";
+import { useColor } from "@/hooks/useColor";
 
 export default function ScheduleScreen() {
   const { classes } = useTimetable();
+  const iconColor = useColor("icon");
 
   const handleAddClass = () => {
     router.replace("/(drawer)/(tabs)/(schedule)/add-class");
@@ -26,7 +28,7 @@ export default function ScheduleScreen() {
         showBack={false}
         rightAction={
           <Pressable onPress={handleAddClass}>
-            <Plus size={22} color="#111" />
+            <Plus size={22} color={iconColor} />
           </Pressable>
         }
       />
