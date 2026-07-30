@@ -1,20 +1,31 @@
 import { View, Text, StyleSheet, Pressable } from "react-native";
-
 import type { Notification } from "@/api/types/notification";
-
 import { NotificationIcon } from "./notification-icon";
-
 import { formatNotificationTime } from "@/utils/format-notification-time";
 import { router } from "expo-router";
+import { useColor } from "@/hooks/useColor";
 
 interface Props {
   notification: Notification;
 }
 
 export function NotificationCard({ notification }: Props) {
+  const cardColor = useColor("card");
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const borderColor = useColor("border");
+
   return (
     <Pressable
-      style={[styles.card, notification.status === "unread" && styles.unread]}
+      style={[
+        styles.card,
+        { backgroundColor: cardColor, borderColor },
+        // notification.status === "unread" && {
+        //   backgroundColor: "#",
+        //   borderColor: "#BFDBFE",
+        // },
+      ]}
       onPress={() =>
         router.push({
           pathname: "/notifications/notification-details",
@@ -35,13 +46,16 @@ export function NotificationCard({ notification }: Props) {
 
       <View style={styles.content}>
         <View style={styles.header}>
-          <Text style={styles.title}>{notification.title}</Text>
-          <Text style={styles.time}>
+          <Text style={[styles.title, { color: textColor }]}>
+            {notification.title}
+          </Text>
+          <Text style={[styles.time, { color: mutedColor }]}>
             {formatNotificationTime(notification.createdAt)}
           </Text>
         </View>
-
-        <Text style={styles.message}>{notification.message}</Text>
+        <Text style={[styles.message, { color: mutedColor }]}>
+          {notification.message}
+        </Text>
       </View>
     </Pressable>
   );
@@ -54,44 +68,28 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
-    backgroundColor: "#fff",
   },
-
   header: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
   },
-
-  unread: {
-    backgroundColor: "#F9FAFB",
-  },
-
   icon: {
     marginTop: 2,
     marginRight: 8,
   },
-
   content: {
     flex: 1,
   },
-
   title: {
     fontSize: 16,
     fontWeight: "500",
-    color: "#111827",
   },
-
   message: {
     marginTop: 4,
     fontSize: 14,
-    color: "#6B7280",
   },
-
   time: {
-    // marginTop: 8,
     fontSize: 12,
-    color: "#9CA3AF",
   },
 });

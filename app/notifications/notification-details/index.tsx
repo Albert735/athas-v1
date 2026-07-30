@@ -5,7 +5,7 @@ import { useLocalSearchParams } from "expo-router";
 import { Header } from "@/components/shared/screen/header";
 import { NotificationIcon } from "@/components/notifications/notification-icon";
 import { formatNotificationTime } from "@/utils/format-notification-time";
-import type { Notification } from "@/api/types/notification";
+import { useColor } from "@/hooks/useColor";
 
 export default function NotificationDetails() {
   const params = useLocalSearchParams<{
@@ -17,12 +17,21 @@ export default function NotificationDetails() {
     createdAt?: string;
   }>();
 
+  const backgroundColor = useColor("background");
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const borderColor = useColor("border");
+  const iconColor = useColor("icon");
+
   if (!params.title || !params.message) {
     return (
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <Header title="Notification Details" showBack />
         <View style={styles.center}>
-          <Text style={styles.errorText}>Notification details not found.</Text>
+          <Text style={[styles.errorText, { color: mutedColor }]}>
+            Notification details not found.
+          </Text>
         </View>
       </SafeAreaView>
     );
@@ -38,26 +47,32 @@ export default function NotificationDetails() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Header title="Notification Details" />
+    <SafeAreaView style={[styles.container, { backgroundColor }]}>
+      <Header title="Notification Details" showBack />
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        <View style={styles.card}>
-          <View style={styles.headerRow}>
-            <View style={styles.iconContainer}>
+        <View
+          style={[styles.card, { backgroundColor: cardColor, borderColor }]}
+        >
+          <View style={[styles.headerRow, { borderBottomColor: borderColor }]}>
+            <View style={[styles.iconContainer, { backgroundColor }]}>
               <NotificationIcon type={notification.type} />
             </View>
             <View style={styles.meta}>
-              <Text style={styles.typeText}>
+              <Text style={[styles.typeText, { color: mutedColor }]}>
                 {notification.type.toUpperCase()}
               </Text>
-              <Text style={styles.timeText}>
+              <Text style={[styles.timeText, { color: mutedColor }]}>
                 {formatNotificationTime(notification.createdAt)}
               </Text>
             </View>
           </View>
 
-          <Text style={styles.title}>{notification.title}</Text>
-          <Text style={styles.message}>{notification.message}</Text>
+          <Text style={[styles.title, { color: textColor }]}>
+            {notification.title}
+          </Text>
+          <Text style={[styles.message, { color: mutedColor }]}>
+            {notification.message}
+          </Text>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -67,7 +82,6 @@ export default function NotificationDetails() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#F9FAFB",
   },
   scrollContent: {
     padding: 20,
@@ -80,13 +94,10 @@ const styles = StyleSheet.create({
   },
   errorText: {
     fontSize: 16,
-    color: "#6B7280",
   },
   card: {
-    backgroundColor: "#FFFFFF",
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     padding: 24,
     gap: 16,
   },
@@ -95,14 +106,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#F3F4F6",
     paddingBottom: 16,
   },
   iconContainer: {
     width: 48,
     height: 48,
     borderRadius: 16,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -113,22 +122,18 @@ const styles = StyleSheet.create({
   typeText: {
     fontSize: 12,
     fontWeight: "700",
-    color: "#9CA3AF",
     letterSpacing: 1,
   },
   timeText: {
     fontSize: 13,
-    color: "#6B7280",
   },
   title: {
     fontSize: 20,
     fontWeight: "600",
-    color: "#111827",
     lineHeight: 28,
   },
   message: {
     fontSize: 15,
-    color: "#374151",
     lineHeight: 24,
   },
 });

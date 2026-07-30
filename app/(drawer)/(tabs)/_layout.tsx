@@ -1,89 +1,83 @@
-import { Tabs } from "expo-router";
+import { Platform } from "react-native";
 import { useColor } from "@/hooks/useColor";
-import Feather from "@expo/vector-icons/Feather";
+import { isLiquidGlassAvailable } from "expo-glass-effect";
+import MaterialIcons from "@expo/vector-icons/Feather";
+import {
+  Badge,
+  Icon,
+  Label,
+  NativeTabs,
+  VectorIcon,
+} from "expo-router/unstable-native-tabs";
 
 export default function TabsLayout() {
   const red = useColor("red");
   const primary = useColor("primary");
   const foreground = useColor("foreground");
-  const background = useColor("background");
 
   return (
-    <Tabs
-      screenOptions={{
-        headerShown: false,
-        tabBarActiveTintColor: foreground,
-        tabBarInactiveTintColor: primary,
-        tabBarStyle: {
-          backgroundColor: background,
-        },
+    <NativeTabs
+      minimizeBehavior="onScrollDown"
+      labelStyle={{
+        default: { color: primary },
+        selected: { color: foreground },
       }}
+      iconColor={{
+        default: primary,
+        selected: foreground,
+      }}
+      badgeBackgroundColor={red}
+      labelVisibilityMode="labeled"
+      disableTransparentOnScrollEdge={true}
     >
-      {/* Home */}
-      <Tabs.Screen
-        name="(home)"
-        options={{
-          title: "Home",
-          tabBarIcon: ({ color }) => (
-            <Feather name="home" size={24} color={color} />
+      <NativeTabs.Trigger name="(home)">
+        {Platform.select({
+          ios: <Icon sf="house" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="home" />} />
           ),
-        }}
-      />
+        })}
+        <Label>Home</Label>
+      </NativeTabs.Trigger>
 
-      {/* Schedule */}
-      <Tabs.Screen
-        name="(schedule)"
-        options={{
-          title: "Schedule",
-          tabBarIcon: ({ color }) => (
-            <Feather name="calendar" size={24} color={color} />
+      <NativeTabs.Trigger name="(schedule)">
+        {Platform.select({
+          ios: <Icon sf="calendar" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="calendar" />} />
           ),
-        }}
-      />
+        })}
+        <Label>Schedule</Label>
+      </NativeTabs.Trigger>
 
-      {/* Map - Tab icon shows on other tabs, but tab bar is hidden when on Map screen */}
-      <Tabs.Screen
-        name="(map)"
-        options={{
-          title: "Map",
-          tabBarStyle: { display: "none" },
-          tabBarIcon: ({ color }) => (
-            <Feather name="map" size={24} color={color} />
+      <NativeTabs.Trigger name="(map)">
+        {Platform.select({
+          ios: <Icon sf="map" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="map" />} />
           ),
-        }}
-      />
+        })}
+        <Label>Schedule</Label>
+      </NativeTabs.Trigger>
 
-      {/* NearBy */}
-      <Tabs.Screen
-        name="(nearby)"
-        options={{
-          title: "Near",
-          tabBarBadge: 1,
-          tabBarBadgeStyle: { backgroundColor: red },
-          tabBarIcon: ({ color }) => (
-            <Feather name="heart" size={24} color={color} />
+      <NativeTabs.Trigger name="(nearby)">
+        {Platform.select({
+          ios: <Icon sf="heart" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="map-pin" />} />
           ),
-        }}
-      />
-
-      {/* Profile */}
-      <Tabs.Screen
-        name="(profile)"
-        options={{
-          title: "Profile",
-          tabBarIcon: ({ color }) => (
-            <Feather name="user" size={24} color={color} />
+        })}
+        <Label>Nearby</Label>
+      </NativeTabs.Trigger>
+      <NativeTabs.Trigger name="(profile)">
+        {Platform.select({
+          ios: <Icon sf="person" />,
+          android: (
+            <Icon src={<VectorIcon family={MaterialIcons} name="user" />} />
           ),
-        }}
-      />
-
-      {/* Search */}
-      <Tabs.Screen
-        name="(search)"
-        options={{
-          href: null,
-        }}
-      />
-    </Tabs>
+        })}
+        <Label>Profile</Label>
+      </NativeTabs.Trigger>
+    </NativeTabs>
   );
 }

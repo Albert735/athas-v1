@@ -73,7 +73,7 @@ export default function Profile() {
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <ScrollView contentContainerStyle={styles.scrollContent}>
+      <View style={styles.scrollContent}>
         {/* PROFILE HEADER */}
         <View style={styles.card}>
           <View style={styles.avatar}>
@@ -81,19 +81,36 @@ export default function Profile() {
           </View>
 
           <View style={styles.info}>
-            <Text style={[styles.name, { color: textColor }]}>Lamine Yamal</Text>
+            <Text style={[styles.name, { color: textColor }]}>
+              Lamine Yamal
+            </Text>
 
-            <Text style={[styles.major, { color: textMuted }]}>B.Sc. in Computer Science</Text>
+            <Text style={[styles.major, { color: textMuted }]}>
+              B.Sc. in Computer Science
+            </Text>
 
-            <Badge style={{ ...styles.badge, backgroundColor: cardColor, borderColor }}>
-              <Text style={[styles.batch, { color: textColor }]}>Class of 2027</Text>
+            <Badge
+              style={{
+                ...styles.badge,
+                backgroundColor: cardColor,
+                borderColor,
+              }}
+            >
+              <Text style={[styles.batch, { color: textColor }]}>
+                Class of 2027
+              </Text>
             </Badge>
           </View>
         </View>
 
         {/* MAP PREFERENCES */}
         <View style={styles.preferences}>
-          <View style={[styles.preferencesCard, { backgroundColor: cardColor, borderColor }]}>
+          <View
+            style={[
+              styles.preferencesCard,
+              { backgroundColor: cardColor, borderColor },
+            ]}
+          >
             <FlatList
               data={preferences}
               keyExtractor={(item) => item.id}
@@ -110,11 +127,21 @@ export default function Profile() {
                         </View>
 
                         <View>
-                          <Text style={[styles.preferenceTitle, { color: textColor }]}>
+                          <Text
+                            style={[
+                              styles.preferenceTitle,
+                              { color: textColor },
+                            ]}
+                          >
                             {item.title}
                           </Text>
 
-                          <Text style={[styles.preferenceSubtitle, { color: textMuted }]}>
+                          <Text
+                            style={[
+                              styles.preferenceSubtitle,
+                              { color: textMuted },
+                            ]}
+                          >
                             {item.subtitle}
                           </Text>
                         </View>
@@ -135,14 +162,21 @@ export default function Profile() {
         </View>
 
         {/* SETTINGS */}
-        <View style={[styles.settingsCard, { backgroundColor: cardColor, borderColor }]}>
+        <View
+          style={[
+            styles.settingsCard,
+            { backgroundColor: cardColor, borderColor },
+          ]}
+        >
           <TouchableOpacity
             style={styles.settingItem}
             onPress={() => router.push("/privacy-security")}
           >
             <View style={styles.settingLeft}>
               <ShieldCheck size={18} color={textColor} />
-              <Text style={[styles.settingTitle, { color: textColor }]}>Privacy & Security</Text>
+              <Text style={[styles.settingTitle, { color: textColor }]}>
+                Privacy & Security
+              </Text>
             </View>
             <ChevronRight size={18} color={iconColor} />
           </TouchableOpacity>
@@ -153,12 +187,14 @@ export default function Profile() {
           >
             <View style={styles.settingLeft}>
               <Info size={18} color={textColor} />
-              <Text style={[styles.settingTitle, { color: textColor }]}>Help & Support</Text>
+              <Text style={[styles.settingTitle, { color: textColor }]}>
+                Help & Support
+              </Text>
             </View>
             <ChevronRight size={18} color={iconColor} />
           </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
     </SafeAreaView>
   );
 }
