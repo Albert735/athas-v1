@@ -15,7 +15,8 @@ import { OTPForm } from "@/components/authentication/OTP/form/OTP-form";
 import { useColor } from "@/hooks/useColor";
 
 export default function OTPScreen() {
-  const iconColor = useColor("text");
+  const iconColor = useColor("icon");
+
   return (
     <SafeAreaView style={styles.container}>
       {/* KeyboardAvoidingView pushes content up when the keyboard opens */}

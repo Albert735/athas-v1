@@ -18,6 +18,7 @@ import {
 } from "react-native";
 
 import { SafeAreaView } from "react-native-safe-area-context";
+import { useColor } from "@/hooks/useColor";
 
 /** Consistent horizontal padding used across all sections */
 const SPACING = 30;
@@ -36,6 +37,11 @@ const SPACING = 30;
  * footer is pushed to the bottom on taller screens.
  */
 export default function LogInScreen() {
+  const iconColor = useColor("icon");
+  const actionColor = useColor("primary");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+
   return (
     <SafeAreaView style={styles.container}>
       {/* Shifts content up when the keyboard opens on iOS */}
@@ -43,19 +49,18 @@ export default function LogInScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView
-          contentContainerStyle={{
-            flexGrow: 1,
+        <View
+          style={{
+            flex: 1,
             justifyContent: "space-between",
             gap: 16,
           }}
-          showsVerticalScrollIndicator={false}
         >
           {/* ── Header ─────────────────────────────────── */}
           {/* Guest mode entry point — aligned to the right */}
           <View style={styles.header}>
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onPress={() => router.push("/guest")}
             >
@@ -72,14 +77,16 @@ export default function LogInScreen() {
                 style={styles.logo}
               />
 
-              <Text style={styles.title}>Athas</Text>
+              <View style={styles.textContainer}>
+                <Text style={styles.title}>Athas</Text>
 
-              <Text style={styles.subtitle}>
-                Navigating your academic journey
-              </Text>
+                <Text style={styles.subtitle}>
+                  Navigating your academic journey
+                </Text>
+              </View>
 
               {/* Primary login option — SSO via University ID */}
-              <View style={{ width: "100%" }}>
+              {/* <View style={{ width: "100%" }}>
                 <Button
                   icon={GraduationCap}
                   variant="default"
@@ -88,18 +95,18 @@ export default function LogInScreen() {
                 >
                   Log in with University ID
                 </Button>
-              </View>
+              </View> */}
             </View>
 
             {/* ── Divider ──────────────────────────────── */}
             {/* Horizontal rule with centred label */}
-            <View style={styles.divider}>
+            {/* <View style={styles.divider}>
               <View style={styles.line} />
 
               <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
 
               <View style={styles.line} />
-            </View>
+            </View> */}
 
             {/* ── Email / Password Form ────────────────── */}
             <View style={styles.formCard}>
@@ -115,7 +122,7 @@ export default function LogInScreen() {
               Don&apos;t have an account?{" "}
               <Text
                 variant="caption"
-                style={styles.signupText}
+                style={[styles.signupText, { color: actionColor }]}
                 onPress={() => router.push("/(auth)/sign-up")}
               >
                 Sign Up
@@ -124,33 +131,44 @@ export default function LogInScreen() {
 
             {/* Trust / info badges */}
             <View style={styles.badgesContainer}>
-              <Badge variant="outline">
-                <View style={styles.badgeContent}>
-                  <ShieldCheck size={14} />
-                  <Text variant="caption" style={{ fontSize: 12 }}>
-                    Encrypted Sessions
-                  </Text>
-                </View>
-              </Badge>
+              <View
+                style={[
+                  styles.badgeContent,
+                  { backgroundColor: cardColor, borderColor },
+                ]}
+              >
+                <ShieldCheck size={14} color={iconColor} />
+                <Text variant="caption" style={{ fontSize: 12 }}>
+                  Encrypted Sessions
+                </Text>
+              </View>
 
-              <Badge variant="outline">
-                <View style={styles.badgeContent}>
-                  <BadgeInfo size={14} />
-                  <Text variant="caption" style={{ fontSize: 12 }}>
-                    v0.01
-                  </Text>
-                </View>
-              </Badge>
+              <View
+                style={[
+                  styles.badgeContent,
+                  { backgroundColor: cardColor, borderColor },
+                ]}
+              >
+                <BadgeInfo size={14} color={iconColor} />
+                <Text variant="caption" style={{ fontSize: 12 }}>
+                  v0.01
+                </Text>
+              </View>
             </View>
 
             {/* Legal — Terms of Service & Privacy Policy */}
             <Text variant="caption" style={styles.termsText}>
               By logging in, you agree to the Athas{" "}
-              <Text style={styles.signupText}>Terms of Service</Text> and{" "}
-              <Text style={styles.signupText}>Privacy Policy</Text>
+              <Text style={[styles.signupText, { color: actionColor }]}>
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text style={[styles.signupText, { color: actionColor }]}>
+                Privacy Policy
+              </Text>
             </Text>
           </View>
-        </ScrollView>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -181,7 +199,12 @@ const styles = StyleSheet.create({
   /** Hero — centred branding stack with logo, title, tagline */
   hero: {
     alignItems: "center",
-    gap: 14,
+    gap: 8,
+    marginBottom: 40,
+  },
+  textContainer: {
+    alignItems: "center",
+    gap: 4,
   },
 
   /** App icon */
@@ -269,12 +292,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    maxWidth: 200,
+    minHeight: 40,
+    justifyContent: "center",
   },
 
   /** Fine-print legal text */
   termsText: {
     textAlign: "center",
-    opacity: 0.7,
     lineHeight: 20,
     fontSize: 12,
   },
