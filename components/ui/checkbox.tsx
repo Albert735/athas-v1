@@ -41,8 +41,8 @@ export function Checkbox({
     >
       <View
         style={{
-          width: 22,
-          height: 22,
+          width: 18,
+          height: 18,
           borderRadius: BORDER_RADIUS,
           borderWidth: 1.5,
           borderColor: checked ? primary : borderColor,

@@ -3,6 +3,9 @@ import { Input } from "@/components/ui/input";
 import { StyleSheet, View } from "react-native";
 import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useColor } from "@/hooks/useColor";
+import React from "react";
 
 /**
  * SignInForm — Email/password login form.
@@ -12,15 +15,18 @@ import { router } from "expo-router";
  * The form submits via a full-width "Sign In" button.
  */
 export function SignInForm() {
+  const text = useColor("primary");
+  const [checked, setChecked] = React.useState(false);
+
   return (
     <View style={styles.container}>
       {/* Input fields group */}
       <View style={{ gap: 16 }}>
         {/* Email field */}
         <View style={{ gap: 8 }}>
-          <Text variant="caption" style={{ fontSize: 12, letterSpacing: 0.5 }}>
+          {/* <Text variant="caption" style={{ fontSize: 12 }}>
             INSTITUTIONAL EMAIL
-          </Text>
+          </Text> */}
           <Input placeholder="Email" />
         </View>
 
@@ -30,13 +36,10 @@ export function SignInForm() {
           <View
             style={{ flexDirection: "row", justifyContent: "space-between" }}
           >
-            <Text
-              variant="caption"
-              style={{ fontSize: 12, letterSpacing: 0.5 }}
-            >
+            {/* <Text variant="caption" style={{ fontSize: 12 }}>
               PASSWORD
-            </Text>
-            <Text
+            </Text> */}
+            {/* <Text
               variant="caption"
               style={{ fontSize: 12, textDecorationLine: "underline" }}
               onPress={() => {
@@ -44,9 +47,52 @@ export function SignInForm() {
               }}
             >
               Forgot Password?
-            </Text>
+            </Text> */}
           </View>
           <Input placeholder="Password" secureTextEntry />
+        </View>
+
+        <View
+          style={{
+            flexDirection: "row",
+            justifyContent: "space-between",
+            alignItems: "center",
+            paddingHorizontal: 10,
+          }}
+        >
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              gap: 8,
+            }}
+          >
+            <Checkbox
+              checked={checked}
+              onCheckedChange={() => setChecked(!checked)}
+            />
+            <Text variant="caption" style={{ fontSize: 12 }}>
+              Remember me
+            </Text>
+          </View>
+
+          <View>
+            <Text
+              variant="caption"
+              style={[
+                {
+                  fontSize: 12,
+                  textDecorationLine: "underline",
+                  color: text,
+                },
+              ]}
+              onPress={() => {
+                router.push("/(auth)/forgotten-password");
+              }}
+            >
+              Forgot Password?
+            </Text>
+          </View>
         </View>
       </View>
 
