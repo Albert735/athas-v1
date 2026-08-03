@@ -160,12 +160,12 @@ export function DrawerContent(props: DrawerContentComponentProps) {
 
       {/* Logout */}
       <TouchableOpacity
-        style={styles.logout}
+        style={[styles.logout, { backgroundColor: cardColor, borderColor }]}
         activeOpacity={0.7}
         onPress={handleLogout}
       >
         <LogOut size={18} color="#EF4444" />
-        <Text style={styles.logoutText}>Log Out</Text>
+        <Text style={[styles.logoutText, { color: textColor }]}>Log Out</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );
@@ -295,12 +295,10 @@ const styles = StyleSheet.create({
     margin: 20,
     padding: 16,
     borderWidth: 1,
-    borderColor: "rgba(161, 161, 170, 0.5)",
     borderRadius: 200,
   },
   logoutText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#fff",
   },
 });

@@ -6,7 +6,7 @@ import {
   Pressable,
   Share,
 } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { ParallaxScrollView } from "@/components/ui/parallax-scrollview";
 import { buildingData } from "@/data/buildings";
@@ -18,6 +18,7 @@ import {
   WifiHigh,
   Heart,
   Share2,
+  ArrowRight,
 } from "lucide-react-native";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
@@ -200,7 +201,11 @@ export default function BuildingDetailsScreen() {
             </Text>
           </View>
         </View>
-
+        {/* Description */}
+        <Text style={[styles.description, { color: mutedColor }]}>
+          The main hub for Faculty of Computing and Information Technology
+          (FCIT). Student Affairs, lecture halls, and academic resources.
+        </Text>
         {/* Carousel */}
         <FlatList
           horizontal
@@ -216,13 +221,15 @@ export default function BuildingDetailsScreen() {
             />
           )}
         />
-
-        {/* Description */}
-        <Text style={[styles.description, { color: mutedColor }]}>
-          The main hub for Faculty of Computing and Information Technology
-          (FCIT). Student Affairs, lecture halls, and academic resources.
-        </Text>
-
+        <Button
+          icon={ArrowRight}
+          size="sm"
+          onPress={() => {
+            router.push(`/map?buildingId=${id}`);
+          }}
+        >
+          Navigate
+        </Button>
         {/* Operational Hours */}
         <View style={styles.operationalHoursContainer}>
           <Text style={[styles.sectionHeading, { color: textColor }]}>
@@ -243,7 +250,6 @@ export default function BuildingDetailsScreen() {
             </View>
           </View>
         </View>
-
         {/* Facilities */}
         <View style={styles.section}>
           <View style={styles.sectionList}>
@@ -289,7 +295,6 @@ export default function BuildingDetailsScreen() {
             />
           </View>
         </View>
-
         {/* Accessibility */}
         <View style={styles.section}>
           <View style={styles.sectionList}>
@@ -322,7 +327,6 @@ export default function BuildingDetailsScreen() {
             ))}
           </View>
         </View>
-
         {/* Need Assistance */}
         <View style={styles.needAssistance}>
           <Text style={[styles.sectionTitle, { color: textColor }]}>
