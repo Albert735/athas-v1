@@ -1,3 +1,3 @@
 Command line invocation:
-    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace /Users/albertquaye/Downloads/athas-v1/ios/athasv1.xcworkspace -configuration Debug -scheme athasv1 -destination id=52A42123-E69E-4004-A13F-B441CFE9C5E6
+    /Applications/Xcode.app/Contents/Developer/usr/bin/xcodebuild -workspace /Users/albertquaye/Downloads/athas-v1/ios/athasv1.xcworkspace -configuration Debug -scheme athasv1 -destination id=0C0711D3-98DC-448A-A029-134E811D9C19
 

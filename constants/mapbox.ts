@@ -1,1 +1,2 @@
-export const MAPBOX_PUBLIC_TOKEN = process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN;
+export const MAPBOX_PUBLIC_TOKEN =
+  process.env.EXPO_PUBLIC_MAPBOX_ACCESS_TOKEN || null;

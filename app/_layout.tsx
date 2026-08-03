@@ -14,10 +14,10 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { ToastProvider } from "@/components/ui/toast";
 
-import MapboxGL from "@rnmapbox/maps";
-import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
+// import MapboxGL from "@rnmapbox/maps";
+// import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
 
-MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN);
+// MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN);
 
 // SplashScreen.setOptions({
 //   duration: 200,
@@ -62,11 +62,6 @@ export default function RootLayout() {
               name="notifications/index"
               options={{ headerShown: false }}
             />
-
-            {/* <Stack.Screen
-              name="notifications/notification-details/index"
-              options={{ headerShown: false }}
-            /> */}
 
             <Stack.Screen
               name="sheet"
