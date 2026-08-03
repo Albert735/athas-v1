@@ -1,0 +1,6 @@
+2026-08-03 04:45:22.068 xcodebuild[42848:3463651] Writing error result bundle to /var/folders/zz/p880ksq54wv9dykx30y70dp40000gn/T/ResultBundle_2026-03-08_4-45-0022 AM.xcresult
+xcodebuild: error: Unable to find a destination matching the provided destination specifier:
+		{ id:52A42123-E69E-4004-A13F-B441CFE9C5E6 }
+
+	Ineligible destinations for the "athasv1" scheme:
+		{ platform:iOS, id:dvtdevice-DVTiPhonePlaceholder-iphoneos:placeholder, name:Any iOS Device, error:iOS 26.4 is not installed. Please download and install the platform from Xcode > Settings > Components. }

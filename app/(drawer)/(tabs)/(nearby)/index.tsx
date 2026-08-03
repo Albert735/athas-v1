@@ -147,7 +147,7 @@ export default function NearByScreen() {
               <TouchableOpacity
                 style={styles.goButton}
                 activeOpacity={0.85}
-                onPress={() => router.push("/(drawer)/(tabs)/(map)")}
+                onPress={() => router.push("/map")}
               >
                 <Navigation size={14} color="#FFFFFF" />
                 <Text style={styles.goButtonText}>Go</Text>

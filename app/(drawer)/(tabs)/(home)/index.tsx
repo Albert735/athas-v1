@@ -43,7 +43,9 @@ export default function HomeScreen() {
   return (
     <View style={[styles.root, { backgroundColor }]}>
       {/* Map — top half, sits behind everything */}
-      <View style={[styles.mapContainer, { height: MAP_HEIGHT }]}>
+      <View
+        style={[styles.mapContainer, { height: MAP_HEIGHT, backgroundColor }]}
+      >
         {/* Replace with your Mapbox component */}
       </View>
 
@@ -88,7 +90,10 @@ export default function HomeScreen() {
                 style={[
                   styles.chip,
                   { backgroundColor: cardColor, borderColor },
-                  isSelected && { backgroundColor: primaryColor, borderColor: primaryColor }
+                  isSelected && {
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor,
+                  },
                 ]}
                 onPress={() => {
                   setSelectedQuickAction(isSelected ? null : item.id);
@@ -115,7 +120,9 @@ export default function HomeScreen() {
       <View style={[styles.sheet, { top: MAP_HEIGHT - 20, backgroundColor }]}>
         {/* Section Header */}
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>Popular places on campus</Text>
+          <Text style={[styles.sectionTitle, { color: textColor }]}>
+            Popular places on campus
+          </Text>
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => router.push("/popular-places")}
@@ -177,13 +184,20 @@ export default function HomeScreen() {
               </View>
 
               <View style={styles.cardBody}>
-                <Text style={[styles.cardName, { color: textColor }]}>{item.name}</Text>
-                <Text style={[styles.cardDescription, { color: textMuted }]} numberOfLines={2}>
+                <Text style={[styles.cardName, { color: textColor }]}>
+                  {item.name}
+                </Text>
+                <Text
+                  style={[styles.cardDescription, { color: textMuted }]}
+                  numberOfLines={2}
+                >
                   {item.description}
                 </Text>
                 <View style={styles.cardFooter}>
                   <MapPin size={12} color={primaryColor} />
-                  <Text style={[styles.cardDistance, { color: textMuted }]}>{item.distance}</Text>
+                  <Text style={[styles.cardDistance, { color: textMuted }]}>
+                    {item.distance}
+                  </Text>
                 </View>
               </View>
             </Pressable>
@@ -205,7 +219,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    backgroundColor: "#0D1E36",
   },
 
   // Search + chips float over the map

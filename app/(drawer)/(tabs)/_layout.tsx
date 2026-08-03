@@ -50,7 +50,7 @@ export default function TabsLayout() {
         <Label>Schedule</Label>
       </NativeTabs.Trigger>
 
-      <NativeTabs.Trigger name="(map)">
+      {/* <NativeTabs.Trigger name="(map)">
         {Platform.select({
           ios: <Icon sf="map" />,
           android: (
@@ -58,7 +58,7 @@ export default function TabsLayout() {
           ),
         })}
         <Label>Schedule</Label>
-      </NativeTabs.Trigger>
+      </NativeTabs.Trigger> */}
 
       <NativeTabs.Trigger name="(nearby)">
         {Platform.select({
