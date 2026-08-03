@@ -1,4 +1,5 @@
 import { View, StyleSheet, Animated } from "react-native";
+import { useColor } from "@/hooks/useColor";
 
 type ProgressProps = {
   currentStep: number; // The active step (1-indexed)
@@ -19,8 +20,8 @@ export function Progress({ currentStep }: ProgressProps) {
   const steps = [1, 2];
 
   // Dot colours
-  const primaryColor = "#000"; // Active step
-  const mutedColor = "#D1D5DB"; // Inactive step (light grey)
+  const primaryColor = useColor("primary"); // Active step
+  const mutedColor = useColor("textMuted"); // Inactive step (light grey)
 
   return (
     <View style={styles.progressContainer}>

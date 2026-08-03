@@ -14,6 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { TouchableOpacity } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useState } from "react";
+import { useColor } from "@/hooks/useColor";
 
 /** Consistent horizontal padding used across all sections */
 const SPACING = 30;
@@ -33,6 +34,7 @@ const SPACING = 30;
 export default function SignUpScreen() {
   // Current form step (1 = personal info, 2 = password)
   const [step, setStep] = useState(1);
+  const textColor = useColor("text");
 
   /**
    * Smart back navigation:
@@ -63,13 +65,13 @@ export default function SignUpScreen() {
           <View style={styles.header}>
             <TouchableOpacity
               onPress={handleBack}
-              style={styles.backButton}
+              style={[styles.backButton]}
               activeOpacity={0.7}
             >
-              <Octicons name="arrow-left" size={24} color="black" />
+              <Octicons name="arrow-left" size={24} color={textColor} />
             </TouchableOpacity>
             <Button
-              variant="outline"
+              variant="default"
               size="sm"
               onPress={() => router.push("/guest")}
             >

@@ -32,7 +32,7 @@ export function OTPForm() {
             borderWidth: 0.2,
             width: 50,
             height: 50,
-            borderColor: primary,
+            // borderColor: primary,
           }}
           showCursor={false}
           onComplete={(value) => {

@@ -11,8 +11,10 @@ import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native";
 import { ResetPasswordForm } from "@/components/authentication/reset-password/form";
+import { useColor } from "@/hooks/useColor";
 
 export default function ResetPasswordScreen() {
+  const iconColor = useColor("text");
   return (
     <SafeAreaView style={styles.container}>
       {/* KeyboardAvoidingView pushes content up when the keyboard opens */}
@@ -44,7 +46,7 @@ export default function ResetPasswordScreen() {
 
         {/* Security trust badge pinned to bottom */}
         <View style={styles.footerContainer}>
-          <ShieldCheck strokeWidth={1} size={12} />
+          <ShieldCheck strokeWidth={1} size={14} color={iconColor} />
           <Text style={styles.footer}>SSO PROTECTED</Text>
         </View>
       </KeyboardAvoidingView>

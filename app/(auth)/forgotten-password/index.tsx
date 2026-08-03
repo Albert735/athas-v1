@@ -8,11 +8,19 @@ import { router } from "expo-router";
 import Octicons from "@expo/vector-icons/Octicons";
 
 import { SafeAreaView } from "react-native-safe-area-context";
-import { KeyboardAvoidingView, Platform, StyleSheet, TouchableOpacity, View } from "react-native";
+import {
+  KeyboardAvoidingView,
+  Platform,
+  StyleSheet,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import { useColor } from "@/hooks/useColor";
 
 const SPACING = 30;
 
 export default function ForgottenPasswordScreen() {
+  const iconColor = useColor("text");
   return (
     <SafeAreaView style={styles.container}>
       <KeyboardAvoidingView
@@ -44,8 +52,8 @@ export default function ForgottenPasswordScreen() {
               <Text style={styles.title}>Forgotten Access?</Text>
 
               <Text style={styles.subtitle}>
-                Enter your institutional email address and we&apos;ll send a secure
-                link to reset your credentials.
+                Enter your institutional email address and we&apos;ll send a
+                secure link to reset your credentials.
               </Text>
             </View>
 
@@ -54,7 +62,7 @@ export default function ForgottenPasswordScreen() {
         </View>
 
         <View style={styles.footerContainer}>
-          <ShieldCheck strokeWidth={1} size={12} />
+          <ShieldCheck strokeWidth={1} size={14} color={iconColor} />
           <Text style={styles.footer}>SSO PROTECTED</Text>
         </View>
       </KeyboardAvoidingView>

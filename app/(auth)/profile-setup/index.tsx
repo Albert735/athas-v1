@@ -19,10 +19,14 @@ import {
 import { schools } from "@/data/school";
 import { departmentsBySchool } from "@/data/department";
 import { router } from "expo-router";
+import { useColor } from "@/hooks/useColor";
 
 const SPACING = 24;
 
 export default function ProfileSetupScreen() {
+  const textColor = useColor("text");
+  const iconColor = useColor("text");
+
   const [selectedLevel, setSelectedLevel] = useState<string | null>(null);
   const [school, setSchool] = useState<OptionType | null>(null);
   const [department, setDepartment] = useState<OptionType | null>(null);
@@ -54,7 +58,7 @@ export default function ProfileSetupScreen() {
             {/* Department Card */}
             <View style={styles.card}>
               <View style={styles.sectionHeader}>
-                <Landmark size={20} />
+                <Landmark size={20} color={iconColor} />
                 <Text style={styles.sectionTitle}>Primary Department</Text>
               </View>
 
@@ -139,7 +143,7 @@ export default function ProfileSetupScreen() {
             {/* Academic Standing */}
             <View style={styles.card}>
               <View style={styles.sectionHeader}>
-                <Map size={20} />
+                <Map size={20} color={iconColor} />
                 <Text style={styles.sectionTitle}>Academic Standing</Text>
               </View>
 

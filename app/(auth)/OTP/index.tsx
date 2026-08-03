@@ -12,8 +12,10 @@ import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { KeyboardAvoidingView } from "react-native";
 import { OTPForm } from "@/components/authentication/OTP/form/OTP-form";
+import { useColor } from "@/hooks/useColor";
 
 export default function OTPScreen() {
+  const iconColor = useColor("text");
   return (
     <SafeAreaView style={styles.container}>
       {/* KeyboardAvoidingView pushes content up when the keyboard opens */}
@@ -46,7 +48,7 @@ export default function OTPScreen() {
 
         {/* Security trust badge pinned to bottom */}
         <View style={styles.footerContainer}>
-          <ShieldCheck strokeWidth={1} size={12} />
+          <ShieldCheck strokeWidth={1} size={14} color={iconColor} />
           <Text style={styles.footer}>
             SECURED BY ATHAS IDENTITY {`\n`} MANAGEMENT
           </Text>

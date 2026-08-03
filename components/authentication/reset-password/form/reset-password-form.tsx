@@ -11,6 +11,7 @@ import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { router } from "expo-router";
 import { Badge } from "@/components/ui/badge";
+import { useColor } from "@/hooks/useColor";
 
 /** Shape of each password validation rule displayed as a badge */
 interface PasswordRequirement {
@@ -26,6 +27,9 @@ const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
 ];
 
 export function ResetPasswordForm() {
+  const textColor = useColor("text");
+  const primary = useColor("primary");
+
   return (
     <View style={styles.container}>
       {/* New password input */}
@@ -68,9 +72,11 @@ export function ResetPasswordForm() {
       </Button>
 
       {/* Support link for users having trouble */}
-      <Text style={styles.footerText}>
+      <Text style={[styles.footerText, { color: textColor }]}>
         Having trouble?{" "}
-        <Text style={styles.footerLinkText}>Contact Support</Text>
+        <Text style={[styles.footerLinkText, { color: primary }]}>
+          Contact Support
+        </Text>
       </Text>
     </View>
   );
