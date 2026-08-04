@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Button } from "@/components/ui/button";
-
 import { Text } from "@/components/ui/text";
 import { Header } from "@/components/shared/screen/header";
 import { AddClassForm } from "@/components/timetable/add-class/form";
@@ -18,6 +17,9 @@ import { Plus } from "lucide-react-native";
 import { router } from "expo-router";
 import { useToast } from "@/components/ui/toast";
 import { useTimetable } from "@/hooks/useTimetable";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addClassSchema, type AddClassData } from "@/schemas/class";
 
 const SPACING = 20;
 
@@ -26,12 +28,38 @@ export default function AddClassScreen() {
   const { toast } = useToast();
   const { setClasses } = useTimetable();
 
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting },
+  } = useForm<AddClassData>({
+    resolver: zodResolver(addClassSchema),
+    defaultValues: {
+      courseName: "",
+      courseCode: "",
+      building: "",
+      hall: "",
+      repeatEnabled: false,
+      selectedDays: [],
+      startTime: "08:00",
+      endTime: "10:00",
+      repeatType: "weekly",
+    },
+  });
+
   const showToast = () => {
     toast({
       title: "Success!",
       description: "Class has been created successfully!",
       variant: "success",
     });
+  };
+
+  const onSubmit = async (data: AddClassData) => {
+    console.log("New class:", data);
+    // TODO: setClasses(prev => [...prev, data]);
+    router.replace("/(drawer)/(tabs)/(schedule)/scheduled-class-list");
+    showToast();
   };
 
   return (
@@ -52,28 +80,20 @@ export default function AddClassScreen() {
               <Text style={[styles.sub, { color: mutedColor }]}>
                 TIMETABLE ENTRY
               </Text>
-
               <Text variant="subtitle">Build your Academic{"\n"}Schedule</Text>
             </View>
 
-            <AddClassForm />
-
-            <DaySelector />
-
-            {/* <View style={{ height: 500, backgroundColor: "blue" }} /> */}
+            <AddClassForm control={control} />
+            <DaySelector control={control} />
 
             <Button
               style={styles.btn}
               variant="default"
               icon={Plus}
-              onPress={() => {
-                router.replace(
-                  "/(drawer)/(tabs)/(schedule)/scheduled-class-list",
-                );
-                showToast();
-              }}
+              onPress={handleSubmit(onSubmit)}
+              disabled={isSubmitting}
             >
-              Add Schedule
+              {isSubmitting ? "Adding..." : "Add Schedule"}
             </Button>
           </View>
         </ScrollView>
@@ -83,35 +103,11 @@ export default function AddClassScreen() {
 }
 
 const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-  },
-
-  keyboardContainer: {
-    flex: 1,
-  },
-
-  scrollContent: {
-    paddingBottom: 150,
-  },
-
-  main: {
-    paddingHorizontal: SPACING,
-    marginTop: 10,
-    gap: 24,
-  },
-
-  titleContainer: {
-    gap: 4,
-  },
-
-  sub: {
-    fontSize: 14,
-    fontWeight: "500",
-    letterSpacing: 0.48,
-  },
-  btn: {
-    width: "100%",
-    marginTop: 10,
-  },
+  screen: { flex: 1 },
+  keyboardContainer: { flex: 1 },
+  scrollContent: { paddingBottom: 150 },
+  main: { paddingHorizontal: SPACING, marginTop: 10, gap: 24 },
+  titleContainer: { gap: 4 },
+  sub: { fontSize: 14, fontWeight: "500", letterSpacing: 0.48 },
+  btn: { width: "100%", marginTop: 10 },
 });
