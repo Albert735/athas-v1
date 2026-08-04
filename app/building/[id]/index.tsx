@@ -54,7 +54,7 @@ function getBuildingStatus(): OperatingStatus {
 
 export default function BuildingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const place = places.find((p) => p.id === id);
+  const foundPlace = places.find((p) => p.id === id);
 
   const status = getBuildingStatus();
   const [isFavorited, setIsFavorited] = useState(false);
@@ -117,15 +117,7 @@ export default function BuildingDetailsScreen() {
     },
   ];
 
-  const handleShare = () => {
-    Share.share({
-      message:
-        "Check out this building on Athas: https://athas.app/building/" + id,
-      title: "Check out this building",
-    });
-  };
-
-  if (!place) {
+  if (!foundPlace) {
     return (
       <SafeAreaView style={[styles.container, { backgroundColor }]}>
         <Header title="Not Found" showBack />
@@ -133,6 +125,15 @@ export default function BuildingDetailsScreen() {
       </SafeAreaView>
     );
   }
+
+  const place = foundPlace; // now TS knows this is defined
+
+  const handleShare = () => {
+    Share.share({
+      message: `Check out ${place.name} on Athas: https://athas.app/building/${id}`,
+      title: "Check out this location",
+    });
+  };
 
   return (
     <ParallaxScrollView
@@ -160,10 +161,6 @@ export default function BuildingDetailsScreen() {
             <Pressable
               onPress={() => setIsFavorited((prev) => !prev)}
               hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel={
-                isFavorited ? "Remove from favorites" : "Add to favorites"
-              }
               style={({ pressed }) => [
                 styles.actionButton,
                 { backgroundColor: cardColor },
@@ -180,8 +177,6 @@ export default function BuildingDetailsScreen() {
             <Pressable
               onPress={handleShare}
               hitSlop={8}
-              accessibilityRole="button"
-              accessibilityLabel="Share this building"
               style={({ pressed }) => [
                 styles.actionButton,
                 { backgroundColor: cardColor },
@@ -195,22 +190,22 @@ export default function BuildingDetailsScreen() {
           <View
             style={[
               styles.statusBadge,
-              status.isOpen ? styles.statusBadgeOpen : styles.statusBadgeClosed,
+              place.isOpen ? styles.statusBadgeOpen : styles.statusBadgeClosed,
             ]}
           >
             <View
               style={[
                 styles.statusDot,
-                status.isOpen ? styles.statusDotOpen : styles.statusDotClosed,
+                place.isOpen ? styles.statusDotOpen : styles.statusDotClosed,
               ]}
             />
             <Text
               style={[
                 styles.statusText,
-                status.isOpen ? styles.statusTextOpen : styles.statusTextClosed,
+                place.isOpen ? styles.statusTextOpen : styles.statusTextClosed,
               ]}
             >
-              {status.isOpen ? "Open now" : "Closed"}
+              {place.isOpen ? "Open now" : "Closed"}
             </Text>
           </View>
         </View>
@@ -236,28 +231,27 @@ export default function BuildingDetailsScreen() {
         <Button
           icon={ArrowRight}
           size="sm"
-          onPress={() => {
-            router.push(`/map?buildingId=${id}`);
-          }}
+          onPress={() => router.push(`/map?buildingId=${id}`)}
         >
           Navigate
         </Button>
+
         {/* Operational Hours */}
         <View style={styles.operationalHoursContainer}>
           <Text style={[styles.sectionHeading, { color: textColor }]}>
             Operational Hours
           </Text>
           <Text style={[styles.subText, { color: mutedColor }]}>
-            Monday – Saturday
+            {place.days}
           </Text>
           <View style={styles.operationalHours}>
             <View style={styles.operationalHoursInner}>
               <Clock4 size={20} color={iconColor} />
               <Text style={[styles.subText, { color: mutedColor }]}>
-                Open Today
+                {place.isOpen ? "Open Today" : "Closed Today"}
               </Text>
               <Text style={[styles.subText, { color: mutedColor }]}>
-                7:00 AM – 6:00 PM
+                {place.hours}
               </Text>
             </View>
           </View>
