@@ -8,8 +8,13 @@ import Octicons from "@expo/vector-icons/Octicons";
 
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
+import { useColor } from "@/hooks/useColor";
 
 export default function GuestScreen() {
+  const iconColor = useColor("text");
+  const borderColor = useColor("border");
+  const cardColor = useColor("card");
+
   return (
     <SafeAreaView style={styles.container}>
       {/* ── Header ─────────────────────────────────── */}
@@ -17,9 +22,8 @@ export default function GuestScreen() {
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
-          activeOpacity={0.7}
         >
-          <Octicons name="arrow-left" size={24} color="black" />
+          <Octicons name="arrow-left" size={24} color={iconColor} />
         </TouchableOpacity>
       </View>
 
@@ -42,8 +46,13 @@ export default function GuestScreen() {
         </View>
 
         {/* Continue as Guest */}
-        <TouchableOpacity style={styles.guestButton} activeOpacity={0.85}>
-          <Compass size={24} color="#FFFFFF" />
+        <TouchableOpacity
+          style={[
+            styles.guestButton,
+            { backgroundColor: cardColor, borderColor },
+          ]}
+        >
+          <Compass size={24} color={iconColor} />
 
           <View style={styles.buttonContent}>
             <Text style={styles.buttonTitle}>Continue as Guest</Text>
@@ -58,7 +67,7 @@ export default function GuestScreen() {
         <View style={styles.infoSection}>
           <View style={styles.cardContainer}>
             <View style={styles.infoCard}>
-              <Wifi size={20} />
+              <Wifi size={20} color={iconColor} />
 
               <View style={styles.infoContent}>
                 <Text style={styles.infoTitle}>Guest Wi-Fi</Text>
@@ -70,7 +79,7 @@ export default function GuestScreen() {
             </View>
 
             <View style={styles.infoCard}>
-              <Presentation size={20} />
+              <Presentation size={20} color={iconColor} />
 
               <View style={styles.infoContent}>
                 <Text style={styles.infoTitle}>Public Events</Text>
@@ -149,7 +158,6 @@ const styles = StyleSheet.create({
   guestButton: {
     flexDirection: "row",
     alignItems: "center",
-    backgroundColor: "#000",
     borderRadius: 24,
     paddingHorizontal: 20,
     paddingVertical: 15,
@@ -162,13 +170,11 @@ const styles = StyleSheet.create({
   },
 
   buttonTitle: {
-    color: "#FFFFFF",
     fontSize: 16,
     fontWeight: "700",
   },
 
   buttonSubtitle: {
-    color: "rgba(255,255,255,0.75)",
     fontSize: 13,
     lineHeight: 18,
   },

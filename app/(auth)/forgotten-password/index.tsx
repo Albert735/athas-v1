@@ -35,7 +35,7 @@ export default function ForgottenPasswordScreen() {
               style={styles.backButton}
               activeOpacity={0.7}
             >
-              <Octicons name="arrow-left" size={24} color="black" />
+              <Octicons name="arrow-left" size={24} color={iconColor} />
             </TouchableOpacity>
           </View>
 

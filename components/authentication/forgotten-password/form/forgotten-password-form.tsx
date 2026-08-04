@@ -9,7 +9,7 @@ export function ForgottenPasswordForm() {
   return (
     <View style={styles.container}>
       <View style={styles.field}>
-        <Text style={styles.label}>INSTITUTIONAL EMAIL</Text>
+        {/* <Text style={styles.label}>INSTITUTIONAL EMAIL</Text> */}
 
         <Input
           placeholder="student@ug.edu.gh"

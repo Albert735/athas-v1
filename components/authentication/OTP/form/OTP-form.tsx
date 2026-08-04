@@ -55,7 +55,9 @@ export function OTPForm() {
       <View style={styles.footerContainer}>
         <Text style={styles.footer}>
           If you didn&apos;t receive a code?{" "}
-          <Text style={styles.footerHighligh}> Send it again</Text>
+          <Text style={[styles.footerHighligh, { color: primary }]}>
+            Send it again
+          </Text>
         </Text>
       </View>
     </View>
@@ -88,7 +90,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     textAlign: "center",
-    opacity: 0.5,
     marginBottom: "5%",
   },
   footerHighligh: {
@@ -96,7 +97,6 @@ const styles = StyleSheet.create({
     textDecorationLine: "underline",
     fontSize: 12,
     textAlign: "center",
-    opacity: 0.7,
     marginBottom: "5%",
     marginLeft: 5,
   },
