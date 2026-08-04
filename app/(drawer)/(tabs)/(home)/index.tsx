@@ -11,6 +11,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Menu, Mic, MapPin } from "lucide-react-native";
 import { SearchBarWithSuggestions } from "@/components/ui/searchbar";
+import { places } from "@/data/places";
 import { useColor } from "@/hooks/useColor";
 import { popularPlaces } from "@/data/popular-places";
 import { quickActions } from "@/data/quick-actions";
@@ -20,9 +21,7 @@ import { router } from "expo-router";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 
 export default function HomeScreen() {
-  const [selectedQuickAction, setSelectedQuickAction] = useState<string | null>(
-    null,
-  );
+  const [selectedQuickAction, setSelectedQuickAction] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const suggestions = [
@@ -68,6 +67,14 @@ export default function HomeScreen() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
+
+  const filteredPlaces = selectedQuickAction
+    ? places.filter((place) => place.category === selectedQuickAction)
+    : places;
+
+  const selectedCategoryLabel = quickActions.find(
+    (item) => item.category === selectedQuickAction,
+  )?.label;
 
   return (
     <View style={[styles.root, { backgroundColor }]}>
@@ -119,7 +126,7 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.quickActionsContent}
           renderItem={({ item }) => {
-            const isSelected = selectedQuickAction === item.id;
+            const isSelected = selectedQuickAction === item.category;
             const Icon = item.icon;
             return (
               <Pressable
@@ -132,8 +139,7 @@ export default function HomeScreen() {
                   },
                 ]}
                 onPress={() => {
-                  setSelectedQuickAction(isSelected ? null : item.id);
-                  router.push("/(drawer)/(tabs)/(nearby)");
+                  setSelectedQuickAction(item.category);
                 }}
               >
                 <Icon size={14} color={isSelected ? primaryForeground : icon} />
@@ -157,7 +163,9 @@ export default function HomeScreen() {
         {/* Section Header */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: textColor }]}>
-            Popular places on campus
+            {selectedCategoryLabel
+              ? `${selectedCategoryLabel} near you`
+              : "Popular places on campus"}
           </Text>
           <TouchableOpacity
             activeOpacity={0.7}
@@ -170,67 +178,29 @@ export default function HomeScreen() {
         {/* Popular Places — horizontal FlatList #2 */}
         <FlatList
           horizontal
-          data={popularPlaces}
+          data={filteredPlaces}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.placesContent}
-          snapToInterval={220 + 16}
-          decelerationRate="fast"
           renderItem={({ item }) => (
             <Pressable
-              onPress={() => router.push(`/building/${item.id}`)}
-              style={({ pressed }) => [
-                styles.card,
-                { backgroundColor: cardColor, borderColor },
-                pressed && { opacity: 0.9 },
-              ]}
+              style={[styles.card, { backgroundColor: cardColor, borderColor }]}
             >
-              <View>
-                <Image
-                  source={item.image}
-                  style={styles.cardImage}
-                  contentFit="cover"
-                />
-                {/* Open/Closed badge over the image */}
-                <View
-                  style={[
-                    styles.statusBadge,
-                    item.isOpen ? styles.statusOpen : styles.statusClosed,
-                  ]}
-                >
-                  <View
-                    style={[
-                      styles.statusDot,
-                      item.isOpen
-                        ? styles.statusDotOpen
-                        : styles.statusDotClosed,
-                    ]}
-                  />
-                  <Text
-                    style={[
-                      styles.statusText,
-                      item.isOpen
-                        ? styles.statusTextOpen
-                        : styles.statusTextClosed,
-                    ]}
-                  >
-                    {item.isOpen ? "Open" : "Closed"}
-                  </Text>
-                </View>
-              </View>
-
               <View style={styles.cardBody}>
                 <Text style={[styles.cardName, { color: textColor }]}>
                   {item.name}
                 </Text>
+
                 <Text
                   style={[styles.cardDescription, { color: textMuted }]}
                   numberOfLines={2}
                 >
                   {item.description}
                 </Text>
+
                 <View style={styles.cardFooter}>
                   <MapPin size={12} color={primaryColor} />
+
                   <Text style={[styles.cardDistance, { color: textMuted }]}>
                     {item.distance}
                   </Text>

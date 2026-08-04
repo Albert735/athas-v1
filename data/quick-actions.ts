@@ -16,7 +16,7 @@ import {
 
 export const quickActions = [
   {
-    id: "0",
+    id: "all",
     label: "All",
     icon: LayoutDashboard,
     category: "all",
