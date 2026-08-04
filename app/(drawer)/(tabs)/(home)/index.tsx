@@ -68,9 +68,10 @@ export default function HomeScreen() {
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
 
-  const filteredPlaces = selectedQuickAction
-    ? places.filter((place) => place.category === selectedQuickAction)
-    : places;
+  const filteredPlaces =
+    selectedQuickAction === "all"
+      ? places
+      : places.filter((place) => place.category === selectedQuickAction);
 
   const selectedCategoryLabel = quickActions.find(
     (item) => item.category === selectedQuickAction,
@@ -80,10 +81,7 @@ export default function HomeScreen() {
     <View style={[styles.root, { backgroundColor }]}>
       {/* Map — top half, sits behind everything */}
       <View
-        style={[
-          styles.mapContainer,
-          { height: MAP_HEIGHT, backgroundColor: primaryColor },
-        ]}
+        style={[styles.mapContainer, { height: MAP_HEIGHT, backgroundColor }]}
       >
         {/* Replace with your Mapbox component */}
       </View>
