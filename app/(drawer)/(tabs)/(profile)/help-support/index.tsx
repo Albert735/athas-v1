@@ -9,7 +9,7 @@ import { Pressable } from "react-native";
 import { FAQData } from "@/data/faq";
 import { Collapsible } from "@/components/ui/collapsible";
 import { HS_CARD_DATA } from "@/data/hs-card-data";
-import { MiniCard } from "@/components/profile/Help-and-support/mini-card";
+import { MiniCard } from "@/components/profile/help-and-support/mini-card";
 
 export default function HelpSupport() {
   const icon = useColor("icon");
@@ -29,28 +29,50 @@ export default function HelpSupport() {
           loading={false}
           rightIcon={<Mic size={18} color={icon} />}
         />
-        <Pressable style={[styles.card, { backgroundColor: cardColor, borderColor }]}>
+        <Pressable
+          style={[styles.card, { backgroundColor: cardColor, borderColor }]}
+        >
           <Headset size={24} color={icon} />
-          <Text style={[styles.title, { color: textColor }]}>Live Concierge</Text>
+          <Text style={[styles.title, { color: textColor }]}>
+            Live Concierge
+          </Text>
           <Text style={[styles.description, { color: textMuted }]}>
             Instant human assistance for navigation issues
           </Text>
         </Pressable>
 
         <View style={styles.buttonContainer}>
-          <Pressable style={[styles.cardButton, { backgroundColor: cardColor, borderColor }]}>
+          <Pressable
+            style={[
+              styles.cardButton,
+              { backgroundColor: cardColor, borderColor },
+            ]}
+          >
             <Mail size={24} color={icon} />
             <View>
-              <Text style={[styles.title, { color: textColor }]}>Email Desk</Text>
-              <Text style={[styles.description, { color: textMuted }]}>Fast Response</Text>
+              <Text style={[styles.title, { color: textColor }]}>
+                Email Desk
+              </Text>
+              <Text style={[styles.description, { color: textMuted }]}>
+                Fast Response
+              </Text>
             </View>
           </Pressable>
 
-          <Pressable style={[styles.cardButton, { backgroundColor: cardColor, borderColor }]}>
+          <Pressable
+            style={[
+              styles.cardButton,
+              { backgroundColor: cardColor, borderColor },
+            ]}
+          >
             <Info size={24} color={icon} />
             <View>
-              <Text style={[styles.title, { color: textColor }]}>Report Map Error</Text>
-              <Text style={[styles.description, { color: textMuted }]}>Submit Feedback</Text>
+              <Text style={[styles.title, { color: textColor }]}>
+                Report Map Error
+              </Text>
+              <Text style={[styles.description, { color: textMuted }]}>
+                Submit Feedback
+              </Text>
             </View>
           </Pressable>
         </View>
@@ -59,7 +81,10 @@ export default function HelpSupport() {
           data={HS_CARD_DATA}
           keyExtractor={(_, index) => index.toString()}
           scrollEnabled={false}
-          style={[styles.cardContainer, { backgroundColor: cardColor, borderColor }]}
+          style={[
+            styles.cardContainer,
+            { backgroundColor: cardColor, borderColor },
+          ]}
           renderItem={({ item }) => (
             <MiniCard
               icon={item.icon}
@@ -70,14 +95,18 @@ export default function HelpSupport() {
         />
 
         <View style={styles.section}>
-          <Text style={[styles.title, { color: textColor }]}>Frequently Asked Questions</Text>
+          <Text style={[styles.title, { color: textColor }]}>
+            Frequently Asked Questions
+          </Text>
           <FlatList
             data={FAQData}
             keyExtractor={(_, index) => index.toString()}
             scrollEnabled={false}
             renderItem={({ item }) => (
               <Collapsible title={item.question}>
-                <Text style={[styles.description, { color: textMuted }]}>{item.answer}</Text>
+                <Text style={[styles.description, { color: textMuted }]}>
+                  {item.answer}
+                </Text>
               </Collapsible>
             )}
           />

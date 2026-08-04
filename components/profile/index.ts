@@ -1,2 +1,2 @@
 export * from "./cards/id-card";
-export * from "./Help-and-support/mini-card";
+export * from "./help-and-support/mini-card";
