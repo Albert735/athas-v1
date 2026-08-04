@@ -1,126 +1,167 @@
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View, TextInput } from "react-native";
 import { Text } from "@/components/ui/text";
 import { router } from "expo-router";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useColor } from "@/hooks/useColor";
 import React from "react";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { signInSchema, type SignInFormData } from "@/schemas/auth";
 
-/**
- * SignInForm — Email/password login form.
- *
- * Renders two input fields (email + password) with uppercase
- * labels and a "Forgot Password?" link beside the password label.
- * The form submits via a full-width "Sign In" button.
- */
 export function SignInForm() {
-  const text = useColor("primary");
+  const primaryColor = useColor("primary");
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const borderColor = useColor("border");
   const [checked, setChecked] = React.useState(false);
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<SignInFormData>({
+    resolver: zodResolver(signInSchema),
+    defaultValues: { email: "", password: "" },
+  });
+
+  const onSubmit = async (data: SignInFormData) => {
+    console.log("Sign in data:", data);
+    router.replace("/(drawer)/(tabs)/(home)");
+  };
 
   return (
     <View style={styles.container}>
-      {/* Input fields group */}
-      <View style={{ gap: 16 }}>
-        {/* Email field */}
-        <View style={{ gap: 8 }}>
-          {/* <Text variant="caption" style={{ fontSize: 12 }}>
-            INSTITUTIONAL EMAIL
-          </Text> */}
-          <Input placeholder="Email" />
+      <View style={styles.fields}>
+        {/* Email */}
+        <View style={styles.fieldGroup}>
+          <Controller
+            control={control}
+            name="email"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor, color: textColor, borderColor },
+                  errors.email && styles.inputError,
+                ]}
+                placeholder="student@st.ug.edu.gh"
+                placeholderTextColor="#9CA3AF"
+                keyboardType="email-address"
+                autoCapitalize="none"
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+          {errors.email && (
+            <Text style={styles.errorText}>{errors.email.message}</Text>
+          )}
         </View>
 
-        {/* Password field with "Forgot Password?" link */}
-        <View style={{ gap: 8 }}>
-          {/* Label row — password label on the left, reset link on the right */}
-          <View
-            style={{ flexDirection: "row", justifyContent: "space-between" }}
-          >
-            {/* <Text variant="caption" style={{ fontSize: 12 }}>
-              PASSWORD
-            </Text> */}
-            {/* <Text
-              variant="caption"
-              style={{ fontSize: 12, textDecorationLine: "underline" }}
-              onPress={() => {
-                router.push("/(auth)/forgotten-password");
-              }}
-            >
-              Forgot Password?
-            </Text> */}
-          </View>
-          <Input placeholder="Password" secureTextEntry />
+        {/* Password */}
+        <View style={styles.fieldGroup}>
+          <Controller
+            control={control}
+            name="password"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor, color: textColor, borderColor },
+                  errors.password && styles.inputError,
+                ]}
+                placeholder="••••••••"
+                placeholderTextColor="#9CA3AF"
+                secureTextEntry
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={value}
+              />
+            )}
+          />
+          {errors.password && (
+            <Text style={styles.errorText}>{errors.password.message}</Text>
+          )}
         </View>
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-            paddingHorizontal: 10,
-          }}
-        >
-          <View
-            style={{
-              flexDirection: "row",
-              alignItems: "center",
-              gap: 8,
-            }}
-          >
+        {/* Remember me + Forgot password */}
+        <View style={styles.row}>
+          <View style={styles.rememberMe}>
             <Checkbox
               checked={checked}
               onCheckedChange={() => setChecked(!checked)}
             />
-            <Text variant="caption" style={{ fontSize: 12 }}>
+            <Text variant="caption" style={styles.rememberText}>
               Remember me
             </Text>
           </View>
-
-          <View>
-            <Text
-              variant="caption"
-              style={[
-                {
-                  fontSize: 12,
-                  textDecorationLine: "underline",
-                  color: text,
-                },
-              ]}
-              onPress={() => {
-                router.push("/(auth)/forgotten-password");
-              }}
-            >
-              Forgot Password?
-            </Text>
-          </View>
+          <Text
+            variant="caption"
+            style={[styles.forgotText, { color: primaryColor }]}
+            onPress={() => router.push("/(auth)/forgotten-password")}
+          >
+            Forgot Password?
+          </Text>
         </View>
       </View>
 
-      {/* Submit button */}
       <Button
         style={styles.button}
         variant="default"
-        onPress={() => {
-          router.replace("/(drawer)/(tabs)/(home)");
-        }}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
       >
-        Sign In
+        {isSubmitting ? "Signing in..." : "Sign In"}
       </Button>
     </View>
   );
 }
 
-/* ─── Styles ─────────────────────────────────────────── */
-
 const styles = StyleSheet.create({
-  /** Outer wrapper — 28px gap separates the fields group from the button */
   container: {
     gap: 28,
-    alignSelf: "center",
     width: "100%",
   },
-
-  /** Sign-in button — taller than the default for emphasis */
+  fields: {
+    gap: 16,
+  },
+  fieldGroup: {
+    gap: 6,
+  },
+  input: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  inputError: {
+    borderColor: "#EF4444",
+  },
+  errorText: {
+    color: "#EF4444",
+    fontSize: 13,
+  },
+  row: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 10,
+  },
+  rememberMe: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  rememberText: {
+    fontSize: 12,
+  },
+  forgotText: {
+    fontSize: 12,
+    textDecorationLine: "underline",
+  },
   button: {
     height: 50,
   },
