@@ -44,7 +44,16 @@ export const signUpSchema = stepOneSchema
     path: ["confirmPassword"],
   });
 
+export const forgotPasswordSchema = z.object({
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Enter a valid email address")
+    .endsWith("st.ug.edu.gh", "Must be a UG institutional email"),
+});
+
 export type SignInFormData = z.infer<typeof signInSchema>;
 export type StepOneData = z.infer<typeof stepOneSchema>;
 export type StepTwoData = z.infer<typeof stepTwoSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;
+export type ForgotPasswordData = z.infer<typeof forgotPasswordSchema>;

@@ -1,37 +1,69 @@
-import { View, StyleSheet } from "react-native";
-import { Input } from "@/components/ui/input";
+import { View, StyleSheet, TextInput } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { SendHorizontal } from "lucide-react-native";
 import { router } from "expo-router";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useColor } from "@/hooks/useColor";
+import { forgotPasswordSchema, type ForgotPasswordData } from "@/schemas/auth";
 
 export function ForgottenPasswordForm() {
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const borderColor = useColor("border");
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<ForgotPasswordData>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: "" },
+  });
+
+  const onSubmit = async (data: ForgotPasswordData) => {
+    console.log("Reset link sent to:", data.email);
+    router.push("/(auth)/otp");
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.field}>
-        {/* <Text style={styles.label}>INSTITUTIONAL EMAIL</Text> */}
-
-        <Input
-          placeholder="student@ug.edu.gh"
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
+        <Controller
+          control={control}
+          name="email"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                { backgroundColor, color: textColor, borderColor },
+                errors.email && styles.inputError,
+              ]}
+              placeholder="student@ug.edu.gh"
+              placeholderTextColor="#9CA3AF"
+              keyboardType="email-address"
+              autoCapitalize="none"
+              autoCorrect={false}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
         />
+        {errors.email && (
+          <Text style={styles.errorText}>{errors.email.message}</Text>
+        )}
 
         <Button
           variant="default"
           icon={SendHorizontal}
-          onPress={() => {
-            router.push("/otp");
-          }}
+          onPress={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
         >
-          Send Reset Link
+          {isSubmitting ? "Sending..." : "Send Reset Link"}
         </Button>
       </View>
-
-      {/* <Text style={styles.helperText}>
-        We'll send a password reset link to this email address.
-      </Text> */}
     </View>
   );
 }
@@ -40,20 +72,16 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
   },
-
   field: {
     gap: 24,
   },
-
-  label: {
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.5,
+  input: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
   },
-
-  helperText: {
-    fontSize: 12,
-    opacity: 0.6,
-    lineHeight: 18,
-  },
+  inputError: { borderColor: "#EF4444" },
+  errorText: { color: "#EF4444", fontSize: 13 },
 });
