@@ -1,0 +1,38 @@
+export const places = [
+  {
+    id: "1",
+    name: "GCB Bank",
+    category: "bank",
+    description: "GCB Bank branch on campus",
+    distance: "0.4 km",
+    latitude: 5.6508,
+    longitude: -0.1869,
+  },
+  {
+    id: "2",
+    name: "Ecobank",
+    category: "bank",
+    description: "Ecobank branch near campus",
+    distance: "0.8 km",
+    latitude: 5.6515,
+    longitude: -0.1875,
+  },
+  {
+    id: "3",
+    name: "KFC",
+    category: "restaurant",
+    description: "Fast food restaurant",
+    distance: "0.5 km",
+    latitude: 5.6498,
+    longitude: -0.1859,
+  },
+  {
+    id: "4",
+    name: "UG Hospital",
+    category: "hospital",
+    description: "University hospital",
+    distance: "1.2 km",
+    latitude: 5.6521,
+    longitude: -0.1882,
+  },
+];
