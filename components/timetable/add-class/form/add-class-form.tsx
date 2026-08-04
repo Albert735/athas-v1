@@ -164,7 +164,7 @@ const styles = StyleSheet.create({
   label: { fontSize: 13, fontWeight: "500", letterSpacing: 0.1 },
   input: {
     borderWidth: 1,
-    borderRadius: 16,
+    borderRadius: 999,
     paddingHorizontal: 16,
     paddingVertical: 12,
     fontSize: 16,
