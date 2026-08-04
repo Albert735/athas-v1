@@ -51,7 +51,23 @@ export const forgotPasswordSchema = z.object({
     .email("Enter a valid email address")
     .endsWith("st.ug.edu.gh", "Must be a UG institutional email"),
 });
+export const resetPasswordSchema = z
+  .object({
+    password: z
+      .string()
+      .min(1, "Password is required")
+      .min(8, "Must be at least 8 characters")
+      .regex(/[A-Z]/, "Must contain a capital letter")
+      .regex(/[0-9]/, "Must contain a number")
+      .regex(/[^A-Za-z0-9]/, "Must contain a symbol"),
+    confirmPassword: z.string().min(1, "Please confirm your password"),
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
 
+export type ResetPasswordData = z.infer<typeof resetPasswordSchema>;
 export type SignInFormData = z.infer<typeof signInSchema>;
 export type StepOneData = z.infer<typeof stepOneSchema>;
 export type StepTwoData = z.infer<typeof stepTwoSchema>;

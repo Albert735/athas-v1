@@ -1,10 +1,4 @@
-/**
- * OTP Form Component
- * Renders a 6-digit OTP input, a verify button, and a resend code link.
- * On successful verification, navigates to the reset-password screen.
- */
 import { StyleSheet, View } from "react-native";
-
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { router } from "expo-router";
@@ -13,42 +7,61 @@ import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
 
 export function OTPForm() {
-  // Tracks the current OTP digits entered by the user
   const [otp, setOtp] = useState("");
+  const [error, setError] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Theme-aware primary color for slot borders
   const primary = useColor("primary");
+
+  const handleVerify = async () => {
+    if (otp.length < 6) {
+      setError("Please enter the full 6-digit code");
+      return;
+    }
+
+    setError("");
+    setIsSubmitting(true);
+
+    try {
+      // TODO: replace with real OTP verification call
+      console.log("Verifying OTP:", otp);
+      router.push("/(auth)/reset-password");
+    } catch (err) {
+      setError("Invalid code. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
-      {/* 6-digit OTP input — each slot is a rounded box */}
+      {/* 6-digit OTP input */}
       <View style={styles.field}>
         <InputOTP
           length={6}
           value={otp}
-          onChangeText={setOtp}
+          onChangeText={(value) => {
+            setOtp(value);
+            if (error) setError("");
+          }}
           slotStyle={{
             borderRadius: 18,
             borderWidth: 0.2,
             width: 50,
             height: 50,
-            // borderColor: primary,
+            borderColor: error ? "#EF4444" : undefined,
           }}
           showCursor={false}
           onComplete={(value) => {
             console.log("OTP Complete:", value);
           }}
         />
+        {error && <Text style={styles.errorText}>{error}</Text>}
       </View>
 
-      {/* Submit button — navigates to reset-password on press */}
-      <Button
-        variant="default"
-        onPress={() => {
-          router.push("/reset-password");
-        }}
-      >
-        Verify and Continue
+      {/* Submit button */}
+      <Button variant="default" onPress={handleVerify} disabled={isSubmitting}>
+        {isSubmitting ? "Verifying..." : "Verify and Continue"}
       </Button>
 
       {/* Resend code prompt */}
@@ -64,21 +77,18 @@ export function OTPForm() {
   );
 }
 
-// ─── Styles ─────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     width: "100%",
     gap: 24,
   },
-
   field: {
-    gap: 24,
+    gap: 12,
   },
-
-  label: {
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.5,
+  errorText: {
+    color: "#EF4444",
+    fontSize: 13,
+    textAlign: "center",
   },
   footerContainer: {
     alignItems: "center",
