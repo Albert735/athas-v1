@@ -19,6 +19,8 @@ import { router } from "expo-router";
 export default function NearByScreen() {
   const icon = useColor("icon");
   const textColor = useColor("text");
+  const primaryColor = useColor("primary");
+  const primaryForeground = useColor("primaryForeground");
   const mutedColor = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
@@ -62,8 +64,10 @@ export default function NearByScreen() {
               <Pressable
                 style={[
                   styles.chip,
-                  { backgroundColor: cardColor, borderColor },
-                  isSelected && styles.chipSelected,
+                  {
+                    backgroundColor: isSelected ? primaryColor : cardColor,
+                    borderColor: isSelected ? primaryColor : borderColor,
+                  },
                 ]}
                 onPress={() =>
                   setSelectedQuickAction(isSelected ? null : item.id)
