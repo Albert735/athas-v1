@@ -30,7 +30,7 @@ export function StepOne({ data, setData, onNext }: Props) {
     <View style={styles.container}>
       {/* Full name field */}
       <View style={styles.field}>
-        <Text style={styles.label}>FULL NAME</Text>
+        {/* <Text style={styles.label}>FULL NAME</Text> */}
 
         <Input
           placeholder="Ama Ella"
@@ -46,7 +46,7 @@ export function StepOne({ data, setData, onNext }: Props) {
 
       {/* Institutional email field */}
       <View style={styles.field}>
-        <Text style={styles.label}>INSTITUTIONAL EMAIL</Text>
+        {/* <Text style={styles.label}>INSTITUTIONAL EMAIL</Text> */}
 
         <Input
           placeholder="student@ug.edu.gh"
@@ -62,7 +62,7 @@ export function StepOne({ data, setData, onNext }: Props) {
 
       {/* University ID field */}
       <View style={styles.field}>
-        <Text style={styles.label}>UNIVERSITY ID</Text>
+        {/* <Text style={styles.label}>UNIVERSITY ID</Text> */}
 
         <Input
           placeholder="1119086"
@@ -83,9 +83,9 @@ export function StepOne({ data, setData, onNext }: Props) {
 
       {/* ── Footer ─────────────────────────────────── */}
       {/* Sign-up redirect, trust badges, and legal links */}
-      <View style={styles.footer}>
-        {/* Trust / info badges */}
-        <View style={styles.badgesContainer}>
+      {/* <View style={styles.footer}> */}
+      {/* Trust / info badges */}
+      {/* <View style={styles.badgesContainer}>
           <Badge variant="outline">
             <View style={styles.badgeContent}>
               <ShieldCheck size={14} />
@@ -93,9 +93,9 @@ export function StepOne({ data, setData, onNext }: Props) {
                 Encrypted Sessions
               </Text>
             </View>
-          </Badge>
+          </Badge> */}
 
-          <Badge variant="outline">
+      {/* <Badge variant="outline">
             <View style={styles.badgeContent}>
               <BadgeInfo size={14} />
               <Text variant="caption" style={{ fontSize: 12 }}>
@@ -103,15 +103,15 @@ export function StepOne({ data, setData, onNext }: Props) {
               </Text>
             </View>
           </Badge>
-        </View>
+        </View> */}
 
-        {/* Legal — Terms of Service & Privacy Policy */}
-        <Text variant="caption" style={styles.termsText}>
+      {/* Legal — Terms of Service & Privacy Policy */}
+      {/* <Text variant="caption" style={styles.termsText}>
           By logging in, you agree to the Athas{" "}
           <Text style={styles.signupText}>Terms of Service</Text> and{" "}
           <Text style={styles.signupText}>Privacy Policy</Text>
-        </Text>
-      </View>
+        </Text> */}
+      {/* </View> */}
     </View>
   );
 }

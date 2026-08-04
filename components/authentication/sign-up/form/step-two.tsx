@@ -26,7 +26,7 @@ export function StepTwo({ data, setData, onBack }: Props) {
     <View style={styles.container}>
       {/* Password field */}
       <View style={styles.field}>
-        <Text style={styles.label}>PASSWORD</Text>
+        {/* <Text style={styles.label}>PASSWORD</Text> */}
 
         <Input
           placeholder="Password"
@@ -43,7 +43,7 @@ export function StepTwo({ data, setData, onBack }: Props) {
 
       {/* Password confirmation field */}
       <View style={styles.field}>
-        <Text style={styles.label}>CONFIRM PASSWORD</Text>
+        {/* <Text style={styles.label}>CONFIRM PASSWORD</Text> */}
 
         <Input
           placeholder="Confirm Password"

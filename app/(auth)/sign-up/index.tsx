@@ -15,6 +15,7 @@ import { TouchableOpacity } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
+import { ShieldCheck, BadgeInfo } from "lucide-react-native";
 
 /** Consistent horizontal padding used across all sections */
 const SPACING = 30;
@@ -35,6 +36,10 @@ export default function SignUpScreen() {
   // Current form step (1 = personal info, 2 = password)
   const [step, setStep] = useState(1);
   const textColor = useColor("text");
+  const actionColor = useColor("primary");
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
+  const iconColor = useColor("icon");
 
   /**
    * Smart back navigation:
@@ -56,62 +61,107 @@ export default function SignUpScreen() {
         style={{ flex: 1 }}
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          contentContainerStyle={styles.scrollContent}
-        >
+        <View style={{ flex: 1, justifyContent: "space-between" }}>
           {/* ── Header ─────────────────────────────────── */}
-          {/* Back arrow (left) and Guest button (right) */}
-          <View style={styles.header}>
-            <TouchableOpacity
-              onPress={handleBack}
-              style={[styles.backButton]}
-              activeOpacity={0.7}
-            >
-              <Octicons name="arrow-left" size={24} color={textColor} />
-            </TouchableOpacity>
-            <Button
-              variant="default"
-              size="sm"
-              onPress={() => router.push("/guest")}
-            >
-              Guest
-            </Button>
-          </View>
-
-          {/* ── Main Content ───────────────────────────── */}
-          <View style={styles.content}>
-            {/* Hero section — branding (logo, title, tagline) */}
-            <View style={styles.hero}>
-              <Image
-                source={require("@/assets/images/icon.png")}
-                style={styles.logo}
-              />
-
-              <Text style={styles.title}>Athas</Text>
-
-              <Text style={styles.subtitle}>
-                Navigating your academic journey
-              </Text>
+          <View style={{ flex: 0, gap: 24 }}>
+            <View style={styles.header}>
+              <TouchableOpacity
+                onPress={handleBack}
+                style={[styles.backButton]}
+                activeOpacity={0.7}
+              >
+                <Octicons name="arrow-left" size={24} color={textColor} />
+              </TouchableOpacity>
+              <Button
+                variant="default"
+                size="sm"
+                onPress={() => router.push("/guest")}
+              >
+                Guest
+              </Button>
             </View>
 
-            {/* Divider — currently disabled; uncomment to re-enable */}
-            {/* <View style={styles.divider}>
-              <View style={styles.line} />
+            {/* ── Main Content ───────────────────────────── */}
+            <View style={styles.content}>
+              {/* Hero section — branding (logo, title, tagline) */}
+              <View style={styles.hero}>
+                <Image
+                  source={require("@/assets/images/icon.png")}
+                  style={styles.logo}
+                />
 
-              <Text style={styles.dividerText}>OR CONTINUE WITH EMAIL</Text>
+                <Text style={styles.title}>Athas</Text>
 
-              <View style={styles.line} />
-            </View> */}
+                <Text style={styles.subtitle}>
+                  Navigating your academic journey
+                </Text>
+              </View>
 
-            {/* ── Registration Form ────────────────────── */}
-            {/* Multi-step form: step state is passed down so the
+              {/* ── Registration Form ────────────────────── */}
+              {/* Multi-step form: step state is passed down so the
                 form can switch between StepOne and StepTwo */}
-            <View style={styles.formCard}>
-              <SignUpForm step={step} setStep={setStep} />
+              <View style={styles.formCard}>
+                <SignUpForm step={step} setStep={setStep} />
+              </View>
             </View>
           </View>
-        </ScrollView>
+          {/* Back arrow (left) and Guest button (right) */}
+
+          {/* ── Footer ─────────────────────────────────── */}
+          {/* Sign-up redirect, trust badges, and legal links */}
+          <View style={styles.footer}>
+            {/* Sign-up prompt */}
+            <Text variant="caption" style={{ fontSize: 12 }}>
+              Don&apos;t have an account?{" "}
+              <Text
+                variant="caption"
+                style={[styles.signupText, { color: actionColor }]}
+                onPress={() => router.push("/(auth)/sign-up")}
+              >
+                Sign Up
+              </Text>
+            </Text>
+
+            {/* Trust / info badges */}
+            <View style={styles.badgesContainer}>
+              <View
+                style={[
+                  styles.badgeContent,
+                  { backgroundColor: cardColor, borderColor },
+                ]}
+              >
+                <ShieldCheck size={14} color={iconColor} />
+                <Text variant="caption" style={{ fontSize: 12 }}>
+                  Encrypted Sessions
+                </Text>
+              </View>
+
+              <View
+                style={[
+                  styles.badgeContent,
+                  { backgroundColor: cardColor, borderColor },
+                ]}
+              >
+                <BadgeInfo size={14} color={iconColor} />
+                <Text variant="caption" style={{ fontSize: 12 }}>
+                  v0.01
+                </Text>
+              </View>
+            </View>
+
+            {/* Legal — Terms of Service & Privacy Policy */}
+            <Text variant="caption" style={styles.termsText}>
+              By logging in, you agree to the Athas{" "}
+              <Text style={[styles.signupText, { color: actionColor }]}>
+                Terms of Service
+              </Text>{" "}
+              and{" "}
+              <Text style={[styles.signupText, { color: actionColor }]}>
+                Privacy Policy
+              </Text>
+            </Text>
+          </View>
+        </View>
       </KeyboardAvoidingView>
     </SafeAreaView>
   );
@@ -233,12 +283,17 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
+    borderRadius: 999,
+    paddingHorizontal: 12,
+    borderWidth: 1,
+    maxWidth: 200,
+    minHeight: 40,
+    justifyContent: "center",
   },
 
   /** Fine-print legal text */
   termsText: {
     textAlign: "center",
-    opacity: 0.7,
     lineHeight: 20,
     fontSize: 12,
   },
