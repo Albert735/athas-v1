@@ -2,7 +2,7 @@ import React from "react";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
-import { NotificationList } from "@/components/notifications/NotificationList";
+import { NotificationList } from "@/components/notifications/notification-list";
 import { useNotifications } from "@/hooks/useNotifications";
 import { useColor } from "@/hooks/useColor";
 

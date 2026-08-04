@@ -1,7 +1,7 @@
 import { FlatList, StyleProp, ViewStyle, Text, View } from "react-native";
 
 import type { Notification } from "@/api/types/notification";
-import { NotificationCard } from "./NotificationCard";
+import { NotificationCard } from "./notification-card";
 
 interface Props {
   notifications: Notification[];
