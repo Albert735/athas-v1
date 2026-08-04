@@ -11,17 +11,21 @@ export const signInSchema = z.object({
     .min(8, "Password must be at least 8 characters"),
 });
 
-export type SignInFormData = z.infer<typeof signInSchema>;
-// console.log(signInSchema);
+export const stepOneSchema = z.object({
+  fullName: z.string().min(1, "Full name is required"),
+  email: z
+    .string()
+    .min(1, "Email is required")
+    .email("Enter a valid email address")
+    .endsWith("ug.edu.gh", "Must be a UG institutional email"),
+  universityId: z
+    .string()
+    .min(1, "University ID is required")
+    .regex(/^\d+$/, "University ID must be numeric"),
+});
 
-export const signUpSchema = z
+export const stepTwoSchema = z
   .object({
-    firstName: z.string().min(1, "First name is required"),
-    lastName: z.string().min(1, "Last name is required"),
-    email: z
-      .string()
-      .min(1, "Email is required")
-      .email("Enter a valid email address"),
     password: z
       .string()
       .min(1, "Password is required")
@@ -33,4 +37,14 @@ export const signUpSchema = z
     path: ["confirmPassword"],
   });
 
+export const signUpSchema = stepOneSchema
+  .merge(stepTwoSchema.innerType())
+  .refine((data) => data.password === data.confirmPassword, {
+    message: "Passwords do not match",
+    path: ["confirmPassword"],
+  });
+
+export type SignInFormData = z.infer<typeof signInSchema>;
+export type StepOneData = z.infer<typeof stepOneSchema>;
+export type StepTwoData = z.infer<typeof stepTwoSchema>;
 export type SignUpFormData = z.infer<typeof signUpSchema>;

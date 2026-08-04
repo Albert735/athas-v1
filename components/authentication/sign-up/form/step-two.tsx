@@ -1,100 +1,113 @@
-import { View, StyleSheet } from "react-native";
-
+import { View, StyleSheet, TextInput } from "react-native";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Text } from "@/components/ui/text";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useColor } from "@/hooks/useColor";
 import { router } from "expo-router";
+import { stepTwoSchema, type StepTwoData } from "@/schemas/auth";
 
-/** Props received from the parent SignUpForm orchestrator */
 type Props = {
-  data: any; // Current form data object
-  setData: any; // State updater for the shared form data
-  onBack: () => void; // Callback to return to step 1
+  stepOneData: any;
+  onBack: () => void;
 };
 
-/**
- * StepTwo — Second (final) step of the sign-up flow.
- *
- * Collects the user's password and a confirmation entry.
- * Both inputs use `secureTextEntry` to mask characters.
- *
- * TODO: Add password validation (min length, matching check)
- * before allowing the "Create Account" submission.
- */
-export function StepTwo({ data, setData, onBack }: Props) {
+export function StepTwo({ stepOneData, onBack }: Props) {
+  const backgroundColor = useColor("background");
+  const textColor = useColor("text");
+  const borderColor = useColor("border");
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<StepTwoData>({
+    resolver: zodResolver(stepTwoSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  });
+
+  const onSubmit = async (data: StepTwoData) => {
+    const fullData = { ...stepOneData, ...data };
+    console.log("Full sign up data:", fullData);
+    router.push("/(auth)/profile-setup");
+  };
+
   return (
     <View style={styles.container}>
-      {/* Password field */}
+      {/* Password */}
       <View style={styles.field}>
-        {/* <Text style={styles.label}>PASSWORD</Text> */}
-
-        <Input
-          placeholder="Password"
-          secureTextEntry
-          value={data.password}
-          onChangeText={(text) =>
-            setData((prev: any) => ({
-              ...prev,
-              password: text,
-            }))
-          }
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                { backgroundColor, color: textColor, borderColor },
+                errors.password && styles.inputError,
+              ]}
+              placeholder="Min. 8 characters"
+              placeholderTextColor="#9CA3AF"
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
         />
+        {errors.password && (
+          <Text style={styles.errorText}>{errors.password.message}</Text>
+        )}
       </View>
 
-      {/* Password confirmation field */}
+      {/* Confirm Password */}
       <View style={styles.field}>
-        {/* <Text style={styles.label}>CONFIRM PASSWORD</Text> */}
-
-        <Input
-          placeholder="Confirm Password"
-          secureTextEntry
-          value={data.confirmPassword}
-          onChangeText={(text) =>
-            setData((prev: any) => ({
-              ...prev,
-              confirmPassword: text,
-            }))
-          }
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                { backgroundColor, color: textColor, borderColor },
+                errors.confirmPassword && styles.inputError,
+              ]}
+              placeholder="Confirm password"
+              placeholderTextColor="#9CA3AF"
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
         />
+        {errors.confirmPassword && (
+          <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>
+        )}
       </View>
 
-      {/* Submit button — triggers account creation */}
       <Button
         style={styles.button}
-        onPress={() => {
-          router.push("/profile-setup");
-        }}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
       >
-        Create Account
+        {isSubmitting ? "Creating account..." : "Create Account"}
       </Button>
     </View>
   );
 }
 
-/* ─── Styles ─────────────────────────────────────────── */
-
 const styles = StyleSheet.create({
-  /** Vertical stack with consistent spacing between fields */
-  container: {
-    gap: 20,
+  container: { gap: 20 },
+  field: { gap: 6 },
+  input: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
   },
-
-  /** Individual field wrapper — label + input pair */
-  field: {
-    gap: 8,
-  },
-
-  /** Uppercase label styling for form field headers */
-  label: {
-    fontSize: 12,
-    fontWeight: "600",
-    letterSpacing: 0.5,
-  },
-
-  /** "Create Account" button — extra bottom margin for scroll padding */
-  button: {
-    height: 50,
-    marginTop: 12,
-    marginBottom: 32,
-  },
+  inputError: { borderColor: "#EF4444" },
+  errorText: { color: "#EF4444", fontSize: 13 },
+  button: { height: 50, marginTop: 12, marginBottom: 32 },
 });
