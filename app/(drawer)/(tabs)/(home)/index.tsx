@@ -24,6 +24,7 @@ export default function HomeScreen() {
     null,
   );
   const [searchQuery, setSearchQuery] = useState("");
+  const [loading, setLoading] = useState(false);
   const suggestions = [
     "React Native",
     "React Navigation",
@@ -38,6 +39,14 @@ export default function HomeScreen() {
   ];
   const handleSearch = (query: string) => {
     console.log("Searching for:", query);
+    if (query.trim()) {
+      setLoading(true);
+      // Simulate API call
+      setTimeout(() => {
+        setLoading(false);
+        console.log("Search completed for:", query);
+      }, 2000);
+    }
   };
   const handleSuggestionPress = (suggestion: string) => {
     setSearchQuery(suggestion);
@@ -97,7 +106,7 @@ export default function HomeScreen() {
             onSearch={handleSearch}
             suggestions={suggestions}
             onSuggestionPress={handleSuggestionPress}
-            loading={true}
+            loading={loading}
             rightIcon={<Mic size={18} color={icon} />}
           />
         </View>
