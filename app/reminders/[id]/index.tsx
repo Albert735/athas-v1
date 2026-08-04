@@ -98,10 +98,7 @@ export default function ReminderDetailScreen() {
 
       {/* Start Navigation */}
       <View style={styles.footer}>
-        <Button
-          icon={Navigation}
-          onPress={() => router.navigate("/(drawer)/(tabs)/(map)")}
-        >
+        <Button icon={Navigation} onPress={() => router.navigate("/map")}>
           <Text style={styles.navButtonText}>Start Navigation</Text>
         </Button>
       </View>

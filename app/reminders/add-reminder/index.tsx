@@ -2,30 +2,41 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   TextInput,
   Switch,
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-import { MapPin, Calendar, Bell, Mic } from "lucide-react-native";
-import { useState } from "react";
+import { MapPin, Bell, Mic } from "lucide-react-native";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/components/ui/toast";
 import { Header } from "@/components/shared/screen/header";
 import { DatePicker } from "@/components/ui/date-picker";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { addReminderSchema, type AddReminderData } from "@/schemas/reminder";
 
 export default function AddReminderScreen() {
   const { building } = useLocalSearchParams<{ building?: string }>();
-  const [note, setNote] = useState(building ? `Visit ${building}` : "");
-  const [dateTime, setDateTime] = useState<Date | undefined>();
-  const [alertNearby, setAlertNearby] = useState(true);
   const icon = useColor("icon");
-  const selectedBuilding = building || "Mensah Sarbah Hall";
   const { toast } = useToast();
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<AddReminderData>({
+    resolver: zodResolver(addReminderSchema),
+    defaultValues: {
+      note: building ? `Visit ${building}` : "",
+      building: building || "",
+      dateTime: undefined,
+      alertNearby: true,
+    },
+  });
 
   const showToast = () => {
     toast({
@@ -35,9 +46,14 @@ export default function AddReminderScreen() {
     });
   };
 
+  const onSubmit = async (data: AddReminderData) => {
+    console.log("Reminder data:", data);
+    router.back();
+    showToast();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
       <Header title="Reminder" variant="solid" />
 
       <ScrollView
@@ -56,75 +72,108 @@ export default function AddReminderScreen() {
         {/* Reminder Note */}
         <View style={styles.field}>
           <Text style={styles.label}>Reminder Note</Text>
-          <TextInput
-            style={styles.textArea}
-            placeholder="eg. Intro to Computer Science"
-            placeholderTextColor="#9CA3AF"
-            multiline
-            numberOfLines={4}
-            value={note}
-            onChangeText={setNote}
-            textAlignVertical="top"
+          <Controller
+            control={control}
+            name="note"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <TextInput
+                style={[styles.textArea, errors.note && styles.inputError]}
+                placeholder="eg. Intro to Computer Science"
+                placeholderTextColor="#9CA3AF"
+                multiline
+                numberOfLines={4}
+                value={value}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                textAlignVertical="top"
+              />
+            )}
           />
+          {errors.note && (
+            <Text style={styles.errorText}>{errors.note.message}</Text>
+          )}
         </View>
 
         {/* Select Location */}
         <View style={styles.field}>
           <Text style={styles.label}>Select Location</Text>
-          <SearchBar
-            placeholder="Search campus buildings..."
-            onSearch={(query) => console.log(query)}
-            loading={false}
-            rightIcon={<Mic size={18} color={icon} />}
+          <Controller
+            control={control}
+            name="building"
+            render={({ field: { onChange, value } }) => (
+              <>
+                <SearchBar
+                  placeholder="Search campus buildings..."
+                  onSearch={(query) => onChange(query)}
+                  loading={false}
+                  rightIcon={<Mic size={18} color={icon} />}
+                />
+                {errors.building && (
+                  <Text style={styles.errorText}>
+                    {errors.building.message}
+                  </Text>
+                )}
+                <View style={styles.mapPreview}>
+                  <View style={styles.mapPlaceholder} />
+                  <View style={styles.locationPill}>
+                    <MapPin size={13} color="#374151" />
+                    <Text style={styles.locationText}>
+                      {value || "No location selected"}
+                    </Text>
+                  </View>
+                </View>
+              </>
+            )}
           />
-
-          {/* Map Preview */}
-          <View style={styles.mapPreview}>
-            <View style={styles.mapPlaceholder} />
-            <View style={styles.locationPill}>
-              <MapPin size={13} color="#374151" />
-              <Text style={styles.locationText}>{selectedBuilding}</Text>
-            </View>
-          </View>
         </View>
 
         {/* Set Alert */}
         <View style={styles.field}>
-          <DatePicker
-            label="Date"
-            mode="datetime"
-            value={dateTime}
-            onChange={setDateTime}
-            placeholder="Select date and time"
-            timeFormat="12"
+          <Controller
+            control={control}
+            name="dateTime"
+            render={({ field: { onChange, value } }) => (
+              <DatePicker
+                label="Date"
+                mode="datetime"
+                value={value}
+                onChange={onChange}
+                placeholder="Select date and time"
+                timeFormat="12"
+              />
+            )}
           />
+          {errors.dateTime && (
+            <Text style={styles.errorText}>{errors.dateTime.message}</Text>
+          )}
         </View>
 
         {/* Alert Nearby */}
         <View style={styles.field}>
-          <View style={styles.alertRow}>
-            <View style={styles.alertLeft}>
-              <Bell size={18} color="#6B7280" />
-              <Text style={styles.alertValue}>Alert me when nearby</Text>
-            </View>
-            <Switch
-              value={alertNearby}
-              onValueChange={setAlertNearby}
-              thumbColor="#FFFFFF"
-            />
-          </View>
+          <Controller
+            control={control}
+            name="alertNearby"
+            render={({ field: { onChange, value } }) => (
+              <View style={styles.alertRow}>
+                <View style={styles.alertLeft}>
+                  <Bell size={18} color="#6B7280" />
+                  <Text style={styles.alertValue}>Alert me when nearby</Text>
+                </View>
+                <Switch
+                  value={value}
+                  onValueChange={onChange}
+                  thumbColor="#FFFFFF"
+                />
+              </View>
+            )}
+          />
         </View>
       </ScrollView>
 
       {/* Create Button */}
       <View style={styles.footer}>
-        <Button
-          onPress={() => {
-            router.back();
-            showToast();
-          }}
-        >
-          Create Reminder
+        <Button onPress={handleSubmit(onSubmit)} disabled={isSubmitting}>
+          {isSubmitting ? "Creating..." : "Create Reminder"}
         </Button>
       </View>
     </SafeAreaView>
@@ -136,43 +185,17 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#F9FAFB",
   },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    paddingHorizontal: 20,
-    paddingVertical: 14,
-    borderBottomWidth: 1,
-    borderBottomColor: "#E5E7EB",
-  },
-  headerTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#111827",
-  },
-  scroll: {
-    flex: 1,
-  },
-  scrollContent: {
-    padding: 20,
-    gap: 24,
-  },
-  titleBlock: {
-    gap: 4,
-  },
+  scroll: { flex: 1 },
+  scrollContent: { padding: 20, gap: 24 },
+  titleBlock: { gap: 4 },
   title: {
     fontSize: 26,
     fontWeight: "700",
     color: "#111827",
     letterSpacing: -0.5,
   },
-  subtitle: {
-    fontSize: 14,
-    color: "#6B7280",
-  },
-  field: {
-    gap: 8,
-  },
+  subtitle: { fontSize: 14, color: "#6B7280" },
+  field: { gap: 8 },
   label: {
     fontSize: 13,
     fontWeight: "500",
@@ -190,6 +213,8 @@ const styles = StyleSheet.create({
     color: "#111827",
     minHeight: 100,
   },
+  inputError: { borderColor: "#EF4444" },
+  errorText: { color: "#EF4444", fontSize: 13 },
   mapPreview: {
     borderRadius: 30,
     overflow: "hidden",
@@ -225,40 +250,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 14,
   },
-  alertLeft: {
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 12,
-  },
-  alertLabel: {
-    fontSize: 10,
-    fontWeight: "600",
-    color: "#9CA3AF",
-    letterSpacing: 0.8,
-  },
-  alertValue: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#111827",
-  },
-  editText: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#3B82F6",
-  },
-  footer: {
-    padding: 20,
-  },
-  createButton: {
-    height: 54,
-    backgroundColor: "#111827",
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  createButtonText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
+  alertLeft: { flexDirection: "row", alignItems: "center", gap: 12 },
+  alertValue: { fontSize: 15, fontWeight: "500", color: "#111827" },
+  footer: { padding: 20 },
 });
