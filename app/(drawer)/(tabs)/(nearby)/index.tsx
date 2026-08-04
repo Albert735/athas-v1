@@ -102,6 +102,7 @@ export default function NearByScreen() {
               { backgroundColor: cardColor, borderColor },
               pressed && { opacity: 0.95 },
             ]}
+            onPress={() => router.push(`/building/${item.id}`)}
           >
             {/* Image + badge */}
             <View>
