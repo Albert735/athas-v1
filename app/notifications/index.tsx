@@ -13,8 +13,8 @@ export default function NotificationsScreen() {
     useNotifications();
 
   const backgroundColor = useColor("background");
+  const activeColor = useColor("primary");
   const cardColor = useColor("card");
-  const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
 
@@ -25,21 +25,25 @@ export default function NotificationsScreen() {
       <View style={styles.filters}>
         {FILTERS.map((item) => {
           const active = filter === item;
+
           return (
             <Pressable
               key={item}
               onPress={() => setFilter(item)}
               style={[
                 styles.pill,
-                { backgroundColor: cardColor, borderColor },
-                active && styles.activePill,
+                {
+                  backgroundColor: active ? activeColor : cardColor,
+                  borderColor: active ? activeColor : borderColor,
+                },
               ]}
             >
               <Text
                 style={[
                   styles.pillText,
-                  { color: mutedColor },
-                  active && styles.activeText,
+                  {
+                    color: active ? "#FFFFFF" : mutedColor,
+                  },
                 ]}
               >
                 {item}
@@ -62,6 +66,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
   filters: {
     flexDirection: "row",
     alignItems: "center",
@@ -69,21 +74,16 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     gap: 10,
   },
+
   pill: {
     paddingHorizontal: 16,
     paddingVertical: 8,
     borderRadius: 999,
     borderWidth: 1,
   },
-  activePill: {
-    backgroundColor: "#111827",
-    borderColor: "#111827",
-  },
+
   pillText: {
     fontSize: 14,
     fontWeight: "500",
-  },
-  activeText: {
-    color: "#FFFFFF",
   },
 });
