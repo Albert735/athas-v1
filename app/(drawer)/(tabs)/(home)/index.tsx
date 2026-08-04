@@ -44,7 +44,10 @@ export default function HomeScreen() {
     <View style={[styles.root, { backgroundColor }]}>
       {/* Map — top half, sits behind everything */}
       <View
-        style={[styles.mapContainer, { height: MAP_HEIGHT, backgroundColor }]}
+        style={[
+          styles.mapContainer,
+          { height: MAP_HEIGHT, backgroundColor: primaryColor },
+        ]}
       >
         {/* Replace with your Mapbox component */}
       </View>
