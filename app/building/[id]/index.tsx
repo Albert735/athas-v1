@@ -29,6 +29,8 @@ import { Header } from "@/components/shared/screen/header";
 import { StatusBar } from "expo-status-bar";
 import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
+import { places } from "@/data/places";
+import { categoryImages } from "@/data/category-images";
 
 interface FacilityItem {
   id: string;
@@ -52,6 +54,8 @@ function getBuildingStatus(): OperatingStatus {
 
 export default function BuildingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
+  const place = places.find((p) => p.id === id);
+
   const status = getBuildingStatus();
   const [isFavorited, setIsFavorited] = useState(false);
 
@@ -121,12 +125,21 @@ export default function BuildingDetailsScreen() {
     });
   };
 
+  if (!place) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor }]}>
+        <Header title="Not Found" showBack />
+        <Text style={{ padding: 20, color: mutedColor }}>Place not found.</Text>
+      </SafeAreaView>
+    );
+  }
+
   return (
     <ParallaxScrollView
       headerHeight={460}
       headerImage={
         <Image
-          source={require("@/assets/images/building-1.jpg")}
+          source={categoryImages[place.category] ?? categoryImages.library}
           style={{ position: "relative", width: "100%", height: "100%" }}
           contentFit="cover"
         />
@@ -135,7 +148,7 @@ export default function BuildingDetailsScreen() {
         <>
           <StatusBar style="light" translucent backgroundColor="transparent" />
           <SafeAreaView edges={["top"]}>
-            <Header title="Building Details" variant="transparent" />
+            <Header title={place.name} variant="transparent" />
           </SafeAreaView>
         </>
       }
@@ -203,8 +216,7 @@ export default function BuildingDetailsScreen() {
         </View>
         {/* Description */}
         <Text style={[styles.description, { color: mutedColor }]}>
-          The main hub for Faculty of Computing and Information Technology
-          (FCIT). Student Affairs, lecture halls, and academic resources.
+          {place.description}
         </Text>
         {/* Carousel */}
         <FlatList
