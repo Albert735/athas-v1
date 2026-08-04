@@ -1,77 +1,129 @@
-/**
- * Reset Password Form Component
- * Renders new-password and confirm-password fields, password requirement
- * badges, an update button, and a support link.
- * On submit, navigates back to the sign-in screen.
- */
-import { StyleSheet, View, FlatList } from "react-native";
-
-import { Input } from "@/components/ui/input";
+import { StyleSheet, View, TextInput } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { router } from "expo-router";
 import { Badge } from "@/components/ui/badge";
 import { useColor } from "@/hooks/useColor";
+import { useForm, Controller } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { resetPasswordSchema, type ResetPasswordData } from "@/schemas/auth";
 
-/** Shape of each password validation rule displayed as a badge */
 interface PasswordRequirement {
   label: string;
+  test: (password: string) => boolean;
 }
 
-/** List of password rules shown below the new-password input */
 const PASSWORD_REQUIREMENTS: PasswordRequirement[] = [
-  { label: "8+ Characters" },
-  { label: "Capital Letter" },
-  { label: "Number" },
-  { label: "One Symbol" },
+  { label: "8+ Characters", test: (p) => p.length >= 8 },
+  { label: "Capital Letter", test: (p) => /[A-Z]/.test(p) },
+  { label: "Number", test: (p) => /[0-9]/.test(p) },
+  { label: "One Symbol", test: (p) => /[^A-Za-z0-9]/.test(p) },
 ];
 
 export function ResetPasswordForm() {
   const textColor = useColor("text");
   const primary = useColor("primary");
+  const backgroundColor = useColor("background");
+  const borderColor = useColor("border");
+
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting },
+  } = useForm<ResetPasswordData>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: { password: "", confirmPassword: "" },
+  });
+
+  const passwordValue = watch("password");
+
+  const onSubmit = async (data: ResetPasswordData) => {
+    console.log("Password reset:", data);
+    router.push("/(auth)/sign-in");
+  };
 
   return (
     <View style={styles.container}>
-      {/* New password input */}
+      {/* New password */}
       <View style={styles.field}>
         <Text style={styles.label}>NEW PASSWORD</Text>
-        <Input placeholder="••••••••" />
+        <Controller
+          control={control}
+          name="password"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                { backgroundColor, color: textColor, borderColor },
+                errors.password && styles.inputError,
+              ]}
+              placeholder="••••••••"
+              placeholderTextColor="#9CA3AF"
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.password && (
+          <Text style={styles.errorText}>{errors.password.message}</Text>
+        )}
       </View>
 
-      {/* Password requirement badges — rendered from the typed array */}
+      {/* Password requirement badges — now reactive to input */}
       <View style={styles.passwordRequirements}>
-        {PASSWORD_REQUIREMENTS.map((req) => (
-          <Badge
-            key={req.label}
-            variant="outline"
-            style={{
-              paddingHorizontal: 16,
-              paddingVertical: 8,
-            }}
-            textStyle={{ fontSize: 12 }}
-          >
-            {req.label}
-          </Badge>
-        ))}
+        {PASSWORD_REQUIREMENTS.map((req) => {
+          const met = req.test(passwordValue || "");
+          return (
+            <Badge
+              key={req.label}
+              variant={met ? "default" : "outline"}
+              style={{ paddingHorizontal: 16, paddingVertical: 8 }}
+              textStyle={{ fontSize: 12 }}
+            >
+              {req.label}
+            </Badge>
+          );
+        })}
       </View>
 
-      {/* Confirm password input */}
+      {/* Confirm password */}
       <View style={styles.field}>
         <Text style={styles.label}>CONFIRM PASSWORD</Text>
-        <Input placeholder="••••••••" />
+        <Controller
+          control={control}
+          name="confirmPassword"
+          render={({ field: { onChange, onBlur, value } }) => (
+            <TextInput
+              style={[
+                styles.input,
+                { backgroundColor, color: textColor, borderColor },
+                errors.confirmPassword && styles.inputError,
+              ]}
+              placeholder="••••••••"
+              placeholderTextColor="#9CA3AF"
+              secureTextEntry
+              onBlur={onBlur}
+              onChangeText={onChange}
+              value={value}
+            />
+          )}
+        />
+        {errors.confirmPassword && (
+          <Text style={styles.errorText}>{errors.confirmPassword.message}</Text>
+        )}
       </View>
 
-      {/* Submit button — navigates to sign-in on success */}
       <Button
         variant="default"
-        onPress={() => {
-          router.push("/sign-in");
-        }}
+        onPress={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
       >
-        Update Password
+        {isSubmitting ? "Updating..." : "Update Password"}
       </Button>
 
-      {/* Support link for users having trouble */}
       <Text style={[styles.footerText, { color: textColor }]}>
         Having trouble?{" "}
         <Text style={[styles.footerLinkText, { color: primary }]}>
@@ -82,23 +134,28 @@ export function ResetPasswordForm() {
   );
 }
 
-// ─── Styles ─────────────────────────────────────────────
 const styles = StyleSheet.create({
   container: {
     width: "100%",
     gap: 24,
   },
-
   field: {
     gap: 8,
   },
-
   label: {
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.5,
   },
-
+  input: {
+    borderWidth: 1,
+    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    fontSize: 16,
+  },
+  inputError: { borderColor: "#EF4444" },
+  errorText: { color: "#EF4444", fontSize: 13 },
   passwordRequirements: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -109,14 +166,12 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     letterSpacing: 0.5,
     textAlign: "center",
-    color: "#333",
   },
   footerLinkText: {
     fontSize: 12,
     fontWeight: "600",
     letterSpacing: 0.5,
     textAlign: "center",
-    color: "#333",
     textDecorationLine: "underline",
   },
 });
