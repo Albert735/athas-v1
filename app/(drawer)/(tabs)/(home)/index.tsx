@@ -10,7 +10,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Menu, Mic, MapPin } from "lucide-react-native";
-import { SearchBar } from "@/components/ui/searchbar";
+import { SearchBarWithSuggestions } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { popularPlaces } from "@/data/popular-places";
 import { quickActions } from "@/data/quick-actions";
@@ -23,6 +23,26 @@ export default function HomeScreen() {
   const [selectedQuickAction, setSelectedQuickAction] = useState<string | null>(
     null,
   );
+  const [searchQuery, setSearchQuery] = useState("");
+  const suggestions = [
+    "React Native",
+    "React Navigation",
+    "React Hook Form",
+    "Redux Toolkit",
+    "Expo Router",
+    "TypeScript",
+    "JavaScript",
+    "Node.js",
+    "Next.js",
+    "Tailwind CSS",
+  ];
+  const handleSearch = (query: string) => {
+    console.log("Searching for:", query);
+  };
+  const handleSuggestionPress = (suggestion: string) => {
+    setSearchQuery(suggestion);
+    handleSearch(suggestion);
+  };
   const icon = useColor("icon");
   const navigation = useNavigation();
 
@@ -70,10 +90,14 @@ export default function HomeScreen() {
 
         {/* Search */}
         <View style={styles.searchRow}>
-          <SearchBar
+          <SearchBarWithSuggestions
             placeholder="Search for anything..."
-            onSearch={(query) => console.log(query)}
-            loading={false}
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSearch={handleSearch}
+            suggestions={suggestions}
+            onSuggestionPress={handleSuggestionPress}
+            loading={true}
             rightIcon={<Mic size={18} color={icon} />}
           />
         </View>
