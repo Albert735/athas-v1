@@ -4,9 +4,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { Mic, MapPin } from "lucide-react-native";
-import { popularPlaces } from "@/data/popular-places";
+import { places } from "@/data/places";
+import { categoryImages } from "@/data/category-images";
 import { Image } from "expo-image";
 import { router } from "expo-router";
+import { useState, useMemo } from "react";
 
 export default function PopularPlaces() {
   const icon = useColor("icon");
@@ -16,24 +18,40 @@ export default function PopularPlaces() {
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
 
+  const [query, setQuery] = useState("");
+
+  const filtered = useMemo(() => {
+    if (!query.trim()) return places;
+    return places.filter((item) =>
+      item.name.toLowerCase().includes(query.toLowerCase()),
+    );
+  }, [query]);
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       <Header title="Popular Places" showBack={true} />
       <View style={styles.searchContainer}>
         <SearchBar
           placeholder="Search for anything..."
-          onSearch={(query) => console.log(query)}
+          onSearch={setQuery}
           loading={false}
           rightIcon={<Mic size={18} color={icon} />}
         />
       </View>
       <FlatList
-        data={popularPlaces}
+        data={filtered}
         keyExtractor={(item) => item.id}
         numColumns={2}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.listContent}
         columnWrapperStyle={styles.row}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text style={[styles.emptyText, { color: mutedColor }]}>
+              No places found
+            </Text>
+          </View>
+        }
         renderItem={({ item }) => (
           <Pressable
             onPress={() => router.push(`/building/${item.id}`)}
@@ -43,37 +61,11 @@ export default function PopularPlaces() {
               pressed && { opacity: 0.9 },
             ]}
           >
-            <View>
-              <Image
-                source={item.image}
-                style={styles.cardImage}
-                contentFit="cover"
-              />
-              {/* Open/Closed badge */}
-              <View
-                style={[
-                  styles.statusBadge,
-                  item.isOpen ? styles.statusOpen : styles.statusClosed,
-                ]}
-              >
-                <View
-                  style={[
-                    styles.statusDot,
-                    item.isOpen ? styles.statusDotOpen : styles.statusDotClosed,
-                  ]}
-                />
-                <Text
-                  style={[
-                    styles.statusText,
-                    item.isOpen
-                      ? styles.statusTextOpen
-                      : styles.statusTextClosed,
-                  ]}
-                >
-                  {item.isOpen ? "Open" : "Closed"}
-                </Text>
-              </View>
-            </View>
+            <Image
+              source={categoryImages[item.category] ?? categoryImages.library}
+              style={styles.cardImage}
+              contentFit="cover"
+            />
 
             <View style={styles.cardBody}>
               <Text style={[styles.cardName, { color: textColor }]}>
@@ -100,89 +92,22 @@ export default function PopularPlaces() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  listContent: {
-    paddingHorizontal: 20,
-    paddingBottom: 120,
-    gap: 16,
-  },
-  searchContainer: {
-    marginBottom: 16,
-    paddingHorizontal: 20,
-  },
-  row: {
-    justifyContent: "space-between",
-    gap: 12,
-  },
-  card: {
-    flex: 1,
-    borderRadius: 16,
-    overflow: "hidden",
-    borderWidth: 1,
-  },
-  cardImage: {
-    width: "100%",
-    height: 110,
-  },
-  statusBadge: {
-    position: "absolute",
-    top: 8,
-    right: 8,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 4,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 20,
-  },
-  statusOpen: {
-    backgroundColor: "rgba(209, 250, 229, 0.95)",
-  },
-  statusClosed: {
-    backgroundColor: "rgba(254, 226, 226, 0.95)",
-  },
-  statusDot: {
-    width: 6,
-    height: 6,
-    borderRadius: 3,
-  },
-  statusDotOpen: {
-    backgroundColor: "#059669",
-  },
-  statusDotClosed: {
-    backgroundColor: "#DC2626",
-  },
-  statusText: {
-    fontSize: 11,
-    fontWeight: "600",
-  },
-  statusTextOpen: {
-    color: "#065F46",
-  },
-  statusTextClosed: {
-    color: "#991B1B",
-  },
-  cardBody: {
-    padding: 12,
-    gap: 4,
-  },
-  cardName: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-  cardDescription: {
-    fontSize: 12,
-    lineHeight: 17,
-  },
+  container: { flex: 1 },
+  listContent: { paddingHorizontal: 20, paddingBottom: 120, gap: 16 },
+  searchContainer: { marginBottom: 16, paddingHorizontal: 20 },
+  row: { justifyContent: "space-between", gap: 12 },
+  empty: { flex: 1, alignItems: "center", paddingTop: 60 },
+  emptyText: { fontSize: 14 },
+  card: { flex: 1, borderRadius: 16, overflow: "hidden", borderWidth: 1 },
+  cardImage: { width: "100%", height: 110 },
+  cardBody: { padding: 12, gap: 4 },
+  cardName: { fontSize: 14, fontWeight: "600" },
+  cardDescription: { fontSize: 12, lineHeight: 17 },
   cardFooter: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     marginTop: 6,
   },
-  cardDistance: {
-    fontSize: 12,
-  },
+  cardDistance: { fontSize: 12 },
 });

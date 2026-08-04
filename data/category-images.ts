@@ -1,0 +1,15 @@
+export const categoryImages: Record<string, any> = {
+  bank: require("@/assets/images/categories/bank.jpg"),
+  library: require("@/assets/images/categories/library.jpg"),
+  clinic: require("@/assets/images/categories/clinic.jpg"),
+  restroom: require("@/assets/images/categories/restroom.jpg"),
+  lab: require("@/assets/images/categories/lab.jpg"),
+  "lecture-hall": require("@/assets/images/categories/lecture-hall.jpg"),
+  gym: require("@/assets/images/categories/gym.jpg"),
+  cafeteria: require("@/assets/images/categories/cafeteria.jpg"),
+  coffee: require("@/assets/images/categories/coffee.jpg"),
+  shuttle: require("@/assets/images/categories/shuttle.jpg"),
+  printing: require("@/assets/images/categories/printing.jpg"),
+  atm: require("@/assets/images/categories/atm.jpg"),
+  office: require("@/assets/images/categories/office.jpg"),
+};

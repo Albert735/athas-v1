@@ -19,23 +19,13 @@ import { useState } from "react";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
+import { categoryImages } from "@/data/category-images";
 
 export default function HomeScreen() {
   const [selectedQuickAction, setSelectedQuickAction] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");
   const [loading, setLoading] = useState(false);
-  const suggestions = [
-    "React Native",
-    "React Navigation",
-    "React Hook Form",
-    "Redux Toolkit",
-    "Expo Router",
-    "TypeScript",
-    "JavaScript",
-    "Node.js",
-    "Next.js",
-    "Tailwind CSS",
-  ];
+  const suggestions = places.map((place) => place.name);
   const handleSearch = (query: string) => {
     console.log("Searching for:", query);
     if (query.trim()) {
@@ -179,26 +169,32 @@ export default function HomeScreen() {
           data={filteredPlaces}
           keyExtractor={(item) => item.id}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.placesContent}
+          contentContainerStyle={[
+            styles.placesContent,
+            { paddingBottom: bottomInset },
+          ]}
           renderItem={({ item }) => (
             <Pressable
               style={[styles.card, { backgroundColor: cardColor, borderColor }]}
+              onPress={() => router.push(`/building/${item.id}`)}
             >
+              <Image
+                source={categoryImages[item.category]}
+                style={styles.cardImage}
+                contentFit="cover"
+              />
               <View style={styles.cardBody}>
                 <Text style={[styles.cardName, { color: textColor }]}>
                   {item.name}
                 </Text>
-
                 <Text
                   style={[styles.cardDescription, { color: textMuted }]}
                   numberOfLines={2}
                 >
                   {item.description}
                 </Text>
-
                 <View style={styles.cardFooter}>
                   <MapPin size={12} color={primaryColor} />
-
                   <Text style={[styles.cardDistance, { color: textMuted }]}>
                     {item.distance}
                   </Text>
