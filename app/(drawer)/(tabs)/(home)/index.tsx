@@ -78,7 +78,10 @@ export default function HomeScreen() {
     <View style={[styles.root, { backgroundColor }]}>
       {/* Map — top half, sits behind everything */}
       <View
-        style={[styles.mapContainer, { height: MAP_HEIGHT, backgroundColor }]}
+        style={[
+          styles.mapContainer,
+          { height: MAP_HEIGHT, backgroundColor: cardColor },
+        ]}
       >
         {/* Replace with your Mapbox component */}
       </View>
@@ -154,7 +157,12 @@ export default function HomeScreen() {
       </SafeAreaView>
 
       {/* Bottom sheet area */}
-      <View style={[styles.sheet, { top: MAP_HEIGHT - 20, backgroundColor }]}>
+      <View
+        style={[
+          styles.sheet,
+          { top: MAP_HEIGHT - 20, backgroundColor: backgroundColor },
+        ]}
+      >
         {/* Section Header */}
         <View style={styles.sectionHeader}>
           <Text style={[styles.sectionTitle, { color: textColor }]}>
