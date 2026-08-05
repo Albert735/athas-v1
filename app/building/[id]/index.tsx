@@ -52,6 +52,12 @@ function getBuildingStatus(): OperatingStatus {
   return { isOpen: true };
 }
 
+/**
+ * BuildingDetailsScreen Component
+ *
+ * Displays detailed information about a specific building/place by ID.
+ * Features parallax hero image, accessibility amenities, facility highlights, favorite toggle, and share action.
+ */
 export default function BuildingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const foundPlace = places.find((p) => p.id === id);

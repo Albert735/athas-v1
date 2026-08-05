@@ -24,6 +24,13 @@ import { ToastProvider } from "@/components/ui/toast";
 //   fade: true,
 // });
 
+/**
+ * RootLayout Component
+ *
+ * Root layout wrapper for Expo Router.
+ * Configures top-level context providers (GestureHandler, ThemeProvider, ToastProvider),
+ * status bar/navigation bar color syncing, and defines the primary Stack navigation routes.
+ */
 export default function RootLayout() {
   const colorScheme = useColorScheme() || "light";
 

@@ -6,10 +6,20 @@ import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useState } from "react";
 import { Button } from "../ui/button";
 
+/**
+ * MapNavigationCard Props Interface
+ */
 interface Props {
+  /** Callback fired when user exits navigation mode */
   onExit?: () => void;
 }
 
+/**
+ * MapNavigationCard Component
+ *
+ * Overlay sheet displayed during active step-by-step turn navigation.
+ * Displays maneuver icon, turn instructions, remaining distance, ETA, and an exit button.
+ */
 export default function MapNavigationCard({ onExit }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];

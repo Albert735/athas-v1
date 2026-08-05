@@ -20,7 +20,16 @@ import { CATEGORIES } from "@/data/categories";
 import { COLLECTIONS } from "@/data/collections";
 import { Header } from "@/components/shared";
 
+/**
+ * ExploreScreen
+ * 
+ * Main campus discovery & directory screen.
+ * Supports two view modes:
+ * 1. Discovery Mode (default): Displays curated collections and a category tile grid.
+ * 2. Directory Mode (active when search query or category is selected): Displays search results, category filter chips, and facility cards.
+ */
 export default function ExploreScreen() {
+  // Theme color tokens from custom hook
   const icon = useColor("icon");
   const textColor = useColor("text");
   const primaryColor = useColor("primary");
@@ -29,30 +38,38 @@ export default function ExploreScreen() {
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
 
+  // Search & Filter State
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
+  // Filter places based on active category filter and search query
   const filteredPlaces = useMemo(() => {
     let result = places;
+
+    // Filter by selected category if active
     if (selectedCategory) {
       result = result.filter((p) => p.category === selectedCategory);
     }
+
+    // Filter by text search query (case-insensitive search against place name)
     if (query.trim()) {
       result = result.filter((p) =>
         p.name.toLowerCase().includes(query.toLowerCase()),
       );
     }
+
     return result;
   }, [query, selectedCategory]);
 
+  // Determine view mode: true when user is searching or has selected a category filter
   const isBrowsing = !!query.trim() || !!selectedCategory;
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      {/* Title */}
-
+      {/* ── Header Title Row ── */}
       <View style={styles.titleRow}>
         {isBrowsing ? (
+          // In browsing mode, show a back button to reset search/filter
           <Pressable
             onPress={() => {
               setQuery("");
@@ -73,6 +90,7 @@ export default function ExploreScreen() {
             </View>
           </Pressable>
         ) : (
+          // In default discovery mode, show screen title & subtitle
           <View style={{ flexDirection: "column", gap: 4 }}>
             <Text style={[styles.titleText, { color: textColor }]}>
               Explore
@@ -84,7 +102,7 @@ export default function ExploreScreen() {
         )}
       </View>
 
-      {/* Search */}
+      {/* ── Search Bar Input ── */}
       <View style={styles.searchRow}>
         <SearchBar
           placeholder="Search buildings, facilities..."
@@ -94,13 +112,15 @@ export default function ExploreScreen() {
         />
       </View>
 
+      {/* ── Main View Content ── */}
       {isBrowsing ? (
-        /* ── Directory mode — full filtered list ── */
+        /* ── DIRECTORY MODE: Vertical list of filtered places with category filter chips ── */
         <FlatList
           data={filteredPlaces}
           keyExtractor={(item) => item.id}
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.listContent}
+          // Horizontal category chips filter at top of list
           ListHeaderComponent={
             <View style={styles.chipsWrapper}>
               <FlatList
@@ -140,6 +160,7 @@ export default function ExploreScreen() {
               />
             </View>
           }
+          // Display when no places match search/filter criteria
           ListEmptyComponent={
             <View style={styles.empty}>
               <Text style={[styles.emptyText, { color: mutedColor }]}>
@@ -147,6 +168,7 @@ export default function ExploreScreen() {
               </Text>
             </View>
           }
+          // Render individual place card item
           renderItem={({ item }) => (
             <Pressable
               style={({ pressed }) => [
@@ -173,6 +195,7 @@ export default function ExploreScreen() {
                     </Text>
                   </View>
                 </View>
+                {/* Navigation button directing user to interactive map view */}
                 <TouchableOpacity
                   style={styles.goButton}
                   activeOpacity={0.85}
@@ -186,12 +209,12 @@ export default function ExploreScreen() {
           )}
         />
       ) : (
-        /* ── Discovery mode — collections + category grid ── */
+        /* ── DISCOVERY MODE: Curated collections & category grid ── */
         <ScrollView
           showsVerticalScrollIndicator={false}
           contentContainerStyle={styles.scrollContent}
         >
-          {/* Curated Collections */}
+          {/* Section 1: Curated Collections (Horizontal Scrolling Lists) */}
           {COLLECTIONS.map((collection) => {
             const items = places.filter((p) =>
               collection.categories.includes(p.category),
@@ -248,7 +271,7 @@ export default function ExploreScreen() {
             );
           })}
 
-          {/* Browse by Category grid */}
+          {/* Section 2: Browse by Category Grid Tiles */}
           <View style={styles.section}>
             <Text style={[styles.sectionTitle, { color: textColor }]}>
               Browse by Category

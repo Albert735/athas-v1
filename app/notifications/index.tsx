@@ -8,6 +8,12 @@ import { useColor } from "@/hooks/useColor";
 
 const FILTERS = ["All", "Unread", "Security", "System"] as const;
 
+/**
+ * NotificationsScreen Component
+ *
+ * Displays a filterable list of user notifications (All, Unread, Security, System)
+ * with pull-to-refresh capabilities.
+ */
 export default function NotificationsScreen() {
   const { notifications, loading, filter, setFilter, refresh } =
     useNotifications();

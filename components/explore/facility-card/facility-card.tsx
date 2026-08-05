@@ -2,12 +2,23 @@ import { View, Text, StyleSheet } from "react-native";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * FacilityCard Props Interface
+ */
 type FacilityCardProps = {
+  /** Facility title label */
   label: string;
+  /** MaterialIcons glyph name for facility icon */
   icon: keyof typeof MaterialIcons.glyphMap;
+  /** Optional background accent color for icon circle */
   color?: string;
 };
 
+/**
+ * FacilityCard Component
+ *
+ * Tile card component displaying a facility icon and title.
+ */
 export function FacilityCard({
   label,
   icon,

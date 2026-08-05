@@ -21,6 +21,13 @@ import { router } from "expo-router";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
 import { categoryImages } from "@/data/category-images";
 
+/**
+ * HomeScreen Component
+ *
+ * Main landing dashboard of Athas.
+ * Features top navigation drawer toggle, live search bar with suggestions, quick action chips,
+ * and cards for popular campus destinations.
+ */
 export default function HomeScreen() {
   const [selectedQuickAction, setSelectedQuickAction] = useState("all");
   const [searchQuery, setSearchQuery] = useState("");

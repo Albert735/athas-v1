@@ -5,10 +5,20 @@ import { router } from "expo-router";
 import type { ScheduledClass } from "@/types/class";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * UpcomingClassCard Component Props
+ */
 export type UpcomingClassCardProps = ScheduledClass & {
+  /** Optional callback handler when navigation chevron is clicked */
   onNavigate?: () => void;
 };
 
+/**
+ * UpcomingClassCard Component
+ *
+ * Renders an upcoming class card item on the timetable list showing course name,
+ * scheduled time, room, and campus building details.
+ */
 export function UpcomingClassCard({
   id,
   course,

@@ -53,6 +53,12 @@ const REMINDERS = [
   },
 ];
 
+/**
+ * RemindersScreen Component
+ *
+ * Displays campus reminders with filter options (All, Upcoming, Completed),
+ * reminder status details (location, time), empty state placeholder, and "Add to Reminder" action button.
+ */
 export default function RemindersScreen() {
   const [activeFilter, setActiveFilter] = useState("All");
 

@@ -12,6 +12,12 @@ import { MOCK_STEPS } from "@/data/navigation-steps";
 
 type SheetState = "details" | "directions" | "navigating";
 
+/**
+ * Interactive Map Screen
+ *
+ * Renders campus map interface, search overlay, turn-by-turn navigation overlay,
+ * and bottom sheet building details controller.
+ */
 export default function Map() {
   const icon = useColor("icon");
   const [selectedBuilding, setSelectedBuilding] = useState<

@@ -5,10 +5,20 @@ import { formatNotificationTime } from "@/utils/format-notification-time";
 import { router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * NotificationCard Component Props
+ */
 interface Props {
+  /** The notification data payload to render */
   notification: Notification;
 }
 
+/**
+ * NotificationCard Component
+ *
+ * Renders an individual notification item card displaying icon, title, formatted timestamp, and message.
+ * Tapping navigates to notification details page with notification parameters.
+ */
 export function NotificationCard({ notification }: Props) {
   const cardColor = useColor("card");
   const backgroundColor = useColor("background");

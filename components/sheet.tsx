@@ -1,6 +1,11 @@
 import { FlatList } from 'react-native';
 import { Text } from './ui/text';
 
+/**
+ * SheetScreen Component
+ *
+ * Bottom sheet modal previewing available component primitives and UI catalog elements.
+ */
 export default function SheetScreen() {
   return (
     <FlatList

@@ -9,6 +9,12 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, type SignInFormData } from "@/schemas/auth";
 
+/**
+ * SignInForm Component
+ *
+ * Renders the user authentication sign-in form using React Hook Form and Zod validation.
+ * Includes student email input, password input, remember me checkbox, and forgotten password link.
+ */
 export function SignInForm() {
   const primaryColor = useColor("primary");
   const backgroundColor = useColor("background");

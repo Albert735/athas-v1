@@ -8,6 +8,12 @@ import { Plus } from "lucide-react-native";
 import { Pressable } from "react-native";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * ScheduleScreen Component
+ *
+ * Checks student timetable classes. If classes exist, redirects to the list view;
+ * otherwise displays the EmptySchedule empty state with an option to add classes.
+ */
 export default function ScheduleScreen() {
   const { classes } = useTimetable();
   const iconColor = useColor("icon");

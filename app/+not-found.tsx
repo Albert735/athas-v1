@@ -4,6 +4,11 @@ import { Link } from '@/components/ui/link';
 import { Text } from '@/components/ui/text';
 import { View } from '@/components/ui/view';
 
+/**
+ * NotFoundScreen Component
+ *
+ * Fallback 404 screen displayed when navigating to an unhandled or invalid route path.
+ */
 export default function NotFoundScreen() {
   return (
     <>

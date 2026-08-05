@@ -24,6 +24,10 @@ import {
 import { ModeToggle } from "../ui/mode-toggle";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * Navigation items structure for the custom side drawer.
+ * Categorized into Activity and Account sections.
+ */
 const MENU_ITEMS = [
   {
     section: "Activity",
@@ -43,6 +47,12 @@ const MENU_ITEMS = [
   },
 ];
 
+/**
+ * Custom DrawerContent Component
+ *
+ * Renders the sliding drawer navigation sidebar with user profile information,
+ * dark/light mode toggle, activity & account navigation links, and logout action.
+ */
 export function DrawerContent(props: DrawerContentComponentProps) {
   const theme = useColorScheme();
   const glassAvailable = isLiquidGlassAvailable();

@@ -8,10 +8,20 @@ import {
 
 import type { NotificationType } from "@/api/types/notification";
 
+/**
+ * NotificationIcon Component Props
+ */
 interface Props {
+  /** The type category of notification */
   type: NotificationType;
 }
 
+/**
+ * NotificationIcon Component
+ *
+ * Renders the appropriate colored icon based on the notification type
+ * (warning, security, system, reminder, or default bell).
+ */
 export function NotificationIcon({ type }: Props) {
   switch (type) {
     case "warning":

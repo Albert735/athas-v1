@@ -6,14 +6,28 @@ import { BlurView } from "expo-blur";
 import type { ReactNode } from "react";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * Header Props Interface
+ */
 type Props = {
+  /** Screen title displayed centered in the header */
   title: string;
+  /** Whether to render the back arrow button (defaults to true) */
   showBack?: boolean;
+  /** Optional custom back button press handler (defaults to router.back()) */
   onBack?: () => void;
+  /** Visual variant: 'solid' (standard theme text) or 'transparent' (white text with blur backdrop) */
   variant?: "transparent" | "solid";
+  /** Optional custom React Node rendered on the right slot */
   rightAction?: ReactNode;
 };
 
+/**
+ * Header Component
+ *
+ * Reusable top header bar supporting title centering, back button with optional blur background,
+ * and customizable right action slots.
+ */
 export function Header({
   title,
   showBack = true,

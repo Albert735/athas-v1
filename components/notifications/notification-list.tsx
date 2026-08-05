@@ -3,13 +3,26 @@ import { FlatList, StyleProp, ViewStyle, Text, View } from "react-native";
 import type { Notification } from "@/api/types/notification";
 import { NotificationCard } from "./notification-card";
 
+/**
+ * NotificationList Component Props
+ */
 interface Props {
+  /** Array of notification objects */
   notifications: Notification[];
+  /** Pull-to-refresh active loading status */
   refreshing: boolean;
+  /** Handler callback when pull-to-refresh is triggered */
   onRefresh: () => void;
+  /** Optional container style overrides */
   style?: StyleProp<ViewStyle>;
 }
 
+/**
+ * NotificationList Component
+ *
+ * Renders a scrollable list of notifications with pull-to-refresh capabilities
+ * and an empty state placeholder.
+ */
 export function NotificationList({
   notifications,
   refreshing,

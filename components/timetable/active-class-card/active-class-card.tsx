@@ -4,6 +4,12 @@ import { DoorOpen, School, Navigation } from "lucide-react-native";
 import { router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 
+/**
+ * ActiveClassCard Component
+ *
+ * Featured card displayed at the top of the schedule page for the current/ongoing lecture.
+ * Displays active class time, course name, room, building, and a one-tap navigation launcher.
+ */
 export function ActiveClassCard() {
   const cardColor = useColor("card");
   const textColor = useColor("text");

@@ -3,6 +3,11 @@ import { Text } from "@/components/ui/text";
 import { Button } from "@/components/ui/button";
 import { Plus } from "lucide-react-native";
 
+/**
+ * EmptySchedule Component
+ *
+ * Rendered when the user has no registered classes in their timetable schedule.
+ */
 export function EmptySchedule() {
   return (
     <View style={styles.container}>
