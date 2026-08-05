@@ -271,7 +271,7 @@ const styles = StyleSheet.create({
 
   /* PREFERENCES */
   preferences: {
-    marginTop: 28,
+    marginTop: 22,
   },
 
   prefHeader: {

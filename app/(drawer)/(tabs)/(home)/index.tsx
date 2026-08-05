@@ -297,8 +297,8 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     paddingTop: 20,
-    borderTopLeftRadius: 32,
-    borderTopRightRadius: 32,
+    borderTopLeftRadius: 20,
+    borderTopRightRadius: 20,
   },
   sectionHeader: {
     flexDirection: "row",
