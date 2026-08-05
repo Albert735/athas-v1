@@ -32,7 +32,7 @@ export function BuildingNameBlock({
 }
 
 const styles = StyleSheet.create({
-  nameBlock: { gap: 4 },
+  nameBlock: { gap: 4, marginBottom: 16 },
   placeName: { fontSize: 24, fontWeight: "700" },
   ratingRow: { flexDirection: "row", alignItems: "center", gap: 6 },
   ratingText: { fontSize: 13 },
