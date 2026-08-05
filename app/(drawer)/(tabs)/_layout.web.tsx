@@ -3,8 +3,7 @@ import { useColor } from "@/hooks/useColor";
 import {
   House,
   CalendarDays,
-  Map,
-  Heart,
+  Compass,
   CircleUser,
   Search,
 } from "lucide-react-native";
@@ -35,21 +34,11 @@ export default function WebTabsLayout() {
         }}
       />
 
-      {/* Map - Tab icon shows on other tabs, but tab bar is hidden when on Map screen */}
-      <Tabs.Screen
-        name="(map)"
-        options={{
-          title: "Map",
-          tabBarStyle: { display: "none" },
-          tabBarIcon: ({ color }) => <Map size={24} color={color} />,
-        }}
-      />
-
       <Tabs.Screen
         name="(explore)"
         options={{
           title: "Explore",
-          tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
+          tabBarIcon: ({ color }) => <Compass size={24} color={color} />,
         }}
       />
 

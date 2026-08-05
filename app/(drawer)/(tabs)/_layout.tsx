@@ -50,18 +50,9 @@ export default function TabsLayout() {
         <Label>Schedule</Label>
       </NativeTabs.Trigger>
 
-      {/* <NativeTabs.Trigger name="(map)">
-        {Platform.select({
-          ios: <Icon sf="map" />,
-          android: (
-            <Icon src={<VectorIcon family={MaterialIcons} name="map" />} />
-          ),
-        })}
-        <Label>Schedule</Label>
-      </NativeTabs.Trigger> */}
       <NativeTabs.Trigger name="(explore)">
         {Platform.select({
-          ios: <Icon sf="safari" />, // or "map" / "sparkles" — up to you
+          ios: <Icon sf="safari" />,
           android: (
             <Icon src={<VectorIcon family={MaterialIcons} name="compass" />} />
           ),

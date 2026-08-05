@@ -57,7 +57,7 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     props.navigation.closeDrawer();
     switch (id) {
       case "saved":
-        router.push("/(drawer)/(tabs)/(nearby)");
+        router.push("/(drawer)/(tabs)/(explore)");
         break;
       case "notifications":
         router.push("/notifications");
