@@ -129,7 +129,7 @@ export default function BuildingDetailsScreen() {
 
   return (
     <ParallaxScrollView
-      headerHeight={380}
+      headerHeight={450}
       headerImage={
         <Image
           source={image}
