@@ -50,12 +50,7 @@ export default function ExploreScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* Title */}
-      {/* <View style={styles.titleRow}>
-        <Text style={[styles.titleText, { color: textColor }]}>Explore</Text>
-        <Text style={[styles.subtitleText, { color: mutedColor }]}>
-          Discover everything campus has to offer
-        </Text>
-      </View> */}
+
       <View style={styles.titleRow}>
         {isBrowsing ? (
           <Pressable
