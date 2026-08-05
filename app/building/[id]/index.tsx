@@ -54,8 +54,11 @@ export default function BuildingDetailsScreen() {
   const [isFavorited, setIsFavorited] = useState(false);
 
   const backgroundColor = useColor("background");
+  const primaryColor = useColor("primary");
   const iconColor = useColor("icon");
   const mutedColor = useColor("textMuted");
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
 
   if (!foundPlace) {
     return (
@@ -172,15 +175,29 @@ export default function BuildingDetailsScreen() {
         </Button>
 
         <Tabs
+          orientation="horizontal"
           enableSwipe={false}
           defaultValue="overview"
-          style={{ marginVertical: 20 }}
+          style={{ marginTop: 16, marginBottom: 24 }}
         >
-          <TabsList>
-            <TabsTrigger value="overview">Overview</TabsTrigger>
-            <TabsTrigger value="photos">Photos</TabsTrigger>
-            <TabsTrigger value="reviews">Reviews</TabsTrigger>
-            <TabsTrigger value="about">About</TabsTrigger>
+          <TabsList
+            style={{
+              backgroundColor: cardColor,
+              padding: 6,
+            }}
+          >
+            <TabsTrigger value="overview">
+              <Text style={{ color: textColor }}>Overview</Text>
+            </TabsTrigger>
+            <TabsTrigger value="photos">
+              <Text style={{ color: textColor }}>Photos</Text>
+            </TabsTrigger>
+            <TabsTrigger value="reviews">
+              <Text style={{ color: textColor }}>Reviews</Text>
+            </TabsTrigger>
+            <TabsTrigger value="about">
+              <Text style={{ color: textColor }}>About</Text>
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="overview">

@@ -53,7 +53,7 @@ export const darkColors = {
   secondaryForeground: "#EDEFF2",
 
   // Muted states — softer than pure white overlays
-  muted: "rgba(237, 239, 242, 0.06)",
+  muted: "#161F2E",
   mutedForeground: "#8A96A3",
 
   accent: "#1A2635",
