@@ -296,9 +296,9 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    paddingTop: 30,
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    paddingTop: 20,
+    borderTopLeftRadius: 32,
+    borderTopRightRadius: 32,
   },
   sectionHeader: {
     flexDirection: "row",
