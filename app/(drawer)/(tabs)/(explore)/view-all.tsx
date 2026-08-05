@@ -5,7 +5,7 @@ import { Mic } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
 import { Header } from "@/components/shared";
 import { closest } from "@/data/closest";
-import { ClosestCard } from "@/components/near-by";
+import { ClosestCard } from "@/components/explore/facility-card/closest-card";
 
 export default function ViewAll() {
   const icon = useColor("icon");

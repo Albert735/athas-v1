@@ -1,4 +1,17 @@
-export const places = [
+import type { CategoryId } from "./categories";
+
+export const places: {
+  id: string;
+  name: string;
+  category: CategoryId;
+  description: string;
+  distance: string;
+  latitude: number;
+  longitude: number;
+  hours: string;
+  days: string;
+  isOpen: boolean;
+}[] = [
   // BANKS
   {
     id: "1",
