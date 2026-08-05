@@ -59,16 +59,16 @@ export default function TabsLayout() {
         })}
         <Label>Schedule</Label>
       </NativeTabs.Trigger> */}
-
-      <NativeTabs.Trigger name="(nearby)">
+      <NativeTabs.Trigger name="(explore)">
         {Platform.select({
-          ios: <Icon sf="heart" />,
+          ios: <Icon sf="safari" />, // or "map" / "sparkles" — up to you
           android: (
-            <Icon src={<VectorIcon family={MaterialIcons} name="map-pin" />} />
+            <Icon src={<VectorIcon family={MaterialIcons} name="compass" />} />
           ),
         })}
-        <Label>Nearby</Label>
+        <Label>Explore</Label>
       </NativeTabs.Trigger>
+
       <NativeTabs.Trigger name="(profile)">
         {Platform.select({
           ios: <Icon sf="person" />,

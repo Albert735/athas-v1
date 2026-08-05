@@ -46,9 +46,9 @@ export default function WebTabsLayout() {
       />
 
       <Tabs.Screen
-        name="(nearby)"
+        name="(explore)"
         options={{
-          title: "Nearby",
+          title: "Explore",
           tabBarIcon: ({ color }) => <Heart size={24} color={color} />,
         }}
       />
