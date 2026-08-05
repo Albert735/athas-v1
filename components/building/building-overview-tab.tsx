@@ -32,7 +32,11 @@ export function BuildingOverviewTab({
   const iconColor = useColor("icon");
 
   return (
-    <View style={{ gap: 24 }}>
+    <View
+      style={{
+        gap: 24,
+      }}
+    >
       <Text style={[styles.description, { color: mutedColor }]}>
         {description}
       </Text>
@@ -43,10 +47,20 @@ export function BuildingOverviewTab({
         </Text>
         <Text style={[styles.subText, { color: mutedColor }]}>{days}</Text>
         <View style={styles.operationalHoursInner}>
-          <Clock4 size={20} color={iconColor} />
-          <Text style={[styles.subText, { color: mutedColor }]}>
-            {isOpen ? "Open Today" : "Closed Today"}
-          </Text>
+          <View
+            style={{
+              flexDirection: "row",
+              gap: 6,
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
+            <Clock4 size={20} color={iconColor} />
+            <Text style={[styles.subText, { color: mutedColor }]}>
+              {isOpen ? "Open Today" : "Closed Today"}
+            </Text>
+          </View>
+
           <Text style={[styles.subText, { color: mutedColor }]}>{hours}</Text>
         </View>
       </View>
@@ -79,7 +93,7 @@ export function BuildingOverviewTab({
             High-Speed campus Wi-Fi coverage
           </Text>
         </View>
-        <Ionicons name="checkmark-circle-outline" size={24} color={iconColor} />
+        <Ionicons name="checkmark-circle-outline" size={24} color={"green"} />
       </View>
     </View>
   );

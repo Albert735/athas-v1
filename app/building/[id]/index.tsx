@@ -171,7 +171,11 @@ export default function BuildingDetailsScreen() {
           Navigate
         </Button>
 
-        <Tabs defaultValue="overview" style={{ marginTop: 20 }}>
+        <Tabs
+          enableSwipe={false}
+          defaultValue="overview"
+          style={{ marginVertical: 20 }}
+        >
           <TabsList>
             <TabsTrigger value="overview">Overview</TabsTrigger>
             <TabsTrigger value="photos">Photos</TabsTrigger>
