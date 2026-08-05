@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Mic, MapPin, Navigation } from "lucide-react-native";
+import { Mic, MapPin, Navigation, ArrowLeft } from "lucide-react-native";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
@@ -18,6 +18,7 @@ import { useState, useMemo } from "react";
 import { router } from "expo-router";
 import { CATEGORIES } from "@/data/categories";
 import { COLLECTIONS } from "@/data/collections";
+import { Header } from "@/components/shared";
 
 export default function ExploreScreen() {
   const icon = useColor("icon");
@@ -49,11 +50,43 @@ export default function ExploreScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* Title */}
-      <View style={styles.titleRow}>
+      {/* <View style={styles.titleRow}>
         <Text style={[styles.titleText, { color: textColor }]}>Explore</Text>
         <Text style={[styles.subtitleText, { color: mutedColor }]}>
           Discover everything campus has to offer
         </Text>
+      </View> */}
+      <View style={styles.titleRow}>
+        {isBrowsing ? (
+          <Pressable
+            onPress={() => {
+              setQuery("");
+              setSelectedCategory(null);
+            }}
+            hitSlop={8}
+          >
+            <View
+              style={{ flexDirection: "row", alignItems: "center", gap: 8 }}
+            >
+              <ArrowLeft size={20} color={textColor} />
+              <Text style={[styles.titleText, { color: textColor }]}>
+                {query.trim()
+                  ? "Results"
+                  : (CATEGORIES.find((c) => c.id === selectedCategory)?.label ??
+                    "Explore")}
+              </Text>
+            </View>
+          </Pressable>
+        ) : (
+          <View style={{ flexDirection: "column", gap: 4 }}>
+            <Text style={[styles.titleText, { color: textColor }]}>
+              Explore
+            </Text>
+            <Text style={[styles.subtitleText, { color: mutedColor }]}>
+              Discover everything campus has to offer
+            </Text>
+          </View>
+        )}
       </View>
 
       {/* Search */}
