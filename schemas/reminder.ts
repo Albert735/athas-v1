@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const addReminderSchema = z
+export const reminderSchema = z
   .object({
     note: z.string().min(1, "Please enter a reminder note"),
     building: z.string().min(1, "Please select a location"),
@@ -12,4 +12,4 @@ export const addReminderSchema = z
     path: ["dateTime"],
   });
 
-export type AddReminderData = z.infer<typeof addReminderSchema>;
+export type ReminderFormData = z.infer<typeof reminderSchema>;
