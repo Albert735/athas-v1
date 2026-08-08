@@ -17,19 +17,24 @@ import { Header } from "@/components/shared/screen/header";
 import { DatePicker } from "@/components/ui/date-picker";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { addReminderSchema, type AddReminderData } from "@/schemas/reminder";
+import { useReminders } from "@/providers/reminders-provider";
+import { reminderSchema, type ReminderFormData } from "@/schemas/reminder";
 
 export default function AddReminderScreen() {
-  const { building } = useLocalSearchParams<{ building?: string }>();
+  const { building } = useLocalSearchParams<{
+    building?: string;
+  }>();
+
   const icon = useColor("icon");
   const { toast } = useToast();
+  const { addReminder } = useReminders();
 
   const {
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useForm<AddReminderData>({
-    resolver: zodResolver(addReminderSchema),
+  } = useForm<ReminderFormData>({
+    resolver: zodResolver(reminderSchema),
     defaultValues: {
       note: building ? `Visit ${building}` : "",
       building: building || "",
@@ -46,10 +51,14 @@ export default function AddReminderScreen() {
     });
   };
 
-  const onSubmit = async (data: AddReminderData) => {
-    console.log("Reminder data:", data);
+  const onSubmit = async (data: ReminderFormData) => {
+    addReminder(data);
+
     router.back();
-    showToast();
+
+    setTimeout(() => {
+      showToast();
+    }, 150);
   };
 
   return (
