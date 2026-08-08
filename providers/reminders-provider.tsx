@@ -1,25 +1,29 @@
-import { useState } from "react";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+
 import type { Reminder } from "@/types/reminder";
-import { reminders as initialReminders } from "@/data/reminders";
 import type { ReminderFormData } from "@/schemas/reminder";
+import { reminders as initialReminders } from "@/data/reminders";
 
-// CREATE;
-// addReminder();
+type RemindersContextValue = {
+  reminders: Reminder[];
+  getReminder: (id: string) => Reminder | undefined;
+  addReminder: (data: ReminderFormData) => Reminder;
+  updateReminder: (id: string, data: ReminderFormData) => void;
+  deleteReminder: (id: string) => void;
+  toggleReminder: (id: string) => void;
+};
 
-// READ;
-// reminders;
-// getReminder();
+const RemindersContext = createContext<RemindersContextValue | undefined>(
+  undefined,
+);
 
-// UPDATE;
-// updateReminder();
-
-// DELETE;
-// deleteReminder();
-
-// toggleReminder();
-// for marking a reminder completed.
-
-export function useReminders() {
+export function RemindersProvider({ children }: { children: ReactNode }) {
   const [reminders, setReminders] = useState<Reminder[]>(initialReminders);
 
   const getReminder = (id: string) => {
@@ -75,12 +79,31 @@ export function useReminders() {
     );
   };
 
-  return {
-    reminders,
-    getReminder,
-    addReminder,
-    updateReminder,
-    deleteReminder,
-    toggleReminder,
-  };
+  const value = useMemo(
+    () => ({
+      reminders,
+      getReminder,
+      addReminder,
+      updateReminder,
+      deleteReminder,
+      toggleReminder,
+    }),
+    [reminders],
+  );
+
+  return (
+    <RemindersContext.Provider value={value}>
+      {children}
+    </RemindersContext.Provider>
+  );
+}
+
+export function useReminders() {
+  const context = useContext(RemindersContext);
+
+  if (!context) {
+    throw new Error("useReminders must be used inside RemindersProvider");
+  }
+
+  return context;
 }
