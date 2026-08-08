@@ -4,70 +4,38 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-  TextInput,
   Alert,
 } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
+
 import {
   MapPin,
   Clock,
   Navigation,
   Trash2,
   Pencil,
-  Check,
-  X,
+  Bell,
 } from "lucide-react-native";
-import { Button } from "@/components/ui/button";
-import { Header } from "@/components/shared/screen/header";
-import { Brain, FlaskConical, BookOpen } from "lucide-react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
+
 import { useState } from "react";
 
-const REMINDERS = [
-  {
-    id: "1",
-    title: "Meeting at Student Hub",
-    location: "NNB, Room 2",
-    time: "10:45 AM",
-    icon: <Brain size={22} color="#374151" />,
-    completed: false,
-  },
-  {
-    id: "2",
-    title: "Pick up Lab Results",
-    location: "GCB",
-    time: "10:45 AM",
-    icon: <FlaskConical size={22} color="#374151" />,
-    completed: false,
-  },
-  {
-    id: "3",
-    title: "Study",
-    location: "JQB",
-    time: "10:45 AM",
-    icon: <BookOpen size={22} color="#374151" />,
-    completed: false,
-  },
-  {
-    id: "4",
-    title: "Meeting Course Rep",
-    location: "LOT1",
-    time: "10:45 AM",
-    icon: <MaterialIcons name="directions-walk" size={24} color="#374151" />,
-    completed: true,
-  },
-];
+import { Button } from "@/components/ui/button";
+import { Header } from "@/components/shared/screen/header";
+import { useReminders } from "@/providers/reminders-provider";
+import { EditReminderSheet } from "@/components/reminders/edit-reminder-sheet";
+
+import type { ReminderFormData } from "@/schemas/reminder";
 
 export default function ReminderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
 
-  const reminder = REMINDERS.find((r) => r.id === id);
+  const [editVisible, setEditVisible] = useState(false);
 
-  const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(reminder?.title ?? "");
-  const [location, setLocation] = useState(reminder?.location ?? "");
-  const [time, setTime] = useState(reminder?.time ?? "");
+  const { reminders, deleteReminder } = useReminders();
+
+  const reminder = reminders.find((item) => item.id === id);
 
   if (!reminder) {
     return (
@@ -79,24 +47,10 @@ export default function ReminderDetailScreen() {
     );
   }
 
-  const handleSave = () => {
-    // TODO:
-    // Update the reminder in your backend / state management here.
-
-    setIsEditing(false);
-  };
-
-  const handleCancel = () => {
-    setTitle(reminder.title);
-    setLocation(reminder.location);
-    setTime(reminder.time);
-    setIsEditing(false);
-  };
-
   const handleDelete = () => {
     Alert.alert(
       "Delete reminder?",
-      "This reminder will be permanently removed.",
+      "This reminder will be permanently removed from your schedule.",
       [
         {
           text: "Cancel",
@@ -106,15 +60,43 @@ export default function ReminderDetailScreen() {
           text: "Delete",
           style: "destructive",
           onPress: () => {
-            // TODO:
-            // Delete reminder from your backend / state management here.
-
+            deleteReminder(reminder.id);
             router.back();
           },
         },
       ],
     );
   };
+
+  const handleEditSave = (data: ReminderFormData) => {
+    /*
+     * updateReminder will be connected here
+     * in the next step.
+     *
+     * Example:
+     *
+     * updateReminder(reminder.id, data);
+     */
+
+    console.log("Updated reminder:", data);
+
+    setEditVisible(false);
+  };
+
+  const formattedDate = reminder.dateTime
+    ? reminder.dateTime.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+        year: "numeric",
+      })
+    : "No date";
+
+  const formattedTime = reminder.dateTime
+    ? reminder.dateTime.toLocaleTimeString("en-US", {
+        hour: "numeric",
+        minute: "2-digit",
+      })
+    : "No time";
 
   return (
     <SafeAreaView style={styles.container}>
@@ -125,7 +107,7 @@ export default function ReminderDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Status */}
+        {/* Status + Edit */}
         <View style={styles.statusRow}>
           <View
             style={[
@@ -150,130 +132,114 @@ export default function ReminderDetailScreen() {
             </Text>
           </View>
 
-          {!isEditing && (
-            <TouchableOpacity
-              style={styles.editButton}
-              onPress={() => setIsEditing(true)}
-              activeOpacity={0.7}
-            >
-              <Pencil size={16} color="#374151" />
-              <Text style={styles.editButtonText}>Edit</Text>
-            </TouchableOpacity>
-          )}
+          <TouchableOpacity
+            style={styles.editButton}
+            onPress={() => setEditVisible(true)}
+            activeOpacity={0.7}
+          >
+            <Pencil size={16} color="#374151" />
+
+            <Text style={styles.editButtonText}>Edit</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Reminder Overview */}
-        {!isEditing ? (
-          <View style={styles.infoCard}>
-            <View style={styles.iconWrapper}>{reminder.icon}</View>
+        <View style={styles.infoCard}>
+          <View style={styles.iconWrapper}>
+            <Bell size={23} color="#0099FF" />
+          </View>
 
-            <View style={styles.infoText}>
-              <Text style={styles.infoTitle}>{reminder.title}</Text>
+          <View style={styles.infoText}>
+            <Text style={styles.infoTitle}>{reminder.note}</Text>
 
-              <View style={styles.infoMeta}>
-                <View style={styles.metaItem}>
-                  <MapPin size={14} color="#9CA3AF" />
-                  <Text style={styles.infoMetaText}>{reminder.location}</Text>
-                </View>
+            <View style={styles.infoMeta}>
+              <View style={styles.metaItem}>
+                <MapPin size={14} color="#9CA3AF" />
 
+                <Text style={styles.infoMetaText} numberOfLines={1}>
+                  {reminder.building}
+                </Text>
+              </View>
+
+              {reminder.dateTime && (
                 <View style={styles.metaItem}>
                   <Clock size={14} color="#9CA3AF" />
-                  <Text style={styles.infoMetaText}>{reminder.time}</Text>
+
+                  <Text style={styles.infoMetaText}>{formattedTime}</Text>
                 </View>
-              </View>
+              )}
             </View>
           </View>
-        ) : (
-          /* Edit Section */
-          <View style={styles.editCard}>
-            <View style={styles.sectionHeader}>
-              <View>
-                <Text style={styles.sectionTitle}>Edit Reminder</Text>
-                <Text style={styles.sectionSubtitle}>
-                  Update the details of this reminder
+        </View>
+
+        {/* Reminder Details */}
+        <View style={styles.section}>
+          <View style={styles.sectionTitleRow}>
+            <View>
+              <Text style={styles.sectionTitle}>Reminder Details</Text>
+
+              <Text style={styles.sectionSubtitle}>
+                Information about this reminder
+              </Text>
+            </View>
+          </View>
+
+          <View style={styles.detailsCard}>
+            {/* Location */}
+            <View style={styles.detailRow}>
+              <View style={styles.detailIcon}>
+                <MapPin size={17} color="#374151" />
+              </View>
+
+              <View style={styles.detailContent}>
+                <Text style={styles.detailLabel}>Location</Text>
+
+                <Text style={styles.detailValue}>{reminder.building}</Text>
+              </View>
+            </View>
+
+            <View style={styles.divider} />
+
+            {/* Date & Time */}
+            <View style={styles.detailRow}>
+              <View style={styles.detailIcon}>
+                <Clock size={17} color="#374151" />
+              </View>
+
+              <View style={styles.detailContent}>
+                <Text style={styles.detailLabel}>Date & time</Text>
+
+                <Text style={styles.detailValue}>
+                  {formattedDate} · {formattedTime}
                 </Text>
               </View>
             </View>
 
-            {/* Title */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Reminder title</Text>
+            <View style={styles.divider} />
 
-              <View style={styles.inputWrapper}>
-                <Pencil size={17} color="#9CA3AF" />
-
-                <TextInput
-                  value={title}
-                  onChangeText={setTitle}
-                  placeholder="Enter reminder title"
-                  placeholderTextColor="#9CA3AF"
-                  style={styles.input}
-                />
+            {/* Nearby Alert */}
+            <View style={styles.detailRow}>
+              <View style={styles.detailIcon}>
+                <Bell size={17} color="#374151" />
               </View>
-            </View>
 
-            {/* Location */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Location</Text>
+              <View style={styles.detailContent}>
+                <Text style={styles.detailLabel}>Nearby alert</Text>
 
-              <View style={styles.inputWrapper}>
-                <MapPin size={17} color="#9CA3AF" />
-
-                <TextInput
-                  value={location}
-                  onChangeText={setLocation}
-                  placeholder="Enter location"
-                  placeholderTextColor="#9CA3AF"
-                  style={styles.input}
-                />
+                <Text style={styles.detailValue}>
+                  {reminder.alertNearby ? "Enabled" : "Disabled"}
+                </Text>
               </View>
-            </View>
-
-            {/* Time */}
-            <View style={styles.inputGroup}>
-              <Text style={styles.inputLabel}>Time</Text>
-
-              <View style={styles.inputWrapper}>
-                <Clock size={17} color="#9CA3AF" />
-
-                <TextInput
-                  value={time}
-                  onChangeText={setTime}
-                  placeholder="Enter time"
-                  placeholderTextColor="#9CA3AF"
-                  style={styles.input}
-                />
-              </View>
-            </View>
-
-            {/* Edit Actions */}
-            <View style={styles.editActions}>
-              <TouchableOpacity
-                style={styles.cancelButton}
-                onPress={handleCancel}
-                activeOpacity={0.7}
-              >
-                <X size={17} color="#374151" />
-                <Text style={styles.cancelButtonText}>Cancel</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.saveButton}
-                onPress={handleSave}
-                activeOpacity={0.8}
-              >
-                <Check size={17} color="#FFFFFF" />
-                <Text style={styles.saveButtonText}>Save Changes</Text>
-              </TouchableOpacity>
             </View>
           </View>
-        )}
+        </View>
 
         {/* Map Preview */}
         <View style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <View>
               <Text style={styles.sectionTitle}>Location</Text>
+
               <Text style={styles.sectionSubtitle}>
                 Where this reminder takes place
               </Text>
@@ -282,10 +248,9 @@ export default function ReminderDetailScreen() {
 
           <View style={styles.mapCard}>
             <View style={styles.mapPlaceholder}>
-              <View style={styles.mapGrid}>
-                <View style={styles.mapLine} />
-                <View style={styles.mapLineVertical} />
-              </View>
+              <View style={styles.mapLineOne} />
+
+              <View style={styles.mapLineTwo} />
 
               <View style={styles.mapPin}>
                 <MapPin size={20} color="#FFFFFF" fill="#111827" />
@@ -293,13 +258,16 @@ export default function ReminderDetailScreen() {
 
               <View style={styles.mapLocationBadge}>
                 <MapPin size={14} color="#374151" />
-                <Text style={styles.mapLocationText}>{reminder.location}</Text>
+
+                <Text style={styles.mapLocationText} numberOfLines={1}>
+                  {reminder.building}
+                </Text>
               </View>
             </View>
           </View>
         </View>
 
-        {/* Delete Section */}
+        {/* Delete */}
         <View style={styles.dangerSection}>
           <View style={styles.dangerIcon}>
             <Trash2 size={19} color="#DC2626" />
@@ -324,13 +292,19 @@ export default function ReminderDetailScreen() {
       </ScrollView>
 
       {/* Navigation Footer */}
-      {!isEditing && (
-        <View style={styles.footer}>
-          <Button icon={Navigation} onPress={() => router.navigate("/map")}>
-            <Text style={styles.navButtonText}>Start Navigation</Text>
-          </Button>
-        </View>
-      )}
+      <View style={styles.footer}>
+        <Button icon={Navigation} onPress={() => router.navigate("/map")}>
+          <Text style={styles.navButtonText}>Start Navigation</Text>
+        </Button>
+      </View>
+
+      {/* Edit Bottom Sheet */}
+      <EditReminderSheet
+        visible={editVisible}
+        reminder={reminder}
+        onClose={() => setEditVisible(false)}
+        onSave={handleEditSave}
+      />
     </SafeAreaView>
   );
 }
@@ -423,7 +397,7 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
 
-  /* Reminder Card */
+  /* Overview */
 
   infoCard: {
     flexDirection: "row",
@@ -440,7 +414,7 @@ const styles = StyleSheet.create({
     width: 52,
     height: 52,
     borderRadius: 15,
-    backgroundColor: "#F3F4F6",
+    backgroundColor: "#EFF6FF",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -460,32 +434,30 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
+    flexWrap: "wrap",
   },
 
   metaItem: {
     flexDirection: "row",
     alignItems: "center",
     gap: 5,
+    maxWidth: "100%",
   },
 
   infoMetaText: {
     fontSize: 12,
     color: "#6B7280",
+    flexShrink: 1,
   },
 
-  /* Edit */
+  /* Sections */
 
-  editCard: {
-    backgroundColor: "#FFFFFF",
-    borderRadius: 18,
-    borderWidth: 1,
-    borderColor: "#E5E7EB",
-    padding: 18,
-    gap: 18,
+  section: {
+    gap: 10,
   },
 
-  sectionHeader: {
-    marginBottom: 2,
+  sectionTitleRow: {
+    paddingHorizontal: 2,
   },
 
   sectionTitle: {
@@ -501,83 +473,54 @@ const styles = StyleSheet.create({
     color: "#9CA3AF",
   },
 
-  inputGroup: {
-    gap: 8,
-  },
+  /* Details */
 
-  inputLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#374151",
-  },
-
-  inputWrapper: {
-    height: 48,
-    flexDirection: "row",
-    alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 13,
-    borderRadius: 12,
-    backgroundColor: "#F9FAFB",
+  detailsCard: {
+    backgroundColor: "#FFFFFF",
+    borderRadius: 18,
     borderWidth: 1,
     borderColor: "#E5E7EB",
+    paddingHorizontal: 16,
   },
 
-  input: {
-    flex: 1,
-    fontSize: 14,
-    color: "#111827",
-  },
-
-  editActions: {
-    flexDirection: "row",
-    gap: 10,
-    marginTop: 2,
-  },
-
-  cancelButton: {
-    flex: 1,
-    height: 48,
+  detailRow: {
     flexDirection: "row",
     alignItems: "center",
+    paddingVertical: 15,
+    gap: 12,
+  },
+
+  detailIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
     justifyContent: "center",
-    gap: 7,
-    borderRadius: 12,
     backgroundColor: "#F3F4F6",
   },
 
-  cancelButtonText: {
+  detailContent: {
+    flex: 1,
+  },
+
+  detailLabel: {
+    fontSize: 11,
+    color: "#9CA3AF",
+    marginBottom: 3,
+  },
+
+  detailValue: {
     fontSize: 13,
     fontWeight: "600",
     color: "#374151",
   },
 
-  saveButton: {
-    flex: 1.4,
-    height: 48,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    gap: 7,
-    borderRadius: 12,
-    backgroundColor: "#111827",
+  divider: {
+    height: 1,
+    backgroundColor: "#F3F4F6",
   },
 
-  saveButtonText: {
-    fontSize: 13,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
-
-  /* Location */
-
-  section: {
-    gap: 10,
-  },
-
-  sectionTitleRow: {
-    paddingHorizontal: 2,
-  },
+  /* Map */
 
   mapCard: {
     overflow: "hidden",
@@ -594,31 +537,32 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  mapGrid: {
-    position: "absolute",
-    width: "100%",
-    height: "100%",
-    opacity: 0.5,
-  },
-
-  mapLine: {
+  mapLineOne: {
     position: "absolute",
     width: "150%",
     height: 1,
     backgroundColor: "#D1D5DB",
     top: 75,
     left: -40,
-    transform: [{ rotate: "-15deg" }],
+    transform: [
+      {
+        rotate: "-15deg",
+      },
+    ],
   },
 
-  mapLineVertical: {
+  mapLineTwo: {
     position: "absolute",
     width: 1,
     height: "150%",
     backgroundColor: "#D1D5DB",
     left: "48%",
     top: -40,
-    transform: [{ rotate: "18deg" }],
+    transform: [
+      {
+        rotate: "18deg",
+      },
+    ],
   },
 
   mapPin: {
@@ -640,6 +584,7 @@ const styles = StyleSheet.create({
   mapLocationBadge: {
     position: "absolute",
     left: 14,
+    right: 14,
     bottom: 14,
     flexDirection: "row",
     alignItems: "center",
@@ -651,6 +596,7 @@ const styles = StyleSheet.create({
   },
 
   mapLocationText: {
+    flex: 1,
     fontSize: 12,
     fontWeight: "600",
     color: "#374151",
