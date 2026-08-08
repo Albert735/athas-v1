@@ -1,74 +1,21 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
 import { Plus, Bell, MapPin, Clock } from "lucide-react-native";
 import { useState } from "react";
+
 import { Button } from "@/components/ui/button";
 import { Header } from "@/components/shared/screen/header";
-import { Brain, FlaskConical, BookOpen } from "lucide-react-native";
-import MaterialIcons from "@expo/vector-icons/MaterialIcons";
 import { useColor } from "@/hooks/useColor";
+import { useReminders } from "@/providers/reminders-provider";
 
-const FILTERS = ["All", "Upcoming", "Completed"];
+const FILTERS = ["All", "Upcoming", "Completed"] as const;
 
-const REMINDERS = [
-  {
-    id: "1",
-    title: "Meeting at Student Hub",
-    location: "NNB, Room 2",
-    time: "10:45 AM",
-    icon: <Brain size={20} color="#0099FF" />,
-    completed: false,
-  },
-  {
-    id: "2",
-    title: "Pick up Lab Results",
-    location: "GCB",
-    time: "10:45 AM",
-    icon: <FlaskConical size={20} color="#0099FF" />,
-    completed: false,
-  },
-  {
-    id: "3",
-    title: "Study",
-    location: "JQB",
-    time: "10:45 AM",
-    icon: <BookOpen size={20} color="#0099FF" />,
-    completed: false,
-  },
-  {
-    id: "4",
-    title: "Meeting Course Rep",
-    location: "LOT1",
-    time: "10:45 AM",
-    icon: <MaterialIcons name="directions-walk" size={24} color="#0099FF" />,
-    completed: true,
-  },
-];
-
-/**
- * RemindersScreen Component
- *
- * Displays campus reminders with filter options (All, Upcoming, Completed),
- * reminder status details (location, time), empty state placeholder, and "Add to Reminder" action button.
- */
 export default function RemindersScreen() {
-  const [activeFilter, setActiveFilter] = useState("All");
+  const [activeFilter, setActiveFilter] =
+    useState<(typeof FILTERS)[number]>("All");
 
-  const filtered = REMINDERS.filter((r) => {
-    if (activeFilter === "Upcoming") return !r.completed;
-    if (activeFilter === "Completed") return r.completed;
-    return true;
-  });
-
-  const isEmpty = REMINDERS.length === 0;
+  const { reminders } = useReminders();
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
@@ -78,12 +25,25 @@ export default function RemindersScreen() {
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
 
+  const filteredReminders = reminders.filter((reminder) => {
+    if (activeFilter === "Upcoming") {
+      return !reminder.completed;
+    }
+
+    if (activeFilter === "Completed") {
+      return reminder.completed;
+    }
+
+    return true;
+  });
+
+  const isEmpty = filteredReminders.length === 0;
+
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      {/* Header */}
       <Header
         title="Reminder"
-        showBack={true}
+        showBack
         onBack={() => router.back()}
         variant="solid"
       />
@@ -92,13 +52,20 @@ export default function RemindersScreen() {
       <View style={styles.filters}>
         {FILTERS.map((filter) => {
           const isActive = activeFilter === filter;
+
           return (
             <Pressable
               key={filter}
               style={[
                 styles.filterChip,
-                { backgroundColor: cardColor, borderColor },
-                isActive && { backgroundColor: primaryColor, borderColor: primaryColor }
+                {
+                  backgroundColor: cardColor,
+                  borderColor,
+                },
+                isActive && {
+                  backgroundColor: primaryColor,
+                  borderColor: primaryColor,
+                },
               ]}
               onPress={() => setActiveFilter(filter)}
             >
@@ -106,7 +73,9 @@ export default function RemindersScreen() {
                 style={[
                   styles.filterText,
                   { color: textColor },
-                  isActive && { color: primaryForeground }
+                  isActive && {
+                    color: primaryForeground,
+                  },
                 ]}
               >
                 {filter}
@@ -117,17 +86,20 @@ export default function RemindersScreen() {
       </View>
 
       {isEmpty ? (
-        /* Empty State */
         <View style={styles.empty}>
           <View style={[styles.emptyIcon, { backgroundColor: cardColor }]}>
             <Bell size={32} color={textMuted} />
           </View>
-          <Text style={[styles.emptyText, { color: textMuted }]}>No reminder added yet</Text>
+
+          <Text style={[styles.emptyText, { color: textMuted }]}>
+            {activeFilter === "All"
+              ? "No reminders added yet"
+              : `No ${activeFilter.toLowerCase()} reminders`}
+          </Text>
         </View>
       ) : (
-        /* List */
         <FlatList
-          data={filtered}
+          data={filteredReminders}
           keyExtractor={(item) => item.id}
           contentContainerStyle={styles.listContent}
           showsVerticalScrollIndicator={false}
@@ -135,30 +107,88 @@ export default function RemindersScreen() {
             <Pressable
               style={({ pressed }) => [
                 styles.card,
-                { backgroundColor: cardColor, borderColor },
-                pressed && { opacity: 0.9 },
+                {
+                  backgroundColor: cardColor,
+                  borderColor,
+                },
+                pressed && {
+                  opacity: 0.9,
+                },
               ]}
               onPress={() => router.push(`/reminders/${item.id}`)}
             >
-              <View style={[styles.cardIcon, { backgroundColor: backgroundColor }]}>
-                <Text style={styles.cardIconText}>{item.icon}</Text>
+              <View
+                style={[
+                  styles.cardIcon,
+                  {
+                    backgroundColor,
+                  },
+                ]}
+              >
+                <Bell size={19} color={primaryColor} />
               </View>
+
               <View style={styles.cardInfo}>
-                <Text style={[styles.cardTitle, { color: textColor }]}>{item.title}</Text>
+                <Text
+                  style={[styles.cardTitle, { color: textColor }]}
+                  numberOfLines={1}
+                >
+                  {item.note}
+                </Text>
+
                 <View style={styles.cardMeta}>
                   <MapPin size={11} color={textMuted} />
-                  <Text style={[styles.cardMetaText, { color: textMuted }]}>{item.location}</Text>
-                  <Clock size={11} color={textMuted} />
-                  <Text style={[styles.cardMetaText, { color: textMuted }]}>{item.time}</Text>
+
+                  <Text
+                    style={[styles.cardMetaText, { color: textMuted }]}
+                    numberOfLines={1}
+                  >
+                    {item.building}
+                  </Text>
+
+                  {item.dateTime && (
+                    <>
+                      <Clock size={11} color={textMuted} />
+
+                      <Text style={[styles.cardMetaText, { color: textMuted }]}>
+                        {item.dateTime.toLocaleTimeString([], {
+                          hour: "numeric",
+                          minute: "2-digit",
+                        })}
+                      </Text>
+                    </>
+                  )}
                 </View>
               </View>
+
+              {item.completed && (
+                <View
+                  style={[
+                    styles.completedBadge,
+                    {
+                      backgroundColor: backgroundColor,
+                    },
+                  ]}
+                >
+                  <Text style={[styles.completedText, { color: primaryColor }]}>
+                    Done
+                  </Text>
+                </View>
+              )}
             </Pressable>
           )}
         />
       )}
 
       {/* Add Button */}
-      <View style={[styles.footer, { borderTopColor: borderColor }]}>
+      <View
+        style={[
+          styles.footer,
+          {
+            borderTopColor: borderColor,
+          },
+        ]}
+      >
         <Button
           icon={Plus}
           onPress={() => router.push("/reminders/add-reminder")}
@@ -174,27 +204,32 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+
   filters: {
     flexDirection: "row",
     paddingHorizontal: 20,
     paddingVertical: 14,
     gap: 8,
   },
+
   filterChip: {
     paddingHorizontal: 16,
     paddingVertical: 7,
     borderRadius: 20,
     borderWidth: 1,
   },
+
   filterText: {
     fontSize: 13,
     fontWeight: "500",
   },
+
   listContent: {
     paddingHorizontal: 20,
     paddingBottom: 20,
     gap: 10,
   },
+
   card: {
     flexDirection: "row",
     alignItems: "center",
@@ -203,6 +238,7 @@ const styles = StyleSheet.create({
     borderRadius: 14,
     padding: 14,
   },
+
   cardIcon: {
     width: 40,
     height: 40,
@@ -210,31 +246,46 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  cardIconText: {
-    fontSize: 18,
-  },
+
   cardInfo: {
     flex: 1,
     gap: 4,
   },
+
   cardTitle: {
     fontSize: 14,
     fontWeight: "600",
   },
+
   cardMeta: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
   },
+
   cardMetaText: {
     fontSize: 12,
+    maxWidth: 110,
   },
+
+  completedBadge: {
+    paddingHorizontal: 9,
+    paddingVertical: 5,
+    borderRadius: 8,
+  },
+
+  completedText: {
+    fontSize: 11,
+    fontWeight: "700",
+  },
+
   empty: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     gap: 12,
   },
+
   emptyIcon: {
     width: 64,
     height: 64,
@@ -242,13 +293,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+
   emptyText: {
     fontSize: 15,
     fontWeight: "500",
   },
+
   footer: {
     padding: 20,
+    borderTopWidth: 1,
   },
+
   addButtonText: {
     fontSize: 15,
     fontWeight: "600",
