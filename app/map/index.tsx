@@ -45,7 +45,7 @@ export default function Map() {
     <View style={styles.root}>
       <MapboxGL.MapView
         style={styles.map}
-        styleURL={MapboxGL.StyleURL.Street}
+        styleURL="mapbox://styles/mapbox/streets-v12"
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled

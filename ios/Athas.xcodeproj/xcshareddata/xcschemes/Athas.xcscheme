@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "athasv1.app"
-               BlueprintName = "athasv1"
-               ReferencedContainer = "container:athasv1.xcodeproj">
+               BuildableName = "Athas.app"
+               BlueprintName = "Athas"
+               ReferencedContainer = "container:Athas.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "athasv1Tests.xctest"
-               BlueprintName = "athasv1Tests"
-               ReferencedContainer = "container:athasv1.xcodeproj">
+               BuildableName = "AthasTests.xctest"
+               BlueprintName = "AthasTests"
+               ReferencedContainer = "container:Athas.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "athasv1.app"
-            BlueprintName = "athasv1"
-            ReferencedContainer = "container:athasv1.xcodeproj">
+            BuildableName = "Athas.app"
+            BlueprintName = "Athas"
+            ReferencedContainer = "container:Athas.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "athasv1.app"
-            BlueprintName = "athasv1"
-            ReferencedContainer = "container:athasv1.xcodeproj">
+            BuildableName = "Athas.app"
+            BlueprintName = "Athas"
+            ReferencedContainer = "container:Athas.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>
