@@ -1,26 +1,50 @@
 import { places } from "@/data/places";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
 import { ArrowLeft, Footprints, Car, Bike } from "lucide-react-native";
 import { Button } from "../ui/button";
 import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
+import type { RouteResult } from "@/utils/directions";
+import { formatDistance, formatDuration } from "@/utils/directions";
+
+type TransportProfile = "walking" | "driving" | "cycling";
 
 interface Props {
   place: (typeof places)[number];
+  route: RouteResult | null;
+  routeLoading: boolean;
+  onModeChange: (profile: TransportProfile) => void;
   onStart?: () => void;
   onBack?: () => void;
 }
 
-export default function MapDirectionsCard({ place, onStart, onBack }: Props) {
-  const [transportMode, setTransportMode] = useState<
-    "walk" | "drive" | "cycle"
-  >("walk");
+export default function MapDirectionsCard({
+  place,
+  route,
+  routeLoading,
+  onModeChange,
+  onStart,
+  onBack,
+}: Props) {
+  const [transportMode, setTransportMode] =
+    useState<TransportProfile>("walking");
 
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
+
+  const handleModeSelect = (mode: TransportProfile) => {
+    setTransportMode(mode);
+    onModeChange(mode);
+  };
 
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
@@ -54,9 +78,11 @@ export default function MapDirectionsCard({ place, onStart, onBack }: Props) {
       </View>
 
       <View style={styles.modesContainer}>
-        {(["walk", "drive", "cycle"] as const).map((mode) => {
-          const Icon =
-            mode === "walk" ? Footprints : mode === "drive" ? Car : Bike;
+        {[
+          { mode: "walking" as const, Icon: Footprints, label: "Walk" },
+          { mode: "driving" as const, Icon: Car, label: "Drive" },
+          { mode: "cycling" as const, Icon: Bike, label: "Cycle" },
+        ].map(({ mode, Icon, label }) => {
           const isActive = transportMode === mode;
           return (
             <TouchableOpacity
@@ -66,7 +92,7 @@ export default function MapDirectionsCard({ place, onStart, onBack }: Props) {
                 { backgroundColor },
                 isActive && styles.modeButtonActive,
               ]}
-              onPress={() => setTransportMode(mode)}
+              onPress={() => handleModeSelect(mode)}
               activeOpacity={0.7}
             >
               <Icon size={18} color={isActive ? "#FFFFFF" : mutedColor} />
@@ -76,11 +102,7 @@ export default function MapDirectionsCard({ place, onStart, onBack }: Props) {
                   { color: isActive ? "#FFFFFF" : mutedColor },
                 ]}
               >
-                {mode === "walk"
-                  ? "Walk"
-                  : mode === "drive"
-                    ? "Drive"
-                    : "Cycle"}
+                {label}
               </Text>
             </TouchableOpacity>
           );
@@ -88,19 +110,31 @@ export default function MapDirectionsCard({ place, onStart, onBack }: Props) {
       </View>
 
       <View style={[styles.summaryRow, { borderTopColor: borderColor }]}>
-        <View>
-          <Text style={styles.durationText}>{place.distance}</Text>
+        {routeLoading ? (
+          <ActivityIndicator color={mutedColor} />
+        ) : route ? (
+          <>
+            <View>
+              <Text style={styles.durationText}>
+                {formatDuration(route.durationSeconds)}
+              </Text>
+              <Text style={[styles.distanceText, { color: mutedColor }]}>
+                {formatDistance(route.distanceMeters)}
+              </Text>
+            </View>
+            <View style={styles.fastestBadge}>
+              <Text style={styles.fastestText}>Fastest Route</Text>
+            </View>
+          </>
+        ) : (
           <Text style={[styles.distanceText, { color: mutedColor }]}>
-            {place.hours}
+            Enable location to see route
           </Text>
-        </View>
-        <View style={styles.fastestBadge}>
-          <Text style={styles.fastestText}>Fastest Route</Text>
-        </View>
+        )}
       </View>
 
       <View style={styles.footer}>
-        <Button variant="default" onPress={onStart}>
+        <Button variant="default" onPress={onStart} disabled={!route}>
           Start Navigation
         </Button>
       </View>
@@ -159,6 +193,7 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     borderTopWidth: 1,
     marginBottom: 20,
+    minHeight: 44,
   },
   durationText: { fontSize: 22, fontWeight: "700", color: "#10B981" },
   distanceText: { fontSize: 14, fontWeight: "500", marginTop: 2 },

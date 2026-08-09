@@ -1,20 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
-import { X } from "lucide-react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getManeuverIcon } from "@/utils/navigation";
-import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import { useColor } from "@/hooks/useColor";
+import type { RouteResult } from "@/utils/directions";
+import { formatDistance, formatDuration } from "@/utils/directions";
 
 interface Props {
+  route: RouteResult | null;
   onExit?: () => void;
 }
 
-export default function MapNavigationCard({ onExit }: Props) {
+export default function MapNavigationCard({ route, onExit }: Props) {
   const [stepIndex] = useState(0);
-  const currentStep = MOCK_STEPS[stepIndex];
-  const iconName = getManeuverIcon(currentStep.maneuver);
+  const step = route?.steps[stepIndex];
 
   const cardColor = useColor("card");
   const textColor = useColor("text");
@@ -22,6 +22,23 @@ export default function MapNavigationCard({ onExit }: Props) {
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
   const primaryColor = useColor("primary");
+
+  if (!route || !step) {
+    return (
+      <View style={[styles.sheet, { backgroundColor: cardColor }]}>
+        <Text style={{ color: mutedColor }}>No route available</Text>
+        <Button
+          onPress={onExit}
+          variant="destructive"
+          style={{ marginTop: 16 }}
+        >
+          Exit
+        </Button>
+      </View>
+    );
+  }
+
+  const iconName = getManeuverIcon((step.maneuver.type as any) ?? "straight");
 
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
@@ -31,19 +48,12 @@ export default function MapNavigationCard({ onExit }: Props) {
         </View>
         <View style={styles.instructionInfo}>
           <Text style={[styles.turnDistance, { color: textColor }]}>
-            {currentStep.distance}
+            {formatDistance(step.distance)}
           </Text>
           <Text style={[styles.instructionText, { color: mutedColor }]}>
-            {currentStep.instruction}
+            {step.instruction}
           </Text>
         </View>
-        <TouchableOpacity
-          style={[styles.closeButton, { backgroundColor }]}
-          onPress={onExit}
-          activeOpacity={0.7}
-        >
-          <X size={20} color={mutedColor} />
-        </TouchableOpacity>
       </View>
 
       <View style={[styles.progressRow, { backgroundColor }]}>
@@ -52,7 +62,7 @@ export default function MapNavigationCard({ onExit }: Props) {
             Remaining
           </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {currentStep.duration}
+            {formatDuration(route.durationSeconds)}
           </Text>
         </View>
         <View style={[styles.divider, { backgroundColor: borderColor }]} />
@@ -61,13 +71,8 @@ export default function MapNavigationCard({ onExit }: Props) {
             Distance
           </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {currentStep.distance}
+            {formatDistance(route.distanceMeters)}
           </Text>
-        </View>
-        <View style={[styles.divider, { backgroundColor: borderColor }]} />
-        <View style={styles.statBox}>
-          <Text style={[styles.statLabel, { color: mutedColor }]}>ETA</Text>
-          <Text style={[styles.statValue, { color: textColor }]}>5:24 PM</Text>
         </View>
       </View>
 
@@ -106,17 +111,10 @@ const styles = StyleSheet.create({
   instructionInfo: { flex: 1 },
   turnDistance: { fontSize: 20, fontWeight: "700" },
   instructionText: { fontSize: 14, fontWeight: "500", marginTop: 2 },
-  closeButton: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   progressRow: {
     flexDirection: "row",
     alignItems: "center",
-    justifyContent: "space-between",
+    justifyContent: "space-around",
     padding: 16,
     borderRadius: 20,
     marginBottom: 20,

@@ -9,9 +9,10 @@ import MapboxGL from "@rnmapbox/maps";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 import { places } from "@/data/places";
 import { MapTurnInstruction } from "@/components/map/map-turn-instruction";
-import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useLocalSearchParams } from "expo-router";
 import { MAP_STYLE_URL } from "@/constants/mapbox";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import { getRoute, type RouteResult } from "@/utils/directions";
 
 type SheetState = "details" | "directions" | "navigating";
 
@@ -20,8 +21,6 @@ const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 function findBestMatch(query: string) {
   const lower = query.toLowerCase().trim();
   if (!lower) return undefined;
-
-  // Prioritize exact match, then "starts with", then "includes"
   return (
     places.find((p) => p.name.toLowerCase() === lower) ??
     places.find((p) => p.name.toLowerCase().startsWith(lower)) ??
@@ -31,14 +30,17 @@ function findBestMatch(query: string) {
 
 export default function Map() {
   const icon = useColor("icon");
+  const primaryColor = useColor("primary");
   const { buildingId } = useLocalSearchParams<{ buildingId?: string }>();
+  const { location: userLocation } = useUserLocation();
 
   const [selectedPlace, setSelectedPlace] = useState<(typeof places)[0] | null>(
     null,
   );
   const [mapState, setMapState] = useState<SheetState>("details");
-  const [stepIndex] = useState(0);
-  const currentStep = MOCK_STEPS[stepIndex];
+  const [route, setRoute] = useState<RouteResult | null>(null);
+  const [routeLoading, setRouteLoading] = useState(false);
+  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const handleMarkerPress = (place: (typeof places)[0]) => {
@@ -49,18 +51,49 @@ export default function Map() {
     });
     setSelectedPlace(place);
     setMapState("details");
+    setRoute(null);
+  };
+
+  const handleRequestDirections = async (
+    profile: "walking" | "driving" | "cycling" = "walking",
+  ) => {
+    if (!selectedPlace || !userLocation) return;
+    setRouteLoading(true);
+    const result = await getRoute(
+      userLocation,
+      [selectedPlace.longitude, selectedPlace.latitude],
+      profile,
+    );
+    setRoute(result);
+    setRouteLoading(false);
+
+    // Fit camera to show the whole route
+    if (result) {
+      const coords = result.geometry.coordinates as [number, number][];
+      const lons = coords.map((c) => c[0]);
+      const lats = coords.map((c) => c[1]);
+      cameraRef.current?.fitBounds(
+        [Math.max(...lons), Math.max(...lats)],
+        [Math.min(...lons), Math.min(...lats)],
+        60,
+        800,
+      );
+    }
+  };
+
+  const handleStartNavigation = () => {
+    setCurrentStepIndex(0);
+    setMapState("navigating");
   };
 
   useEffect(() => {
     if (buildingId) {
       const found = places.find((p) => p.id === buildingId);
-      if (found) {
-        handleMarkerPress(found);
-      } else {
-        console.warn(`No place found for buildingId: ${buildingId}`);
-      }
+      if (found) handleMarkerPress(found);
     }
   }, [buildingId]);
+
+  const currentStep = route?.steps[currentStepIndex];
 
   return (
     <View style={styles.root}>
@@ -80,6 +113,21 @@ export default function Map() {
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+
+        {/* Route line */}
+        {route && (
+          <MapboxGL.ShapeSource id="routeSource" shape={route.geometry}>
+            <MapboxGL.LineLayer
+              id="routeLine"
+              style={{
+                lineColor: primaryColor,
+                lineWidth: 5,
+                lineCap: "round",
+                lineJoin: "round",
+              }}
+            />
+          </MapboxGL.ShapeSource>
+        )}
 
         {places.map((place) => (
           <MapboxGL.PointAnnotation
@@ -104,11 +152,7 @@ export default function Map() {
                 placeholder="Search for a building..."
                 onSearch={(query) => {
                   const found = findBestMatch(query);
-                  if (found) {
-                    handleMarkerPress(found);
-                  } else {
-                    console.warn(`No place found matching: ${query}`);
-                  }
+                  if (found) handleMarkerPress(found);
                 }}
                 loading={false}
                 rightIcon={<Mic size={18} color={icon} />}
@@ -117,9 +161,17 @@ export default function Map() {
           </>
         )}
 
-        {mapState === "navigating" && (
+        {mapState === "navigating" && currentStep && (
           <View style={styles.searchRow}>
-            <MapTurnInstruction step={currentStep} />
+            <MapTurnInstruction
+              step={{
+                id: String(currentStepIndex),
+                maneuver: (currentStep.maneuver.type as any) ?? "straight",
+                instruction: currentStep.instruction,
+                distance: `${Math.round(currentStep.distance)} m`,
+                duration: `${Math.round(currentStep.duration / 60)} min`,
+              }}
+            />
           </View>
         )}
       </SafeAreaView>
@@ -127,8 +179,15 @@ export default function Map() {
       {selectedPlace && (
         <MapBottomSheet
           place={selectedPlace}
+          route={route}
+          routeLoading={routeLoading}
+          onRequestDirections={handleRequestDirections}
+          onStartNavigation={handleStartNavigation}
           onStateChange={setMapState}
-          onClose={() => setSelectedPlace(null)}
+          onClose={() => {
+            setSelectedPlace(null);
+            setRoute(null);
+          }}
         />
       )}
     </View>
@@ -136,24 +195,10 @@ export default function Map() {
 }
 
 const styles = StyleSheet.create({
-  root: {
-    flex: 1,
-    backgroundColor: "#000",
-  },
-  map: {
-    flex: 1,
-  },
-  overlay: {
-    position: "absolute",
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 10,
-  },
-  searchRow: {
-    paddingHorizontal: 20,
-    marginTop: 12,
-  },
+  root: { flex: 1, backgroundColor: "#000" },
+  map: { flex: 1 },
+  overlay: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 },
+  searchRow: { paddingHorizontal: 20, marginTop: 12 },
   markerPin: {
     width: 28,
     height: 28,

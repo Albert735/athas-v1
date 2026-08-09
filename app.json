@@ -8,13 +8,13 @@
     "icon": "./assets/images/icon.png",
     "userInterfaceStyle": "automatic",
     "newArchEnabled": true,
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.athasv1",
-      "infoPlist": {
-        "NSLocationWhenInUseUsageDescription": "Athas uses your location to show you on the map and provide directions."
-      }
-    },
+  "ios": {
+    "supportsTablet": true,
+    "bundleIdentifier": "com.anonymous.athasv1",
+    "infoPlist": {
+      "NSLocationWhenInUseUsageDescription": "Athas uses your location to show you on the map and calculate walking routes to campus buildings."
+    }
+  },
     "android": {
       "adaptiveIcon": {
         "backgroundColor": "#E6F4FE",
