@@ -5093,14 +5093,14 @@ PhaseScriptExecution [CP]\ Copy\ Pods\ Resources /Users/albertquaye/Library/Deve
 Transfer starting: 135 files
 EXConstants.bundle/app.config
 
-sent 11571 bytes  received 42 bytes  823617 bytes/sec
-total size is 144494  speedup is 12.44
+sent 11562 bytes  received 42 bytes  720745 bytes/sec
+total size is 144485  speedup is 12.45
 
 ExtractAppIntentsMetadata (in target 'athasv1' from project 'athasv1')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name athasv1 --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk --xcode-version 17E202 --platform-family iOS --deployment-target 15.1 --bundle-identifier com.anonymous.athasv1 --output /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Products/Debug-iphoneos/athasv1.app --target-triple arm64-apple-ios15.1 --binary-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Products/Debug-iphoneos/athasv1.app/athasv1 --dependency-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/Objects-normal/arm64/athasv1_dependency_info.dat --stringsdata-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/Objects-normal/arm64/athasv1.SwiftFileList --metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/athasv1.DependencyMetadataFileList --static-metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/athasv1.DependencyStaticMetadataFileList --swift-const-vals-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Intermediates.noindex/athasv1.build/Debug-iphoneos/athasv1.build/Objects-normal/arm64/athasv1.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
-2026-08-09 02:33:31.953 appintentsmetadataprocessor[43726:532095] Starting appintentsmetadataprocessor export
-2026-08-09 02:33:31.965 appintentsmetadataprocessor[43726:532095] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-08-09 02:48:47.930 appintentsmetadataprocessor[45255:552613] Starting appintentsmetadataprocessor export
+2026-08-09 02:48:47.944 appintentsmetadataprocessor[45255:552613] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
 
 CodeSign /Users/albertquaye/Library/Developer/Xcode/DerivedData/athasv1-dhrvpyjnsnpkhzazbjrnuedwgxud/Build/Products/Debug-iphoneos/athasv1.app/athasv1.debug.dylib (in target 'athasv1' from project 'athasv1')
     cd /Users/albertquaye/Downloads/athas-v1/ios
