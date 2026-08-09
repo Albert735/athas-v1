@@ -47,15 +47,12 @@ export function RemindersProvider({ children }: { children: ReactNode }) {
   };
 
   const updateReminder = (id: string, data: ReminderFormData) => {
-    setReminders((current) =>
-      current.map((reminder) =>
+    setReminders((currentReminders) =>
+      currentReminders.map((reminder) =>
         reminder.id === id
           ? {
               ...reminder,
-              note: data.note,
-              building: data.building,
-              dateTime: data.dateTime,
-              alertNearby: data.alertNearby,
+              ...data,
             }
           : reminder,
       ),

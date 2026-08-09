@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Header } from "@/components/shared/screen/header";
 import { useReminders } from "@/providers/reminders-provider";
 import { EditReminderSheet } from "@/components/reminders/edit-reminder-sheet";
-
 import type { ReminderFormData } from "@/schemas/reminder";
 
 export default function ReminderDetailScreen() {
@@ -33,7 +32,7 @@ export default function ReminderDetailScreen() {
 
   const [editVisible, setEditVisible] = useState(false);
 
-  const { reminders, deleteReminder } = useReminders();
+  const { reminders, deleteReminder, updateReminder } = useReminders();
 
   const reminder = reminders.find((item) => item.id === id);
 
@@ -69,17 +68,7 @@ export default function ReminderDetailScreen() {
   };
 
   const handleEditSave = (data: ReminderFormData) => {
-    /*
-     * updateReminder will be connected here
-     * in the next step.
-     *
-     * Example:
-     *
-     * updateReminder(reminder.id, data);
-     */
-
-    console.log("Updated reminder:", data);
-
+    updateReminder(reminder.id, data);
     setEditVisible(false);
   };
 
