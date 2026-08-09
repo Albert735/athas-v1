@@ -11,11 +11,23 @@ import { places } from "@/data/places";
 import { MapTurnInstruction } from "@/components/map/map-turn-instruction";
 import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useLocalSearchParams } from "expo-router";
+import { MAP_STYLE_URL } from "@/constants/mapbox";
 
 type SheetState = "details" | "directions" | "navigating";
 
-// University of Ghana, Legon — approximate campus center
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
+
+function findBestMatch(query: string) {
+  const lower = query.toLowerCase().trim();
+  if (!lower) return undefined;
+
+  // Prioritize exact match, then "starts with", then "includes"
+  return (
+    places.find((p) => p.name.toLowerCase() === lower) ??
+    places.find((p) => p.name.toLowerCase().startsWith(lower)) ??
+    places.find((p) => p.name.toLowerCase().includes(lower))
+  );
+}
 
 export default function Map() {
   const icon = useColor("icon");
@@ -39,12 +51,13 @@ export default function Map() {
     setMapState("details");
   };
 
-  // If navigated here with ?buildingId=..., auto-select and fly camera to it
   useEffect(() => {
     if (buildingId) {
       const found = places.find((p) => p.id === buildingId);
       if (found) {
         handleMarkerPress(found);
+      } else {
+        console.warn(`No place found for buildingId: ${buildingId}`);
       }
     }
   }, [buildingId]);
@@ -53,7 +66,7 @@ export default function Map() {
     <View style={styles.root}>
       <MapboxGL.MapView
         style={styles.map}
-        styleURL="mapbox://styles/mapbox/streets-v12"
+        styleURL={MAP_STYLE_URL}
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled
@@ -90,10 +103,12 @@ export default function Map() {
               <SearchBar
                 placeholder="Search for a building..."
                 onSearch={(query) => {
-                  const found = places.find((p) =>
-                    p.name.toLowerCase().includes(query.toLowerCase()),
-                  );
-                  if (found) handleMarkerPress(found);
+                  const found = findBestMatch(query);
+                  if (found) {
+                    handleMarkerPress(found);
+                  } else {
+                    console.warn(`No place found matching: ${query}`);
+                  }
                 }}
                 loading={false}
                 rightIcon={<Mic size={18} color={icon} />}
