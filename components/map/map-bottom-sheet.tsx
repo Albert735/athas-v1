@@ -1,4 +1,4 @@
-import { buildingData } from "@/data/buildings";
+import { places } from "@/data/places";
 import { useState } from "react";
 import MapDetailsCard from "@/components/map/map-details-card";
 import MapDirectionsCard from "@/components/map/map-directions-card";
@@ -7,12 +7,12 @@ import MapNavigationCard from "@/components/map/map-navigation-card";
 type SheetState = "details" | "directions" | "navigating";
 
 interface Props {
-  building: (typeof buildingData)[1];
+  place: (typeof places)[number];
   onStateChange?: (state: SheetState) => void;
   onClose?: () => void;
 }
 
-export default function MapBottomSheet({ building, onStateChange }: Props) {
+export default function MapBottomSheet({ place, onStateChange }: Props) {
   const [state, setState] = useState<SheetState>("details");
 
   const updateState = (newState: SheetState) => {
@@ -24,13 +24,13 @@ export default function MapBottomSheet({ building, onStateChange }: Props) {
     <>
       {state === "details" && (
         <MapDetailsCard
-          building={building}
+          place={place}
           onDirections={() => updateState("directions")}
         />
       )}
       {state === "directions" && (
         <MapDirectionsCard
-          building={building}
+          place={place}
           onStart={() => updateState("navigating")}
           onBack={() => updateState("details")}
         />

@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getManeuverIcon } from "@/utils/navigation";
 import type { NavigationStep } from "@/data/navigation-steps";
+import { useColor } from "@/hooks/useColor";
 
 interface Props {
   step: NavigationStep;
@@ -10,14 +11,22 @@ interface Props {
 export function MapTurnInstruction({ step }: Props) {
   const iconName = getManeuverIcon(step.maneuver);
 
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const borderColor = useColor("border");
+  const primaryColor = useColor("primary");
+
   return (
-    <View style={styles.card}>
-      <View style={styles.iconCircle}>
-        <MaterialIcons name={iconName as any} size={24} color="white" />
+    <View style={[styles.card, { backgroundColor: cardColor, borderColor }]}>
+      <View style={[styles.iconCircle, { backgroundColor: primaryColor }]}>
+        <MaterialIcons name={iconName as any} size={24} color="#FFFFFF" />
       </View>
       <View style={styles.info}>
-        <Text style={styles.instruction}>{step.instruction}</Text>
-        <Text style={styles.meta}>
+        <Text style={[styles.instruction, { color: textColor }]}>
+          {step.instruction}
+        </Text>
+        <Text style={[styles.meta, { color: mutedColor }]}>
           {step.distance} • {step.duration} remaining
         </Text>
       </View>
@@ -30,11 +39,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
-    backgroundColor: "#FFFFFF",
     borderRadius: 16,
     padding: 14,
     borderWidth: 1,
-    borderColor: "#E5E7EB",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
@@ -45,21 +52,10 @@ const styles = StyleSheet.create({
     width: 44,
     height: 44,
     borderRadius: 22,
-    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },
-  info: {
-    flex: 1,
-    gap: 3,
-  },
-  instruction: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#111827",
-  },
-  meta: {
-    fontSize: 12,
-    color: "#9CA3AF",
-  },
+  info: { flex: 1, gap: 3 },
+  instruction: { fontSize: 15, fontWeight: "600" },
+  meta: { fontSize: 12 },
 });

@@ -26,6 +26,9 @@ export default function Map() {
   const [stepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];
   const cameraRef = useRef<MapboxGL.Camera>(null);
+  const [selectedPlace, setSelectedPlace] = useState<(typeof places)[0] | null>(
+    null,
+  );
 
   const handleMarkerPress = (place: (typeof places)[0]) => {
     cameraRef.current?.setCamera({
@@ -101,11 +104,11 @@ export default function Map() {
         )}
       </SafeAreaView>
 
-      {selectedBuilding && (
+      {selectedPlace && (
         <MapBottomSheet
-          building={selectedBuilding}
+          place={selectedPlace}
           onStateChange={setMapState}
-          onClose={() => setSelectedBuilding(null)}
+          onClose={() => setSelectedPlace(null)}
         />
       )}
     </View>

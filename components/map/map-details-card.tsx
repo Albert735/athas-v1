@@ -1,31 +1,50 @@
-import { buildingData } from "@/data/buildings";
+import { places } from "@/data/places";
 import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useColor } from "@/hooks/useColor";
 import { router } from "expo-router";
 import { MAP_ACTIONS } from "@/data/map-actions";
 import { Clock, Navigation } from "lucide-react-native";
 import { Button } from "../ui/button";
+import { Image } from "expo-image";
+import { categoryImages } from "@/data/category-images";
 
 interface Props {
-  building: (typeof buildingData)[number];
+  place: (typeof places)[number];
   onDirections?: () => void;
 }
 
-export default function MapDetailsCard({ building, onDirections }: Props) {
+export default function MapDetailsCard({ place, onDirections }: Props) {
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const borderColor = useColor("border");
+  const backgroundColor = useColor("background");
+
   return (
-    <View style={styles.sheet}>
+    <View style={[styles.sheet, { backgroundColor: cardColor }]}>
       <View style={styles.imageWrapper}>
-        <View style={styles.imagePlaceholder} />
+        <Image
+          source={categoryImages[place.category] ?? categoryImages.library}
+          style={styles.image}
+          contentFit="cover"
+        />
       </View>
+
       {/* Name + duration */}
       <View style={styles.nameRow}>
         <View style={styles.nameInfo}>
-          <Text style={styles.buildingName}>{building.name}</Text>
-          <Text style={styles.buildingDept}>{building.department}</Text>
+          <Text style={[styles.buildingName, { color: textColor }]}>
+            {place.name}
+          </Text>
+          <Text
+            style={[styles.buildingDept, { color: mutedColor }]}
+            numberOfLines={1}
+          >
+            {place.description}
+          </Text>
         </View>
         <View style={styles.distanceInfo}>
-          <Text style={styles.duration}>{building.duration}</Text>
-          <Text style={styles.distance}>{building.distance}</Text>
+          <Text style={styles.duration}>{place.distance}</Text>
         </View>
       </View>
 
@@ -38,19 +57,21 @@ export default function MapDetailsCard({ building, onDirections }: Props) {
               key={action.id}
               style={[
                 styles.actionButton,
+                { backgroundColor },
                 index === 0 && styles.actionButtonPrimary,
               ]}
               activeOpacity={0.7}
               onPress={() => {
                 if (action.id === "info") {
-                  router.push(`/building/${building.id}`);
+                  router.push(`/building/${place.id}`);
                 }
               }}
             >
-              <Icon size={16} color={index === 0 ? "#FFFFFF" : "#374151"} />
+              <Icon size={16} color={index === 0 ? "#FFFFFF" : mutedColor} />
               <Text
                 style={[
                   styles.actionLabel,
+                  { color: mutedColor },
                   index === 0 && styles.actionLabelPrimary,
                 ]}
               >
@@ -62,19 +83,36 @@ export default function MapDetailsCard({ building, onDirections }: Props) {
       </View>
 
       {/* Hours */}
-      <View style={styles.hoursRow}>
-        <Clock size={16} color="#6B7280" />
-        <Text style={styles.hoursText}>{building.hours}</Text>
-        <Text style={styles.hoursDot}>•</Text>
-        <Text style={styles.hoursDays}>{building.days}</Text>
-        <View style={styles.statusBadge}>
-          <Text style={styles.statusText}>
-            {building.isOpen ? "Open" : "Closed"}
+      <View style={[styles.hoursRow, { borderTopColor: borderColor }]}>
+        <Clock size={16} color={mutedColor} />
+        <Text style={[styles.hoursText, { color: mutedColor }]}>
+          {place.hours}
+        </Text>
+        <Text style={[styles.hoursDot, { color: mutedColor }]}>•</Text>
+        <Text style={[styles.hoursDays, { color: mutedColor }]}>
+          {place.days}
+        </Text>
+        <View
+          style={[
+            styles.statusBadge,
+            place.isOpen ? styles.statusOpen : styles.statusClosed,
+          ]}
+        >
+          <Text
+            style={[
+              styles.statusText,
+              place.isOpen ? styles.statusTextOpen : styles.statusTextClosed,
+            ]}
+          >
+            {place.isOpen ? "Open" : "Closed"}
           </Text>
         </View>
       </View>
+
       {/* Description */}
-      <Text style={styles.description}>{building.description}</Text>
+      <Text style={[styles.description, { color: mutedColor }]}>
+        {place.description}
+      </Text>
 
       {/* Direction button */}
       <View style={styles.footer}>
@@ -92,92 +130,45 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "white",
     padding: 20,
     margin: 16,
     borderRadius: 40,
   },
   imageWrapper: {
     height: 150,
-    backgroundColor: "#F3F4F6",
     borderRadius: 25,
     marginBottom: 20,
     overflow: "hidden",
   },
-  imagePlaceholder: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  image: {
     width: "100%",
     height: "100%",
-  },
-  imagePlaceholderText: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#6B7280",
   },
   nameRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    alignItems: "center",
+    alignItems: "flex-start",
     marginBottom: 24,
-  },
-  nameInfo: {
-    flex: 1,
-  },
-  buildingName: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#1F2937",
-    marginBottom: 4,
-  },
-  buildingDept: {
-    fontSize: 15,
-    fontWeight: "500",
-    color: "#6B7280",
-  },
-  distanceInfo: {
-    alignItems: "flex-end",
-  },
-  duration: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#10B981",
-    marginBottom: 4,
-  },
-  distance: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#6B7280",
-  },
-
-  actions: {
-    flexDirection: "row",
-    justifyContent: "space-between",
     gap: 12,
   },
+  nameInfo: { flex: 1 },
+  buildingName: { fontSize: 20, fontWeight: "700", marginBottom: 4 },
+  buildingDept: { fontSize: 14, fontWeight: "500" },
+  distanceInfo: { alignItems: "flex-end" },
+  duration: { fontSize: 15, fontWeight: "600", color: "#10B981" },
+  actions: { flexDirection: "row", justifyContent: "space-between", gap: 12 },
   actionButton: {
     flex: 1,
     height: 32,
     borderRadius: 100,
-    backgroundColor: "#F3F4F6",
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "center",
     gap: 8,
   },
-  actionButtonPrimary: {
-    backgroundColor: "#10B981",
-  },
-  actionLabel: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#374151",
-  },
-  actionLabelPrimary: {
-    color: "#FFFFFF",
-  },
-
+  actionButtonPrimary: { backgroundColor: "#10B981" },
+  actionLabel: { fontSize: 12, fontWeight: "600" },
+  actionLabelPrimary: { color: "#FFFFFF" },
   hoursRow: {
     flexDirection: "row",
     alignItems: "center",
@@ -185,43 +176,26 @@ const styles = StyleSheet.create({
     marginTop: 24,
     paddingTop: 20,
     borderTopWidth: 1,
-    borderTopColor: "#E5E7EB",
   },
-  hoursText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#374151",
-  },
-  hoursDot: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#9CA3AF",
-  },
-  hoursDays: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#6B7280",
-  },
+  hoursText: { fontSize: 14, fontWeight: "500" },
+  hoursDot: { fontSize: 16, fontWeight: "500" },
+  hoursDays: { fontSize: 14, fontWeight: "500" },
   statusBadge: {
     marginLeft: "auto",
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 100,
-    backgroundColor: "#ECFDF5",
   },
-  statusText: {
-    fontSize: 12,
-    fontWeight: "600",
-    color: "#10B981",
-  },
+  statusOpen: { backgroundColor: "#ECFDF5" },
+  statusClosed: { backgroundColor: "#FEF2F2" },
+  statusText: { fontSize: 12, fontWeight: "600" },
+  statusTextOpen: { color: "#10B981" },
+  statusTextClosed: { color: "#EF4444" },
   description: {
     fontSize: 14,
     fontWeight: "500",
-    color: "#6B7280",
     marginTop: 12,
     textAlign: "justify",
   },
-  footer: {
-    marginTop: 24,
-  },
+  footer: { marginTop: 24 },
 });

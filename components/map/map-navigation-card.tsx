@@ -5,65 +5,75 @@ import { getManeuverIcon } from "@/utils/navigation";
 import { MOCK_STEPS } from "@/data/navigation-steps";
 import { useState } from "react";
 import { Button } from "../ui/button";
+import { useColor } from "@/hooks/useColor";
 
-/**
- * MapNavigationCard Props Interface
- */
 interface Props {
-  /** Callback fired when user exits navigation mode */
   onExit?: () => void;
 }
 
-/**
- * MapNavigationCard Component
- *
- * Overlay sheet displayed during active step-by-step turn navigation.
- * Displays maneuver icon, turn instructions, remaining distance, ETA, and an exit button.
- */
 export default function MapNavigationCard({ onExit }: Props) {
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];
   const iconName = getManeuverIcon(currentStep.maneuver);
 
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const mutedColor = useColor("textMuted");
+  const borderColor = useColor("border");
+  const backgroundColor = useColor("background");
+  const primaryColor = useColor("primary");
+
   return (
-    <View style={styles.sheet}>
+    <View style={[styles.sheet, { backgroundColor: cardColor }]}>
       <View style={styles.navHeader}>
-        <View style={styles.iconCircle}>
-          <MaterialIcons name={iconName as any} size={24} color="white" />
+        <View style={[styles.iconCircle, { backgroundColor: primaryColor }]}>
+          <MaterialIcons name={iconName as any} size={24} color="#FFFFFF" />
         </View>
         <View style={styles.instructionInfo}>
-          <Text style={styles.turnDistance}>{currentStep.distance}</Text>
-          <Text style={styles.instructionText}>{currentStep.instruction}</Text>
+          <Text style={[styles.turnDistance, { color: textColor }]}>
+            {currentStep.distance}
+          </Text>
+          <Text style={[styles.instructionText, { color: mutedColor }]}>
+            {currentStep.instruction}
+          </Text>
         </View>
         <TouchableOpacity
-          style={styles.closeButton}
+          style={[styles.closeButton, { backgroundColor }]}
           onPress={onExit}
           activeOpacity={0.7}
         >
-          <X size={20} color="#6B7280" />
+          <X size={20} color={mutedColor} />
         </TouchableOpacity>
       </View>
 
-      <View style={styles.progressRow}>
+      <View style={[styles.progressRow, { backgroundColor }]}>
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Remaining</Text>
-          <Text style={styles.statValue}>{currentStep.duration}</Text>
+          <Text style={[styles.statLabel, { color: mutedColor }]}>
+            Remaining
+          </Text>
+          <Text style={[styles.statValue, { color: textColor }]}>
+            {currentStep.duration}
+          </Text>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: borderColor }]} />
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>Distance</Text>
-          <Text style={styles.statValue}>{currentStep.distance}</Text>
+          <Text style={[styles.statLabel, { color: mutedColor }]}>
+            Distance
+          </Text>
+          <Text style={[styles.statValue, { color: textColor }]}>
+            {currentStep.distance}
+          </Text>
         </View>
-        <View style={styles.divider} />
+        <View style={[styles.divider, { backgroundColor: borderColor }]} />
         <View style={styles.statBox}>
-          <Text style={styles.statLabel}>ETA</Text>
-          <Text style={styles.statValue}>5:24 PM</Text>
+          <Text style={[styles.statLabel, { color: mutedColor }]}>ETA</Text>
+          <Text style={[styles.statValue, { color: textColor }]}>5:24 PM</Text>
         </View>
       </View>
 
       <View style={styles.footer}>
-        <Button onPress={onExit} variant={"default"}>
-          <Text style={styles.endButtonText}>Exit</Text>
+        <Button onPress={onExit} variant="destructive">
+          Exit
         </Button>
       </View>
     </View>
@@ -76,7 +86,6 @@ const styles = StyleSheet.create({
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: "white",
     padding: 20,
     margin: 16,
     borderRadius: 40,
@@ -91,29 +100,16 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     borderRadius: 24,
-    backgroundColor: "#000",
     alignItems: "center",
     justifyContent: "center",
   },
-  instructionInfo: {
-    flex: 1,
-  },
-  turnDistance: {
-    fontSize: 20,
-    fontWeight: "700",
-    color: "#1F2937",
-  },
-  instructionText: {
-    fontSize: 14,
-    fontWeight: "500",
-    color: "#6B7280",
-    marginTop: 2,
-  },
+  instructionInfo: { flex: 1 },
+  turnDistance: { fontSize: 20, fontWeight: "700" },
+  instructionText: { fontSize: 14, fontWeight: "500", marginTop: 2 },
   closeButton: {
     width: 36,
     height: 36,
     borderRadius: 18,
-    backgroundColor: "#F3F4F6",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -121,42 +117,13 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    backgroundColor: "#F9FAFB",
     padding: 16,
     borderRadius: 20,
     marginBottom: 20,
   },
-  statBox: {
-    flex: 1,
-    alignItems: "center",
-  },
-  statLabel: {
-    fontSize: 12,
-    fontWeight: "500",
-    color: "#9CA3AF",
-    marginBottom: 4,
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: "700",
-    color: "#1F2937",
-  },
-  divider: {
-    width: 1,
-    height: 24,
-    backgroundColor: "#E5E7EB",
-  },
+  statBox: { flex: 1, alignItems: "center" },
+  statLabel: { fontSize: 12, fontWeight: "500", marginBottom: 4 },
+  statValue: { fontSize: 16, fontWeight: "700" },
+  divider: { width: 1, height: 24 },
   footer: {},
-  endButton: {
-    height: 54,
-    backgroundColor: "#EF4444",
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  endButtonText: {
-    fontSize: 15,
-    fontWeight: "600",
-    color: "#FFFFFF",
-  },
 });
