@@ -13,24 +13,10 @@ import { Platform } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { ToastProvider } from "@/components/ui/toast";
+import MapboxGL from "@rnmapbox/maps";
 
-// import MapboxGL from "@rnmapbox/maps";
-// import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
+MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN!);
 
-// MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN);
-
-// SplashScreen.setOptions({
-//   duration: 200,
-//   fade: true,
-// });
-
-/**
- * RootLayout Component
- *
- * Root layout wrapper for Expo Router.
- * Configures top-level context providers (GestureHandler, ThemeProvider, ToastProvider),
- * status bar/navigation bar color syncing, and defines the primary Stack navigation routes.
- */
 export default function RootLayout() {
   const colorScheme = useColorScheme() || "light";
 
@@ -42,7 +28,6 @@ export default function RootLayout() {
     }
   }, [colorScheme]);
 
-  // Keep the root view background color in sync with the current theme
   useEffect(() => {
     setBackgroundColorAsync(
       colorScheme === "dark" ? Colors.dark.background : Colors.light.background,
@@ -61,6 +46,8 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="(auth)" options={{ headerShown: false }} />
             <Stack.Screen name="(drawer)" options={{ headerShown: false }} />
+            <Stack.Screen name="map" options={{ headerShown: false }} />
+            <Stack.Screen name="reminders" options={{ headerShown: false }} />
             <Stack.Screen
               name="building/[id]/index"
               options={{ headerShown: false }}
