@@ -1,28 +1,49 @@
-export type ManeuverType =
-  | "turn-left"
-  | "turn-right"
-  | "straight"
+export type MapboxManeuverType =
+  | "turn"
+  | "new name"
+  | "depart"
   | "arrive"
-  | "depart";
+  | "merge"
+  | "on ramp"
+  | "off ramp"
+  | "fork"
+  | "end of road"
+  | "continue"
+  | "roundabout"
+  | "rotary"
+  | "roundabout turn"
+  | "notification"
+  | "exit roundabout"
+  | "exit rotary";
 
-export function getManeuverIcon(maneuver: ManeuverType): string {
-  switch (maneuver) {
-    case "turn-left":
+export type MapboxManeuverModifier =
+  | "uturn"
+  | "sharp right"
+  | "right"
+  | "slight right"
+  | "straight"
+  | "slight left"
+  | "left"
+  | "sharp left";
+
+export function getManeuverIcon(type?: string, modifier?: string): string {
+  if (type === "arrive") return "map-marker-check";
+  if (type === "depart") return "navigation";
+  if (type === "roundabout" || type === "rotary") return "rotate-right";
+
+  switch (modifier) {
+    case "left":
+    case "slight left":
+    case "sharp left":
       return "turn-left";
-
-    case "turn-right":
+    case "right":
+    case "slight right":
+    case "sharp right":
       return "turn-right";
-
+    case "uturn":
+      return "u-turn-left";
     case "straight":
-      return "arrow-up-bold";
-
-    case "arrive":
-      return "map-marker-check";
-
-    case "depart":
-      return "navigation";
-
     default:
-      return "navigation";
+      return "arrow-upward";
   }
 }
