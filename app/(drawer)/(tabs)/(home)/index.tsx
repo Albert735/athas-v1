@@ -108,7 +108,7 @@ export default function HomeScreen() {
 
           <MapboxGL.UserLocation visible showsUserHeadingIndicator />
 
-          {places.map((place) => (
+          {/* {places.map((place) => (
             <MapboxGL.PointAnnotation
               key={place.id}
               id={`marker-${place.id}`}
@@ -119,7 +119,7 @@ export default function HomeScreen() {
                 <View style={styles.markerDot} />
               </View>
             </MapboxGL.PointAnnotation>
-          ))}
+          ))} */}
         </MapboxGL.MapView>
       </View>
 

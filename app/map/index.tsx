@@ -4,13 +4,13 @@ import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
 import { useColor } from "@/hooks/useColor";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import MapboxGL from "@rnmapbox/maps";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
-import { buildingData } from "@/data/buildings";
 import { places } from "@/data/places";
 import { MapTurnInstruction } from "@/components/map/map-turn-instruction";
 import { MOCK_STEPS } from "@/data/navigation-steps";
+import { useLocalSearchParams } from "expo-router";
 
 type SheetState = "details" | "directions" | "navigating";
 
@@ -19,16 +19,15 @@ const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
 export default function Map() {
   const icon = useColor("icon");
-  const [selectedBuilding, setSelectedBuilding] = useState<
-    (typeof buildingData)[0] | null
-  >(null);
+  const { buildingId } = useLocalSearchParams<{ buildingId?: string }>();
+
+  const [selectedPlace, setSelectedPlace] = useState<(typeof places)[0] | null>(
+    null,
+  );
   const [mapState, setMapState] = useState<SheetState>("details");
   const [stepIndex] = useState(0);
   const currentStep = MOCK_STEPS[stepIndex];
   const cameraRef = useRef<MapboxGL.Camera>(null);
-  const [selectedPlace, setSelectedPlace] = useState<(typeof places)[0] | null>(
-    null,
-  );
 
   const handleMarkerPress = (place: (typeof places)[0]) => {
     cameraRef.current?.setCamera({
@@ -36,13 +35,19 @@ export default function Map() {
       zoomLevel: 17,
       animationDuration: 600,
     });
-    // Adapt place shape to what MapBottomSheet expects (buildingData shape)
-    setSelectedBuilding({
-      id: place.id,
-      name: place.name,
-      image: undefined,
-    } as any);
+    setSelectedPlace(place);
+    setMapState("details");
   };
+
+  // If navigated here with ?buildingId=..., auto-select and fly camera to it
+  useEffect(() => {
+    if (buildingId) {
+      const found = places.find((p) => p.id === buildingId);
+      if (found) {
+        handleMarkerPress(found);
+      }
+    }
+  }, [buildingId]);
 
   return (
     <View style={styles.root}>
