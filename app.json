@@ -10,7 +10,10 @@
     "newArchEnabled": true,
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.anonymous.athasv1"
+      "bundleIdentifier": "com.anonymous.athasv1",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "Athas uses your location to show you on the map and provide directions."
+      }
     },
     "android": {
       "adaptiveIcon": {

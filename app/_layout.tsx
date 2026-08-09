@@ -16,6 +16,7 @@ import { ToastProvider } from "@/components/ui/toast";
 import MapboxGL from "@rnmapbox/maps";
 
 MapboxGL.setAccessToken(process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN!);
+console.log("Mapbox token:", process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN);
 
 export default function RootLayout() {
   const colorScheme = useColorScheme() || "light";
