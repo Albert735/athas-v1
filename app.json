@@ -1,8 +1,8 @@
 {
   "expo": {
-    "name": "athas-v1",
-    "slug": "athas-v1",
-    "scheme": "athas-v1",
+    "name": "Athas",
+    "slug": "athas",
+    "scheme": "athas",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
