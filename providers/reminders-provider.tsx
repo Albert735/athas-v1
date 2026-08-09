@@ -8,7 +8,6 @@ import {
 
 import type { Reminder } from "@/types/reminder";
 import type { ReminderFormData } from "@/schemas/reminder";
-import { reminders as initialReminders } from "@/data/reminders";
 
 type RemindersContextValue = {
   reminders: Reminder[];
@@ -24,7 +23,7 @@ const RemindersContext = createContext<RemindersContextValue | undefined>(
 );
 
 export function RemindersProvider({ children }: { children: ReactNode }) {
-  const [reminders, setReminders] = useState<Reminder[]>(initialReminders);
+  const [reminders, setReminders] = useState<Reminder[]>([]);
 
   const getReminder = (id: string) => {
     return reminders.find((reminder) => reminder.id === id);
