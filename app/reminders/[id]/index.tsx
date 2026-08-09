@@ -26,6 +26,7 @@ import { Header } from "@/components/shared/screen/header";
 import { useReminders } from "@/providers/reminders-provider";
 import { EditReminderSheet } from "@/components/reminders/edit-reminder-sheet";
 import type { ReminderFormData } from "@/schemas/reminder";
+// import type { ReminderFormData } from "@/schemas/reminder";
 
 export default function ReminderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
