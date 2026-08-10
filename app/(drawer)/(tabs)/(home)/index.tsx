@@ -51,6 +51,9 @@ export default function HomeScreen() {
     cameraRef.current?.setCamera({
       centerCoordinate: [place.longitude, place.latitude],
       zoomLevel: 17,
+      // Tilt the camera when flying to a place — combined with the 3D
+      // buildings layer below, this gives a nice angled view of the destination
+      pitch: 45,
       animationDuration: 600,
     });
     router.push(`/building/${place.id}`);
@@ -97,6 +100,9 @@ export default function HomeScreen() {
           logoEnabled={false}
           attributionEnabled={false}
           compassEnabled
+          // Lets the user tilt the map with a two-finger drag gesture,
+          // needed to actually see the 3D building extrusions at an angle
+          pitchEnabled
         >
           <MapboxGL.Camera
             ref={cameraRef}
@@ -107,6 +113,20 @@ export default function HomeScreen() {
           />
 
           <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+
+          <MapboxGL.FillExtrusionLayer
+            id="3d-buildings"
+            sourceID="composite"
+            sourceLayerID="building"
+            minZoomLevel={15}
+            maxZoomLevel={22}
+            style={{
+              fillExtrusionColor: "#D1D5DB",
+              fillExtrusionHeight: ["get", "height"],
+              fillExtrusionBase: ["get", "min_height"],
+              fillExtrusionOpacity: 0.8,
+            }}
+          />
 
           {/* {places.map((place) => (
             <MapboxGL.PointAnnotation
