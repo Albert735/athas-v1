@@ -39,7 +39,6 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   }
 
   const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
-
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
       <View style={styles.navHeader}>
