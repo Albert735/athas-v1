@@ -1,26 +1,28 @@
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getManeuverIcon } from "@/utils/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { useColor } from "@/hooks/useColor";
 import type { RouteResult } from "@/utils/directions";
 import { formatDistance, formatDuration } from "@/utils/directions";
+import { useLiveLocation } from "@/hooks/useLiveLocation";
+import { getDistanceMeters } from "@/utils/geo";
+
+// How close (in meters) the user needs to be to a maneuver point
+// before we consider that step "reached" and move to the next one
+const ARRIVAL_THRESHOLD_METERS = 15;
 
 interface Props {
-  route: RouteResult | null; // the full calculated route (null if directions haven't loaded)
-  onExit?: () => void; // called when the user taps Exit or finishes the last step
+  route: RouteResult | null;
+  onExit?: () => void;
 }
 
-/**
- * Bottom sheet shown while actively navigating.
- * Displays the current turn instruction and lets the user manually
- * step forward/backward through the route (no live GPS tracking yet —
- * advancement is user-driven via the Next/Back buttons).
- */
 export default function MapNavigationCard({ route, onExit }: Props) {
-  // Which step in route.steps we're currently showing
   const [stepIndex, setStepIndex] = useState(0);
+
+  // Actively track the user's live position while this card is mounted (i.e. while navigating)
+  const liveLocation = useLiveLocation(true);
 
   const step = route?.steps[stepIndex];
   const isLastStep = route ? stepIndex === route.steps.length - 1 : true;
@@ -32,9 +34,26 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   const backgroundColor = useColor("background");
   const primaryColor = useColor("primary");
 
-  // Defensive fallback — if directions failed to load or somehow we got here
-  // without a route, show a simple exit option instead of crashing on
-  // `route.steps[stepIndex]` being undefined.
+  // Auto-advance: every time the user's live location updates, check how
+  // close they are to the current step's maneuver point. Once within the
+  // threshold, move to the next step automatically — or exit if it was the last one.
+  useEffect(() => {
+    if (!liveLocation || !step) return;
+
+    const distanceToManeuver = getDistanceMeters(
+      liveLocation,
+      step.maneuver.location,
+    );
+
+    if (distanceToManeuver <= ARRIVAL_THRESHOLD_METERS) {
+      if (isLastStep) {
+        onExit?.();
+      } else {
+        setStepIndex((i) => i + 1);
+      }
+    }
+  }, [liveLocation]);
+
   if (!route || !step) {
     return (
       <View style={[styles.sheet, { backgroundColor: cardColor }]}>
@@ -50,33 +69,23 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     );
   }
 
-  // Map Mapbox's maneuver type/modifier (e.g. "turn" + "left") to a MaterialIcons name
   const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
 
-  const handleNext = () => {
-    if (isLastStep) {
-      // On the final step, "Next" becomes "Arrived — Exit" and closes navigation
-      onExit?.();
-    } else {
-      setStepIndex((i) => i + 1);
-    }
-  };
-
-  const handlePrevious = () => {
-    // Math.max guards against going below step 0
-    setStepIndex((i) => Math.max(0, i - 1));
-  };
+  // Live distance remaining to the current maneuver, recalculated as the user moves —
+  // falls back to the step's original distance until the first GPS fix comes in
+  const liveDistance = liveLocation
+    ? getDistanceMeters(liveLocation, step.maneuver.location)
+    : step.distance;
 
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
-      {/* Current instruction header: icon + distance + text */}
       <View style={styles.navHeader}>
         <View style={[styles.iconCircle, { backgroundColor: primaryColor }]}>
           <MaterialIcons name={iconName as any} size={24} color="#FFFFFF" />
         </View>
         <View style={styles.instructionInfo}>
           <Text style={[styles.turnDistance, { color: textColor }]}>
-            {formatDistance(step.distance)}
+            {formatDistance(liveDistance)}
           </Text>
           <Text
             style={[styles.instructionText, { color: mutedColor }]}
@@ -87,21 +96,18 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      {/* Dot indicator showing progress through all steps in the route */}
       <View style={styles.stepDots}>
         {route.steps.map((_, i) => (
           <View
             key={i}
             style={[
               styles.stepDot,
-              // Highlight the dot matching the currently displayed step
               { backgroundColor: i === stepIndex ? primaryColor : borderColor },
             ]}
           />
         ))}
       </View>
 
-      {/* Trip-level stats: which step we're on, and total time remaining for the whole route */}
       <View style={[styles.progressRow, { backgroundColor }]}>
         <View style={styles.statBox}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>Step</Text>
@@ -120,23 +126,10 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      {/* Navigation controls: Back only shows after the first step, Next always shows */}
-      <View style={styles.buttonRow}>
-        {stepIndex > 0 && (
-          <TouchableOpacity
-            style={[styles.secondaryButton, { backgroundColor }]}
-            onPress={handlePrevious}
-          >
-            <Text style={[styles.secondaryButtonText, { color: textColor }]}>
-              Back
-            </Text>
-          </TouchableOpacity>
-        )}
-        <View style={{ flex: 1 }}>
-          <Button onPress={handleNext} variant="default">
-            {isLastStep ? "Arrived — Exit" : "Next Step"}
-          </Button>
-        </View>
+      <View style={styles.footer}>
+        <Button onPress={onExit} variant="destructive">
+          Exit
+        </Button>
       </View>
     </View>
   );
@@ -187,13 +180,5 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 12, fontWeight: "500", marginBottom: 4 },
   statValue: { fontSize: 16, fontWeight: "700" },
   divider: { width: 1, height: 24 },
-  buttonRow: { flexDirection: "row", gap: 12, alignItems: "center" },
-  secondaryButton: {
-    paddingHorizontal: 20,
-    height: 48,
-    borderRadius: 14,
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  secondaryButtonText: { fontSize: 15, fontWeight: "600" },
+  footer: {},
 });

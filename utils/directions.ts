@@ -8,8 +8,9 @@ export interface RouteStep {
   distance: number; // Distance for this step, in meters
   duration: number; // Estimated time for this step, in seconds
   maneuver: {
-    type: string; // e.g. "turn", "depart", "arrive", "roundabout"
-    modifier?: string; // e.g. "left", "right", "straight" — direction of the maneuver
+    type: string;
+    modifier?: string;
+    location: [number, number];
   };
 }
 
@@ -66,6 +67,7 @@ export async function getRoute(
       maneuver: {
         type: step.maneuver.type,
         modifier: step.maneuver.modifier,
+        location: step.maneuver.location, // Mapbox already gives [lng, lat] here
       },
     }));
 
