@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
 		3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */; };
-		9884B97BA446AB17756E7A62 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 702480923C492FA0DFDCDD15 /* ExpoModulesProvider.swift */; };
-		A1CABBA126D450C46FD1E5C0 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = F0B227BB095452CF85E3065C /* PrivacyInfo.xcprivacy */; };
-		A3E74CB588F18D981FFDC140 /* libPods-Athas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 37D541BE034932248EBD86FC /* libPods-Athas.a */; };
+		4ECE14A70F61F6726A7E2E34 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 35C33BFBE8E770A5BE0F9BB8 /* PrivacyInfo.xcprivacy */; };
+		6A8394B490C4993C4AF195D7 /* libPods-Athas.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 7AF8DDEDCA128F8FEACA39F8 /* libPods-Athas.a */; };
+		B84CE5AD1285AF5080429F84 /* ExpoModulesProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2044B116E810DFDDA666BB08 /* ExpoModulesProvider.swift */; };
 		BB2F792D24A3F905000567C9 /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = BB2F792C24A3F905000567C9 /* Expo.plist */; };
 		F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = F11748412D0307B40044C1D9 /* AppDelegate.swift */; };
 /* End PBXBuildFile section */
@@ -20,16 +20,16 @@
 		13B07F961A680F5B00A75B9A /* Athas.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Athas.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = Athas/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Athas/Info.plist; sourceTree = "<group>"; };
-		37D541BE034932248EBD86FC /* libPods-Athas.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Athas.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		4F4CC9F2AAF2A499DE93E688 /* Pods-Athas.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Athas.release.xcconfig"; path = "Target Support Files/Pods-Athas/Pods-Athas.release.xcconfig"; sourceTree = "<group>"; };
-		702480923C492FA0DFDCDD15 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Athas/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
-		77E7CC43F8DCB006BABB4207 /* Pods-Athas.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Athas.debug.xcconfig"; path = "Target Support Files/Pods-Athas/Pods-Athas.debug.xcconfig"; sourceTree = "<group>"; };
+		2044B116E810DFDDA666BB08 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Athas/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
+		27286D5F65B5512E1D4B1496 /* Pods-Athas.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Athas.release.xcconfig"; path = "Target Support Files/Pods-Athas/Pods-Athas.release.xcconfig"; sourceTree = "<group>"; };
+		35C33BFBE8E770A5BE0F9BB8 /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Athas/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		7AF8DDEDCA128F8FEACA39F8 /* libPods-Athas.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Athas.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = SplashScreen.storyboard; path = Athas/SplashScreen.storyboard; sourceTree = "<group>"; };
 		BB2F792C24A3F905000567C9 /* Expo.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
-		F0B227BB095452CF85E3065C /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; includeInIndex = 1; name = PrivacyInfo.xcprivacy; path = Athas/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		F11748412D0307B40044C1D9 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Athas/AppDelegate.swift; sourceTree = "<group>"; };
 		F11748442D0722820044C1D9 /* Athas-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; name = "Athas-Bridging-Header.h"; path = "Athas/Athas-Bridging-Header.h"; sourceTree = "<group>"; };
+		F94A5A7B4AEED70F855B1904 /* Pods-Athas.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Athas.debug.xcconfig"; path = "Target Support Files/Pods-Athas/Pods-Athas.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -37,31 +37,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A3E74CB588F18D981FFDC140 /* libPods-Athas.a in Frameworks */,
+				6A8394B490C4993C4AF195D7 /* libPods-Athas.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		068200279796120679F809B6 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				77E7CC43F8DCB006BABB4207 /* Pods-Athas.debug.xcconfig */,
-				4F4CC9F2AAF2A499DE93E688 /* Pods-Athas.release.xcconfig */,
-			);
-			name = Pods;
-			path = Pods;
-			sourceTree = "<group>";
-		};
-		138783E7583C01D4BA3AA0E0 /* ExpoModulesProviders */ = {
-			isa = PBXGroup;
-			children = (
-				992EC947685DCB8B23E61B57 /* Athas */,
-			);
-			name = ExpoModulesProviders;
-			sourceTree = "<group>";
-		};
 		13B07FAE1A68108700A75B9A /* Athas */ = {
 			isa = PBXGroup;
 			children = (
@@ -71,7 +53,15 @@
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
 				13B07FB61A68108700A75B9A /* Info.plist */,
 				AA286B85B6C04FC6940260E9 /* SplashScreen.storyboard */,
-				F0B227BB095452CF85E3065C /* PrivacyInfo.xcprivacy */,
+				35C33BFBE8E770A5BE0F9BB8 /* PrivacyInfo.xcprivacy */,
+			);
+			name = Athas;
+			sourceTree = "<group>";
+		};
+		2CB27E57FBA3C5E1C3E3DFF5 /* Athas */ = {
+			isa = PBXGroup;
+			children = (
+				2044B116E810DFDDA666BB08 /* ExpoModulesProvider.swift */,
 			);
 			name = Athas;
 			sourceTree = "<group>";
@@ -80,9 +70,17 @@
 			isa = PBXGroup;
 			children = (
 				ED297162215061F000B7C4FE /* JavaScriptCore.framework */,
-				37D541BE034932248EBD86FC /* libPods-Athas.a */,
+				7AF8DDEDCA128F8FEACA39F8 /* libPods-Athas.a */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6E24BE1CB2A08CB9EEBA5D8B /* ExpoModulesProviders */ = {
+			isa = PBXGroup;
+			children = (
+				2CB27E57FBA3C5E1C3E3DFF5 /* Athas */,
+			);
+			name = ExpoModulesProviders;
 			sourceTree = "<group>";
 		};
 		832341AE1AAA6A7D00B99B32 /* Libraries */ = {
@@ -99,8 +97,8 @@
 				832341AE1AAA6A7D00B99B32 /* Libraries */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				068200279796120679F809B6 /* Pods */,
-				138783E7583C01D4BA3AA0E0 /* ExpoModulesProviders */,
+				EFDFFF18B13004BE85EFB268 /* Pods */,
+				6E24BE1CB2A08CB9EEBA5D8B /* ExpoModulesProviders */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -115,14 +113,6 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
-		992EC947685DCB8B23E61B57 /* Athas */ = {
-			isa = PBXGroup;
-			children = (
-				702480923C492FA0DFDCDD15 /* ExpoModulesProvider.swift */,
-			);
-			name = Athas;
-			sourceTree = "<group>";
-		};
 		BB2F792B24A3F905000567C9 /* Supporting */ = {
 			isa = PBXGroup;
 			children = (
@@ -130,6 +120,16 @@
 			);
 			name = Supporting;
 			path = Athas/Supporting;
+			sourceTree = "<group>";
+		};
+		EFDFFF18B13004BE85EFB268 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				F94A5A7B4AEED70F855B1904 /* Pods-Athas.debug.xcconfig */,
+				27286D5F65B5512E1D4B1496 /* Pods-Athas.release.xcconfig */,
+			);
+			name = Pods;
+			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -140,13 +140,13 @@
 			buildConfigurationList = 13B07F931A680F5B00A75B9A /* Build configuration list for PBXNativeTarget "Athas" */;
 			buildPhases = (
 				08A4A3CD28434E44B6B9DE2E /* [CP] Check Pods Manifest.lock */,
-				3CC69A556673EF034F6E942B /* [Expo] Configure project */,
+				B0A81463CE328B8C96665A4A /* [Expo] Configure project */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
 				00DD1BFF1BD5951E006B06BC /* Bundle React Native code and images */,
 				800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */,
-				159F4174B406F089E0A5176F /* [CP] Embed Pods Frameworks */,
+				2DF6B0BFCFEB5CD89CAEABD9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -167,8 +167,6 @@
 				TargetAttributes = {
 					13B07F861A680F5B00A75B9A = {
 						LastSwiftMigration = 1250;
-						DevelopmentTeam = "39W9768P9P";
-						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -198,7 +196,7 @@
 				BB2F792D24A3F905000567C9 /* Expo.plist in Resources */,
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
 				3E461D99554A48A4959DE609 /* SplashScreen.storyboard in Resources */,
-				A1CABBA126D450C46FD1E5C0 /* PrivacyInfo.xcprivacy in Resources */,
+				4ECE14A70F61F6726A7E2E34 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,7 +242,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		159F4174B406F089E0A5176F /* [CP] Embed Pods Frameworks */ = {
+		2DF6B0BFCFEB5CD89CAEABD9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -273,30 +271,6 @@
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Athas/Pods-Athas-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
-		};
-		3CC69A556673EF034F6E942B /* [Expo] Configure project */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"$(SRCROOT)/.xcode.env",
-				"$(SRCROOT)/.xcode.env.local",
-				"$(SRCROOT)/Athas/Athas.entitlements",
-				"$(SRCROOT)/Pods/Target Support Files/Pods-Athas/expo-configure-project.sh",
-			);
-			name = "[Expo] Configure project";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"$(SRCROOT)/Pods/Target Support Files/Pods-Athas/ExpoModulesProvider.swift",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Athas/expo-configure-project.sh\"\n";
 		};
 		800E24972A6A228C8D4807E9 /* [CP] Copy Pods Resources */ = {
 			isa = PBXShellScriptBuildPhase;
@@ -332,6 +306,30 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Athas/Pods-Athas-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		B0A81463CE328B8C96665A4A /* [Expo] Configure project */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"$(SRCROOT)/.xcode.env",
+				"$(SRCROOT)/.xcode.env.local",
+				"$(SRCROOT)/Athas/Athas.entitlements",
+				"$(SRCROOT)/Pods/Target Support Files/Pods-Athas/expo-configure-project.sh",
+			);
+			name = "[Expo] Configure project";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(SRCROOT)/Pods/Target Support Files/Pods-Athas/ExpoModulesProvider.swift",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# This script configures Expo modules and generates the modules provider file.\nbash -l -c \"./Pods/Target\\ Support\\ Files/Pods-Athas/expo-configure-project.sh\"\n";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -340,7 +338,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				F11748422D0307B40044C1D9 /* AppDelegate.swift in Sources */,
-				9884B97BA446AB17756E7A62 /* ExpoModulesProvider.swift in Sources */,
+				B84CE5AD1285AF5080429F84 /* ExpoModulesProvider.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -349,7 +347,7 @@
 /* Begin XCBuildConfiguration section */
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 77E7CC43F8DCB006BABB4207 /* Pods-Athas.debug.xcconfig */;
+			baseConfigurationReference = F94A5A7B4AEED70F855B1904 /* Pods-Athas.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -380,15 +378,12 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
-				DEVELOPMENT_TEAM = "39W9768P9P";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Debug;
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4F4CC9F2AAF2A499DE93E688 /* Pods-Athas.release.xcconfig */;
+			baseConfigurationReference = 27286D5F65B5512E1D4B1496 /* Pods-Athas.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
@@ -413,9 +408,6 @@
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 				VERSIONING_SYSTEM = "apple-generic";
-				DEVELOPMENT_TEAM = "39W9768P9P";
-				CODE_SIGN_IDENTITY = "Apple Development";
-				CODE_SIGN_STYLE = Automatic;
 			};
 			name = Release;
 		};
