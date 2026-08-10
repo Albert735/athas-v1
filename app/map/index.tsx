@@ -64,6 +64,9 @@ export default function Map() {
     cameraRef.current?.setCamera({
       centerCoordinate: [place.longitude, place.latitude],
       zoomLevel: 17,
+      // Tilt the camera when flying to a place — combined with the 3D
+      // buildings layer below, this gives a nice angled view of the destination
+      pitch: 45,
       animationDuration: 600,
     });
     setSelectedPlace(place);
@@ -124,6 +127,9 @@ export default function Map() {
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled
+        // Lets the user tilt the map with a two-finger drag gesture,
+        // needed to actually see the 3D building extrusions at an angle
+        pitchEnabled
       >
         {/* Controls what part of the map is visible; ref lets us move it programmatically */}
         <MapboxGL.Camera
@@ -136,6 +142,37 @@ export default function Map() {
 
         {/* Shows the user's live position as a blue dot with a heading arrow */}
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+
+        {/*
+          3D Buildings Layer
+          ───────────────────
+          Extrudes building footprints into 3D shapes using height data
+          that's already baked into Mapbox's "streets" vector tiles —
+          no extra data source or setup required.
+
+          - sourceID="composite" + sourceLayerID="building" reference
+            Mapbox's built-in building layer that ships with the style.
+          - minZoomLevel={15} means these only render once the user has
+            zoomed in close enough for it to make visual sense — at a
+            zoomed-out campus overview, flat 2D footprints look better.
+          - fillExtrusionHeight/fillExtrusionBase read each building's
+            real height/base values straight from the vector tile data,
+            so extrusion heights roughly match real building heights.
+        */}
+
+        <MapboxGL.FillExtrusionLayer
+          id="3d-buildings"
+          sourceID="composite"
+          sourceLayerID="building"
+          minZoomLevel={15}
+          maxZoomLevel={22}
+          style={{
+            fillExtrusionColor: "#D1D5DB",
+            fillExtrusionHeight: ["get", "height"],
+            fillExtrusionBase: ["get", "min_height"],
+            fillExtrusionOpacity: 0.8,
+          }}
+        />
 
         {/* Draws the calculated route as a line, only once a route has been fetched */}
         {route && (
