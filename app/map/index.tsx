@@ -8,7 +8,6 @@ import { useState, useRef, useEffect } from "react";
 import MapboxGL from "@rnmapbox/maps";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 import { places } from "@/data/places";
-import { MapTurnInstruction } from "@/components/map/map-turn-instruction";
 import { useLocalSearchParams } from "expo-router";
 import { MAP_STYLE_URL } from "@/constants/mapbox";
 import { useUserLocation } from "@/hooks/useUserLocation";
@@ -40,7 +39,6 @@ export default function Map() {
   const [mapState, setMapState] = useState<SheetState>("details");
   const [route, setRoute] = useState<RouteResult | null>(null);
   const [routeLoading, setRouteLoading] = useState(false);
-  const [currentStepIndex, setCurrentStepIndex] = useState(0);
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const handleMarkerPress = (place: (typeof places)[0]) => {
@@ -67,7 +65,6 @@ export default function Map() {
     setRoute(result);
     setRouteLoading(false);
 
-    // Fit camera to show the whole route
     if (result) {
       const coords = result.geometry.coordinates as [number, number][];
       const lons = coords.map((c) => c[0]);
@@ -82,7 +79,6 @@ export default function Map() {
   };
 
   const handleStartNavigation = () => {
-    setCurrentStepIndex(0);
     setMapState("navigating");
   };
 
@@ -92,8 +88,6 @@ export default function Map() {
       if (found) handleMarkerPress(found);
     }
   }, [buildingId]);
-
-  const currentStep = route?.steps[currentStepIndex];
 
   return (
     <View style={styles.root}>
@@ -114,7 +108,6 @@ export default function Map() {
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
 
-        {/* Route line */}
         {route && (
           <MapboxGL.ShapeSource id="routeSource" shape={route.geometry}>
             <MapboxGL.LineLayer
@@ -143,38 +136,22 @@ export default function Map() {
         ))}
       </MapboxGL.MapView>
 
-      <SafeAreaView style={styles.overlay} pointerEvents="box-none">
-        {mapState !== "navigating" && (
-          <>
-            <Header title="Map" />
-            <View style={styles.searchRow}>
-              <SearchBar
-                placeholder="Search for a building..."
-                onSearch={(query) => {
-                  const found = findBestMatch(query);
-                  if (found) handleMarkerPress(found);
-                }}
-                loading={false}
-                rightIcon={<Mic size={18} color={icon} />}
-              />
-            </View>
-          </>
-        )}
-
-        {mapState === "navigating" && currentStep && (
+      {mapState !== "navigating" && (
+        <SafeAreaView style={styles.overlay} pointerEvents="box-none">
+          <Header title="Map" />
           <View style={styles.searchRow}>
-            <MapTurnInstruction
-              step={{
-                id: String(currentStepIndex),
-                maneuver: (currentStep.maneuver.type as any) ?? "straight",
-                instruction: currentStep.instruction,
-                distance: `${Math.round(currentStep.distance)} m`,
-                duration: `${Math.round(currentStep.duration / 60)} min`,
+            <SearchBar
+              placeholder="Search for a building..."
+              onSearch={(query) => {
+                const found = findBestMatch(query);
+                if (found) handleMarkerPress(found);
               }}
+              loading={false}
+              rightIcon={<Mic size={18} color={icon} />}
             />
           </View>
-        )}
-      </SafeAreaView>
+        </SafeAreaView>
+      )}
 
       {selectedPlace && (
         <MapBottomSheet
