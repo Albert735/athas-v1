@@ -81,33 +81,38 @@ export default function Map() {
   const handleRequestDirections = async (
     profile: "walking" | "driving" | "cycling" = "walking",
   ) => {
-    if (!selectedPlace || !userLocation) return; // can't route without both endpoints
+    if (!selectedPlace || !userLocation) return;
 
     setRouteLoading(true);
-    const result = await getRoute(
-      userLocation,
-      [selectedPlace.longitude, selectedPlace.latitude],
-      profile,
-    );
-    setRoute(result);
-    setRouteLoading(false);
 
-    // Once we have a route, zoom/pan the camera so the entire path is visible
-    if (result) {
-      const coords = result.geometry.coordinates as [number, number][];
-      const lons = coords.map((c) => c[0]);
-      const lats = coords.map((c) => c[1]);
-      cameraRef.current?.fitBounds(
-        [Math.max(...lons), Math.max(...lats)], // north-east corner of the bounding box
-        [Math.min(...lons), Math.min(...lats)], // south-west corner
-        60, // padding in points around the bounds
-        800, // animation duration in ms
+    try {
+      const result = await getRoute(
+        userLocation,
+        [selectedPlace.longitude, selectedPlace.latitude],
+        profile,
       );
-    }
-  };
 
-  const handleStartNavigation = () => {
-    setMapState("navigating");
+      setRoute(result);
+
+      if (result) {
+        const coords = result.geometry.coordinates as [number, number][];
+
+        const lons = coords.map((c) => c[0]);
+        const lats = coords.map((c) => c[1]);
+
+        cameraRef.current?.fitBounds(
+          [Math.max(...lons), Math.max(...lats)],
+          [Math.min(...lons), Math.min(...lats)],
+          60,
+          800,
+        );
+      }
+    } catch (error) {
+      console.error("Failed to get route:", error);
+      setRoute(null);
+    } finally {
+      setRouteLoading(false);
+    }
   };
 
   // Auto-select a place if we arrived here via a deep link / navigation param
@@ -231,7 +236,9 @@ export default function Map() {
           route={route}
           routeLoading={routeLoading}
           onRequestDirections={handleRequestDirections}
-          onStartNavigation={handleStartNavigation}
+          onStartNavigation={() => {
+            setMapState("navigating");
+          }}
           onStateChange={setMapState}
           onClose={() => {
             setSelectedPlace(null);
