@@ -22,7 +22,7 @@ import { Header } from "@/components/shared";
 
 /**
  * ExploreScreen
- * 
+ *
  * Main campus discovery & directory screen.
  * Supports two view modes:
  * 1. Discovery Mode (default): Displays curated collections and a category tile grid.
@@ -199,7 +199,7 @@ export default function ExploreScreen() {
                 <TouchableOpacity
                   style={styles.goButton}
                   activeOpacity={0.85}
-                  onPress={() => router.push("/map")}
+                  onPress={() => router.push(`/map?buildingId=${item.id}`)}
                 >
                   <Navigation size={14} color="#FFFFFF" />
                   <Text style={styles.goButtonText}>Go</Text>
