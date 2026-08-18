@@ -92,7 +92,10 @@ export default function PopularPlaces() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: {
+    // flex: 1,
+    paddingBottom: 80,
+  },
   listContent: { paddingHorizontal: 20, paddingBottom: 120, gap: 16 },
   searchContainer: { marginBottom: 16, paddingHorizontal: 20 },
   row: { justifyContent: "space-between", gap: 12 },

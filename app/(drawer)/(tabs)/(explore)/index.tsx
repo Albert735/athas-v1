@@ -307,7 +307,7 @@ export default function ExploreScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1 },
+  container: { paddingBottom: 80 },
   titleRow: { paddingHorizontal: 20, paddingVertical: 10, gap: 2 },
   titleText: { fontSize: 22, fontWeight: "700" },
   subtitleText: { fontSize: 13 },
