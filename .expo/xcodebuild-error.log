@@ -1,7 +1,0 @@
-2026-08-18 21:31:57.632 xcodebuild[34685:753824] Writing error result bundle to /var/folders/zz/p880ksq54wv9dykx30y70dp40000gn/T/ResultBundle_2026-18-08_9-31-0057 PM.xcresult
-xcodebuild: error: Timed out waiting for all destinations matching the provided destination specifier to become available
-
-
-	Available destinations for the "Athas" scheme:
-		{ platform:iOS, arch:arm64, id:00008110-000864E61198401E, name:Jaytee's iPhone, error:Browsing on the local area network for Jaytee's iPhone, which has previously reported preparation errors Ensure the device is unlocked and attached with a cable or associated with the same local area network as this Mac.
-The device must be opted into Developer Mode to connect wirelessly. }
