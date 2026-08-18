@@ -21,6 +21,7 @@ export function DaySelector({ control }: Props) {
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
   const iconColor = useColor("icon");
+  const selectedTextColor = useColor("primary");
   const { errors } = useFormState({ control });
 
   return (
@@ -81,15 +82,22 @@ export function DaySelector({ control }: Props) {
                           onPress={() => toggleDay(day.value)}
                           style={[
                             styles.dayButton,
-                            { backgroundColor: cardColor, borderColor },
-                            isSelected && styles.selectedDayButton,
+                            {
+                              backgroundColor: isSelected
+                                ? selectedTextColor
+                                : cardColor,
+                              borderColor: isSelected
+                                ? selectedTextColor
+                                : borderColor,
+                            },
                           ]}
                         >
                           <Text
                             style={[
                               styles.dayText,
-                              { color: textColor },
-                              isSelected && styles.selectedDayText,
+                              {
+                                color: isSelected ? "white" : textColor,
+                              },
                             ]}
                           >
                             {day.short}
@@ -212,7 +220,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     borderWidth: 1,
   },
-  selectedDayButton: { backgroundColor: "#111827", borderColor: "#111827" },
+  selectedDayButton: {},
   dayText: { fontSize: 12, fontWeight: "600" },
   selectedDayText: { color: "#FFFFFF" },
   counter: { fontSize: 13 },

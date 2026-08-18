@@ -104,7 +104,7 @@ export default function AddClassScreen() {
 
 const styles = StyleSheet.create({
   screen: { flex: 1 },
-  keyboardContainer: { flex: 1 },
+  keyboardContainer: {},
   scrollContent: { paddingBottom: 150 },
   main: { paddingHorizontal: SPACING, marginTop: 10, gap: 24 },
   titleContainer: { gap: 4 },
