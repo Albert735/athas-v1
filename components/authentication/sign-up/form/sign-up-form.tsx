@@ -3,8 +3,12 @@ import { StepOne } from "./step-one";
 import { StepTwo } from "./step-two";
 import type { StepOneData } from "@/schemas/auth";
 
-export function SignUpForm() {
-  const [step, setStep] = useState(1);
+interface SignUpFormProps {
+  step: number;
+  setStep: (step: number) => void;
+}
+
+export function SignUpForm({ step, setStep }: SignUpFormProps) {
   const [stepOneData, setStepOneData] = useState<StepOneData | null>(null);
 
   return step === 1 ? (

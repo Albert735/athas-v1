@@ -8,9 +8,9 @@ import { MOCK_UPCOMING_CLASS } from "@/data/upcoming-class";
 import { useColor } from "@/hooks/useColor";
 
 export default function ScheduledClassDetails() {
-  const { Id } = useLocalSearchParams<{ Id: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
-  const selectedClass = MOCK_UPCOMING_CLASS.find((item) => item.id === Id);
+  const selectedClass = MOCK_UPCOMING_CLASS.find((item) => item.id === id);
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
@@ -19,6 +19,7 @@ export default function ScheduledClassDetails() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
+  const redColor = useColor("red");
 
   if (!selectedClass) {
     return (
@@ -28,7 +29,7 @@ export default function ScheduledClassDetails() {
       >
         <Header title="Class Details" />
         <View style={styles.container}>
-          <Text style={[styles.error, { color: useColor("red") }]}>
+          <Text style={[styles.error, { color: redColor }]}>
             Class not found
           </Text>
         </View>

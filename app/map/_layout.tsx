@@ -33,7 +33,6 @@ export default function MapLayout() {
         name="index"
         options={{
           title: "Map",
-          tabBarStyle: { display: "none" },
           headerTitle: () =>
             Platform.OS === "android" ? (
               <Text variant="heading">Map</Text>
