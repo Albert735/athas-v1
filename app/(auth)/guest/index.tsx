@@ -1,4 +1,4 @@
-import React from "react";
+import { useRef } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
@@ -9,14 +9,37 @@ import Octicons from "@expo/vector-icons/Octicons";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { useColor } from "@/hooks/useColor";
+import MapboxGL from "@rnmapbox/maps";
+
+const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
+
+const MAP_STYLE_URL = MapboxGL.StyleURL.Satellite;
 
 export default function GuestScreen() {
   const iconColor = useColor("text");
   const borderColor = useColor("border");
   const cardColor = useColor("card");
 
+  const cameraRef = useRef<MapboxGL.Camera>(null);
   return (
     <SafeAreaView style={styles.container}>
+      <MapboxGL.MapView
+        style={StyleSheet.absoluteFill}
+        styleURL={MapboxGL.StyleURL.Street}
+        logoEnabled={false}
+        attributionEnabled={false}
+        compassEnabled
+        pitchEnabled
+      >
+        <MapboxGL.Camera
+          ref={cameraRef}
+          zoomLevel={16}
+          centerCoordinate={CAMPUS_CENTER}
+          animationMode="flyTo"
+          animationDuration={0}
+        />
+      </MapboxGL.MapView>
+
       {/* ── Header ─────────────────────────────────── */}
       <View style={styles.header}>
         <TouchableOpacity
@@ -121,11 +144,13 @@ const styles = StyleSheet.create({
   },
 
   content: {
-    paddingHorizontal: SPACING,
-    paddingVertical: 24,
-    gap: 32,
     flex: 1,
     justifyContent: "flex-end",
+    paddingHorizontal: SPACING,
+    paddingTop: 28,
+    paddingBottom: 24,
+    gap: 28,
+    marginTop: "auto",
   },
 
   hero: {
