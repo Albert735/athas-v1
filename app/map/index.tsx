@@ -54,7 +54,7 @@ export default function Map() {
 
   // Ref to the Mapbox camera so we can programmatically fly/zoom/fit it
   const cameraRef = useRef<MapboxGL.Camera>(null);
-
+  const requestIdRef = useRef(0);
   /**
    * Called whenever a place is selected — either by tapping a marker,
    * searching, or arriving via the buildingId URL param.
@@ -78,41 +78,64 @@ export default function Map() {
    * Fetches a real route from the user's current location to the selected place.
    * Called when the user taps "Direction" or switches transport mode.
    */
+
   const handleRequestDirections = async (
     profile: "walking" | "driving" | "cycling" = "walking",
   ) => {
-    if (!selectedPlace || !userLocation) return;
+    if (!selectedPlace) return;
 
+    const thisRequestId = ++requestIdRef.current;
     setRouteLoading(true);
+    // removed: setLastRequestedProfile(profile);
 
-    try {
-      const result = await getRoute(
-        userLocation,
-        [selectedPlace.longitude, selectedPlace.latitude],
-        profile,
-      );
-
-      setRoute(result);
-
-      if (result) {
-        const coords = result.geometry.coordinates as [number, number][];
-
-        const lons = coords.map((c) => c[0]);
-        const lats = coords.map((c) => c[1]);
-
-        cameraRef.current?.fitBounds(
-          [Math.max(...lons), Math.max(...lats)],
-          [Math.min(...lons), Math.min(...lats)],
-          60,
-          800,
-        );
-      }
-    } catch (error) {
-      console.error("Failed to get route:", error);
-      setRoute(null);
-    } finally {
-      setRouteLoading(false);
+    let origin = userLocation;
+    if (!origin) {
+      origin = await waitForLocation();
     }
+
+    if (!origin) {
+      setRouteLoading(false);
+      return;
+    }
+
+    const result = await getRoute(
+      origin,
+      [selectedPlace.longitude, selectedPlace.latitude],
+      profile,
+    );
+
+    if (thisRequestId !== requestIdRef.current) return;
+
+    setRoute(result);
+    setRouteLoading(false);
+
+    if (result) {
+      const coords = result.geometry.coordinates as [number, number][];
+      const lons = coords.map((c) => c[0]);
+      const lats = coords.map((c) => c[1]);
+      cameraRef.current?.fitBounds(
+        [Math.max(...lons), Math.max(...lats)],
+        [Math.min(...lons), Math.min(...lats)],
+        60,
+        800,
+      );
+    }
+  };
+
+  const waitForLocation = (): Promise<[number, number] | null> => {
+    return new Promise((resolve) => {
+      if (userLocation) return resolve(userLocation);
+      const interval = setInterval(() => {
+        if (userLocation) {
+          clearInterval(interval);
+          resolve(userLocation);
+        }
+      }, 200);
+      setTimeout(() => {
+        clearInterval(interval);
+        resolve(null);
+      }, 5000); // give up after 5s
+    });
   };
 
   // Auto-select a place if we arrived here via a deep link / navigation param
@@ -131,7 +154,8 @@ export default function Map() {
         styleURL={MAP_STYLE_URL}
         logoEnabled={false}
         attributionEnabled={false}
-        compassEnabled
+        compassEnabled={false}
+        scaleBarEnabled={false}
         // Lets the user tilt the map with a two-finger drag gesture,
         // needed to actually see the 3D building extrusions at an angle
         pitchEnabled
@@ -139,10 +163,21 @@ export default function Map() {
         {/* Controls what part of the map is visible; ref lets us move it programmatically */}
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={16}
-          centerCoordinate={CAMPUS_CENTER}
+          zoomLevel={mapState === "navigating" ? 18 : 16}
+          pitch={mapState === "navigating" ? 60 : 0}
+          centerCoordinate={
+            mapState === "navigating" ? undefined : CAMPUS_CENTER
+          }
+          followUserLocation={mapState === "navigating"}
+          followUserMode={
+            mapState === "navigating"
+              ? MapboxGL.UserTrackingMode.FollowWithCourse
+              : undefined
+          }
+          followZoomLevel={18}
+          followPitch={60}
           animationMode="flyTo"
-          animationDuration={0}
+          animationDuration={mapState === "navigating" ? 800 : 0}
         />
 
         {/* Shows the user's live position as a blue dot with a heading arrow */}
@@ -195,7 +230,7 @@ export default function Map() {
         )}
 
         {/* One marker per place in our data — tapping any of them selects that place */}
-        {places.map((place) => (
+        {(selectedPlace ? [selectedPlace] : places).map((place) => (
           <MapboxGL.PointAnnotation
             key={place.id}
             id={`marker-${place.id}`}

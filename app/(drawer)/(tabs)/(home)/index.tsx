@@ -99,7 +99,8 @@ export default function HomeScreen() {
           styleURL="mapbox://styles/mapbox/streets-v12"
           logoEnabled={false}
           attributionEnabled={false}
-          compassEnabled
+          compassEnabled={false}
+          scaleBarEnabled={false}
           // Lets the user tilt the map with a two-finger drag gesture,
           // needed to actually see the 3D building extrusions at an angle
           pitchEnabled

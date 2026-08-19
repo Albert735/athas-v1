@@ -1,18 +1,18 @@
 import { useState, useEffect, useRef } from "react";
 import * as Location from "expo-location";
 
-/**
- * Continuously watches the user's GPS position while `active` is true.
- * Used during turn-by-turn navigation to auto-advance steps as the user walks.
- * Stops watching automatically when `active` becomes false or the component unmounts.
- */
+export interface LiveLocation {
+  coords: [number, number];
+  accuracy: number | null; // meters — lower is better
+  heading: number | null; // degrees, direction of travel
+}
+
 export function useLiveLocation(active: boolean) {
-  const [location, setLocation] = useState<[number, number] | null>(null);
+  const [location, setLocation] = useState<LiveLocation | null>(null);
   const subscriptionRef = useRef<Location.LocationSubscription | null>(null);
 
   useEffect(() => {
     if (!active) {
-      // Stop watching when navigation isn't active — saves battery
       subscriptionRef.current?.remove();
       subscriptionRef.current = null;
       return;
@@ -26,13 +26,17 @@ export function useLiveLocation(active: boolean) {
 
       subscriptionRef.current = await Location.watchPositionAsync(
         {
-          accuracy: Location.Accuracy.High,
-          timeInterval: 1000, // check position at most once per second
-          distanceInterval: 3, // or every 3 meters moved, whichever comes first
+          accuracy: Location.Accuracy.BestForNavigation, // strongest GPS mode available
+          timeInterval: 500, // check twice a second instead of once
+          distanceInterval: 1, // update on every 1m of movement
         },
         (position) => {
           if (isMounted) {
-            setLocation([position.coords.longitude, position.coords.latitude]);
+            setLocation({
+              coords: [position.coords.longitude, position.coords.latitude],
+              accuracy: position.coords.accuracy,
+              heading: position.coords.heading,
+            });
           }
         },
       );

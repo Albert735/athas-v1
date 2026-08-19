@@ -40,12 +40,28 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   useEffect(() => {
     if (!liveLocation || !step) return;
 
-    const distanceToManeuver = getDistanceMeters(
-      liveLocation,
+    // Ignore readings with poor GPS accuracy — these cause false early/late triggers
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 15) return;
+
+    const distanceToCurrentManeuver = getDistanceMeters(
+      liveLocation.coords,
       step.maneuver.location,
     );
 
-    if (distanceToManeuver <= ARRIVAL_THRESHOLD_METERS) {
+    const nextStep = route?.steps[stepIndex + 1];
+    const distanceToNextManeuver = nextStep
+      ? getDistanceMeters(liveLocation.coords, nextStep.maneuver.location)
+      : null;
+
+    // Advance only when we're within a tight radius of the current point
+    // AND (if there's a next step) we're now closer to the next point than this one —
+    // this stops the instruction from flipping too early while still approaching
+    const closeEnough = distanceToCurrentManeuver <= 10;
+    const pastThisPoint =
+      distanceToNextManeuver === null ||
+      distanceToNextManeuver < distanceToCurrentManeuver;
+
+    if (closeEnough && pastThisPoint) {
       if (isLastStep) {
         onExit?.();
       } else {
@@ -74,7 +90,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   // Live distance remaining to the current maneuver, recalculated as the user moves —
   // falls back to the step's original distance until the first GPS fix comes in
   const liveDistance = liveLocation
-    ? getDistanceMeters(liveLocation, step.maneuver.location)
+    ? getDistanceMeters(liveLocation.coords, step.maneuver.location)
     : step.distance;
 
   return (
@@ -96,32 +112,22 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      <View style={styles.stepDots}>
-        {route.steps.map((_, i) => (
-          <View
-            key={i}
-            style={[
-              styles.stepDot,
-              { backgroundColor: i === stepIndex ? primaryColor : borderColor },
-            ]}
-          />
-        ))}
-      </View>
-
       <View style={[styles.progressRow, { backgroundColor }]}>
         <View style={styles.statBox}>
-          <Text style={[styles.statLabel, { color: mutedColor }]}>Step</Text>
+          <Text style={[styles.statLabel, { color: mutedColor }]}>
+            Time Left
+          </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {stepIndex + 1} / {route.steps.length}
+            {formatDuration(route.durationSeconds)}
           </Text>
         </View>
         <View style={[styles.divider, { backgroundColor: borderColor }]} />
         <View style={styles.statBox}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>
-            Total Left
+            Distance
           </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDuration(route.durationSeconds)}
+            {formatDistance(route.distanceMeters)}
           </Text>
         </View>
       </View>
