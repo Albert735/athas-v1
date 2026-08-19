@@ -1,73 +1,60 @@
+import { useMemo, useRef, useState } from "react";
 import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
   Dimensions,
+  FlatList,
+  Pressable,
+  StyleSheet,
+  TouchableOpacity,
+  View,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import {
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import { Image } from "expo-image";
 import { Menu, Mic, MapPin } from "lucide-react-native";
-import { SearchBarWithSuggestions } from "@/components/ui/searchbar";
-import { places } from "@/data/places";
-import { useColor } from "@/hooks/useColor";
-import { popularPlaces } from "@/data/popular-places";
-import { quickActions } from "@/data/quick-actions";
-import { useState, useRef } from "react";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
-import { router } from "expo-router";
 import { useNavigation, DrawerActions } from "@react-navigation/native";
-import { categoryImages } from "@/data/category-images";
+import { router } from "expo-router";
 import MapboxGL from "@rnmapbox/maps";
+
+import { places } from "@/data/places";
+import { quickActions } from "@/data/quick-actions";
+import { categoryImages } from "@/data/category-images";
+import { useColor } from "@/hooks/useColor";
+import { MAP_STYLE_URL } from "@/constants/mapbox";
+import { SearchBar } from "@/components/ui/searchbar";
+import { Text } from "@/components/ui/text";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
 export default function HomeScreen() {
   const [selectedQuickAction, setSelectedQuickAction] = useState("all");
+
   const [searchQuery, setSearchQuery] = useState("");
-  const [loading, setLoading] = useState(false);
-  const suggestions = places.map((place) => place.name);
+
+  const [searchFocused, setSearchFocused] = useState(false);
+
+  const [selectedPlace, setSelectedPlace] = useState<(typeof places)[0] | null>(
+    null,
+  );
+
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
-  const handleSearch = (query: string) => {
-    console.log("Searching for:", query);
-    if (query.trim()) {
-      setLoading(true);
-      setTimeout(() => {
-        setLoading(false);
-        console.log("Search completed for:", query);
-      }, 2000);
-    }
-  };
-
-  const handleSuggestionPress = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    handleSearch(suggestion);
-  };
-
-  const handleMarkerPress = (place: (typeof places)[0]) => {
-    cameraRef.current?.setCamera({
-      centerCoordinate: [place.longitude, place.latitude],
-      zoomLevel: 17,
-      // Tilt the camera when flying to a place — combined with the 3D
-      // buildings layer below, this gives a nice angled view of the destination
-      pitch: 45,
-      animationDuration: 600,
-    });
-    router.push(`/building/${place.id}`);
-  };
-
-  const icon = useColor("icon");
   const navigation = useNavigation();
 
   const insets = useSafeAreaInsets();
-  const bottomInset = insets.bottom + 60;
 
   const { height } = Dimensions.get("window");
+
+  /*
+   * Map occupies approximately 56% of the screen.
+   * This keeps the layout responsive across devices.
+   */
   const MAP_HEIGHT = height * 0.56;
 
+  /*
+   * Theme colors
+   */
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const textMuted = useColor("textMuted");
@@ -75,34 +62,116 @@ export default function HomeScreen() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
+  const iconColor = useColor("icon");
 
+  /*
+   * Leave room for the bottom tab bar and safe area.
+   */
+  const bottomInset = insets.bottom + 70;
+
+  /*
+   * Filter places according to selected quick action.
+   */
   const filteredPlaces =
     selectedQuickAction === "all"
       ? places
       : places.filter((place) => place.category === selectedQuickAction);
 
+  /*
+   * Get the label of the selected category.
+   */
   const selectedCategoryLabel = quickActions.find(
     (item) => item.category === selectedQuickAction,
   )?.label;
 
+  /*
+   * Search results.
+   *
+   * Places that START with the search term are ranked first.
+   */
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return [];
+    }
+
+    return places
+      .filter((place) => place.name.toLowerCase().includes(query))
+      .sort((a, b) => {
+        const aStarts = a.name.toLowerCase().startsWith(query) ? 0 : 1;
+
+        const bStarts = b.name.toLowerCase().startsWith(query) ? 0 : 1;
+
+        return aStarts - bStarts;
+      })
+      .slice(0, 8);
+  }, [searchQuery]);
+
+  /*
+   * Only display the dropdown when:
+   *
+   * 1. Search is focused
+   * 2. User has typed something
+   */
+  const showDropdown = searchFocused && searchQuery.trim().length > 0;
+
+  /*
+   * Move the map to a selected place.
+   */
+  const handleMarkerPress = (place: (typeof places)[0]) => {
+    cameraRef.current?.setCamera({
+      centerCoordinate: [place.longitude, place.latitude],
+      zoomLevel: 17,
+      pitch: 45,
+      animationDuration: 600,
+    });
+
+    setSelectedPlace(place);
+
+    setSearchQuery("");
+
+    setSearchFocused(false);
+  };
+
+  /*
+   * Navigate to a building after moving the map.
+   */
+  const handlePlacePress = (place: (typeof places)[0]) => {
+    handleMarkerPress(place);
+
+    router.push(`/building/${place.id}`);
+  };
+
   return (
-    <View style={[styles.root, { backgroundColor }]}>
-      {/* Map — top half, sits behind everything */}
+    <View
+      style={[
+        styles.root,
+        {
+          backgroundColor,
+        },
+      ]}
+    >
+      {/* =====================================================
+          MAP
+      ====================================================== */}
+
       <View
         style={[
           styles.mapContainer,
-          { height: MAP_HEIGHT, backgroundColor: cardColor },
+          {
+            height: MAP_HEIGHT,
+            backgroundColor: cardColor,
+          },
         ]}
       >
         <MapboxGL.MapView
           style={styles.map}
-          styleURL="mapbox://styles/mapbox/streets-v12"
+          styleURL={MAP_STYLE_URL}
           logoEnabled={false}
           attributionEnabled={false}
           compassEnabled={false}
           scaleBarEnabled={false}
-          // Lets the user tilt the map with a two-finger drag gesture,
-          // needed to actually see the 3D building extrusions at an angle
           pitchEnabled
         >
           <MapboxGL.Camera
@@ -113,7 +182,11 @@ export default function HomeScreen() {
             animationDuration={0}
           />
 
+          {/* User location */}
+
           <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+
+          {/* 3D buildings */}
 
           <MapboxGL.FillExtrusionLayer
             id="3d-buildings"
@@ -129,104 +202,276 @@ export default function HomeScreen() {
             }}
           />
 
-          {/* {places.map((place) => (
+          {/* Selected place marker */}
+
+          {selectedPlace && (
             <MapboxGL.PointAnnotation
-              key={place.id}
-              id={`marker-${place.id}`}
-              coordinate={[place.longitude, place.latitude]}
-              onSelected={() => handleMarkerPress(place)}
+              key={selectedPlace.id}
+              id={`marker-${selectedPlace.id}`}
+              coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
             >
               <View style={styles.markerPin}>
                 <View style={styles.markerDot} />
               </View>
             </MapboxGL.PointAnnotation>
-          ))} */}
+          )}
         </MapboxGL.MapView>
       </View>
 
-      {/* Overlay: search + chips float over the map */}
+      {/* =====================================================
+          TOP OVERLAY
+      ====================================================== */}
+
       <SafeAreaView style={styles.overlay} pointerEvents="box-none">
         {/* Header */}
+
         <View style={styles.header}>
           <Image
             source={require("@/assets/images/icon.png")}
             style={styles.logo}
+            contentFit="contain"
           />
+
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+            style={styles.menuButton}
           >
             <Menu size={22} color={textColor} />
           </TouchableOpacity>
         </View>
 
         {/* Search */}
+
         <View style={styles.searchRow}>
-          <SearchBarWithSuggestions
+          <SearchBar
             placeholder="Search for anything..."
             value={searchQuery}
             onChangeText={setSearchQuery}
-            onSearch={handleSearch}
-            suggestions={suggestions}
-            onSuggestionPress={handleSuggestionPress}
-            loading={loading}
-            rightIcon={<Mic size={18} color={icon} />}
+            onFocus={() => setSearchFocused(true)}
+            onSearch={(query) => {
+              const found = places.find((place) =>
+                place.name.toLowerCase().includes(query.toLowerCase()),
+              );
+
+              if (found) {
+                handleMarkerPress(found);
+              }
+            }}
+            loading={false}
+            rightIcon={<Mic size={18} color={iconColor} />}
           />
+
+          {/* Search dropdown */}
+
+          {showDropdown && (
+            <View
+              style={[
+                styles.dropdown,
+                {
+                  backgroundColor: cardColor,
+                  borderColor,
+                },
+              ]}
+            >
+              {searchResults.length === 0 ? (
+                <View style={styles.dropdownEmpty}>
+                  <Text
+                    style={[
+                      styles.dropdownEmptyText,
+                      {
+                        color: textMuted,
+                      },
+                    ]}
+                  >
+                    No places found
+                  </Text>
+                </View>
+              ) : (
+                <FlatList
+                  data={searchResults}
+                  keyExtractor={(item) => item.id}
+                  keyboardShouldPersistTaps="handled"
+                  showsVerticalScrollIndicator={false}
+                  ItemSeparatorComponent={() => (
+                    <View
+                      style={[
+                        styles.dropdownSeparator,
+                        {
+                          backgroundColor: borderColor,
+                        },
+                      ]}
+                    />
+                  )}
+                  renderItem={({ item }) => (
+                    <Pressable
+                      style={styles.dropdownItem}
+                      onPress={() => handleMarkerPress(item)}
+                    >
+                      <View
+                        style={[
+                          styles.dropdownIcon,
+                          {
+                            backgroundColor,
+                          },
+                        ]}
+                      >
+                        <MapPin size={16} color={primaryColor} />
+                      </View>
+
+                      <View style={styles.dropdownItemText}>
+                        <Text
+                          style={[
+                            styles.dropdownItemName,
+                            {
+                              color: textColor,
+                            },
+                          ]}
+                        >
+                          {item.name}
+                        </Text>
+
+                        <Text
+                          style={[
+                            styles.dropdownItemDesc,
+                            {
+                              color: textMuted,
+                            },
+                          ]}
+                          numberOfLines={1}
+                        >
+                          {item.description}
+                        </Text>
+                      </View>
+
+                      <Text
+                        style={[
+                          styles.dropdownItemDistance,
+                          {
+                            color: textMuted,
+                          },
+                        ]}
+                      >
+                        {item.distance}
+                      </Text>
+                    </Pressable>
+                  )}
+                />
+              )}
+            </View>
+          )}
         </View>
 
         {/* Quick Actions */}
-        <FlatList
-          horizontal
-          data={quickActions}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.quickActionsContent}
-          renderItem={({ item }) => {
-            const isSelected = selectedQuickAction === item.category;
-            const Icon = item.icon;
-            return (
-              <Pressable
-                style={[
-                  styles.chip,
-                  { backgroundColor: cardColor, borderColor },
-                  isSelected && {
-                    backgroundColor: primaryColor,
-                    borderColor: primaryColor,
-                  },
-                ]}
-                onPress={() => setSelectedQuickAction(item.category)}
-              >
-                <Icon size={14} color={isSelected ? primaryForeground : icon} />
-                <Text
+
+        {!showDropdown && (
+          <FlatList
+            horizontal
+            data={quickActions}
+            keyExtractor={(item) => item.id}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.quickActionsContent}
+            renderItem={({ item }) => {
+              const isSelected = selectedQuickAction === item.category;
+
+              const Icon = item.icon;
+
+              return (
+                <Pressable
                   style={[
-                    styles.chipText,
-                    { color: textColor },
-                    isSelected && { color: primaryForeground },
+                    styles.chip,
+                    {
+                      backgroundColor: cardColor,
+                      borderColor,
+                    },
+
+                    isSelected && {
+                      backgroundColor: primaryColor,
+                      borderColor: primaryColor,
+                    },
                   ]}
+                  onPress={() => setSelectedQuickAction(item.category)}
                 >
-                  {item.label}
-                </Text>
-              </Pressable>
-            );
-          }}
-        />
+                  <Icon
+                    size={14}
+                    color={isSelected ? primaryForeground : iconColor}
+                  />
+
+                  <Text
+                    style={[
+                      styles.chipText,
+                      {
+                        color: isSelected ? primaryForeground : textColor,
+                      },
+                    ]}
+                  >
+                    {item.label}
+                  </Text>
+                </Pressable>
+              );
+            }}
+          />
+        )}
       </SafeAreaView>
 
-      {/* Bottom sheet area */}
-      <View style={[styles.sheet, { top: MAP_HEIGHT - 20, backgroundColor }]}>
+      {/* =====================================================
+          DISMISS SEARCH DROPDOWN
+      ====================================================== */}
+
+      {showDropdown && (
+        <Pressable
+          style={styles.dismissOverlay}
+          onPress={() => setSearchFocused(false)}
+        />
+      )}
+
+      {/* =====================================================
+          BOTTOM SHEET
+      ====================================================== */}
+
+      <View
+        style={[
+          styles.sheet,
+          {
+            top: MAP_HEIGHT - 20,
+            backgroundColor,
+          },
+        ]}
+      >
+        {/* Section header */}
+
         <View style={styles.sectionHeader}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>
+          <Text
+            style={[
+              styles.sectionTitle,
+              {
+                color: textColor,
+              },
+            ]}
+          >
             {selectedCategoryLabel
               ? `${selectedCategoryLabel} near you`
               : "Popular places on campus"}
           </Text>
+
           <TouchableOpacity
             activeOpacity={0.7}
             onPress={() => router.push("/popular-places")}
           >
-            <Text style={[styles.seeAll, { color: textMuted }]}>See All</Text>
+            <Text
+              style={[
+                styles.seeAll,
+                {
+                  color: textMuted,
+                },
+              ]}
+            >
+              See All
+            </Text>
           </TouchableOpacity>
         </View>
+
+        {/* Places */}
 
         <FlatList
           horizontal
@@ -235,31 +480,67 @@ export default function HomeScreen() {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={[
             styles.placesContent,
-            { paddingBottom: bottomInset },
+            {
+              paddingBottom: bottomInset,
+            },
           ]}
           renderItem={({ item }) => (
             <Pressable
-              style={[styles.card, { backgroundColor: cardColor, borderColor }]}
-              onPress={() => router.push(`/building/${item.id}`)}
+              style={[
+                styles.card,
+                {
+                  backgroundColor: cardColor,
+                  borderColor,
+                },
+              ]}
+              onPress={() => handlePlacePress(item)}
             >
+              {/* Image */}
+
               <Image
                 source={categoryImages[item.category]}
                 style={styles.cardImage}
                 contentFit="cover"
               />
+
+              {/* Card body */}
+
               <View style={styles.cardBody}>
-                <Text style={[styles.cardName, { color: textColor }]}>
+                <Text
+                  style={[
+                    styles.cardName,
+                    {
+                      color: textColor,
+                    },
+                  ]}
+                  numberOfLines={1}
+                >
                   {item.name}
                 </Text>
+
                 <Text
-                  style={[styles.cardDescription, { color: textMuted }]}
+                  style={[
+                    styles.cardDescription,
+                    {
+                      color: textMuted,
+                    },
+                  ]}
                   numberOfLines={2}
                 >
                   {item.description}
                 </Text>
+
                 <View style={styles.cardFooter}>
                   <MapPin size={12} color={primaryColor} />
-                  <Text style={[styles.cardDistance, { color: textMuted }]}>
+
+                  <Text
+                    style={[
+                      styles.cardDistance,
+                      {
+                        color: textMuted,
+                      },
+                    ]}
+                  >
                     {item.distance}
                   </Text>
                 </View>
@@ -272,11 +553,39 @@ export default function HomeScreen() {
   );
 }
 
+/* =========================================================
+   STYLES
+========================================================= */
+
 const styles = StyleSheet.create({
-  root: { flex: 1 },
-  mapContainer: { position: "absolute", top: 0, left: 0, right: 0 },
-  map: { flex: 1 },
-  overlay: { position: "absolute", top: 0, left: 0, right: 0, zIndex: 10 },
+  root: {
+    flex: 1,
+  },
+
+  mapContainer: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    overflow: "hidden",
+  },
+
+  map: {
+    flex: 1,
+  },
+
+  /* =======================================================
+     TOP OVERLAY
+  ======================================================== */
+
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 10,
+  },
+
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -284,9 +593,114 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 12,
   },
-  logo: { width: 32, height: 32, borderRadius: 8 },
-  searchRow: { paddingHorizontal: 20, marginTop: 12 },
-  quickActionsContent: { paddingHorizontal: 20, paddingVertical: 12, gap: 8 },
+
+  logo: {
+    width: 34,
+    height: 34,
+    borderRadius: 9,
+  },
+
+  menuButton: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  /* =======================================================
+     SEARCH
+  ======================================================== */
+
+  searchRow: {
+    paddingHorizontal: 20,
+    marginTop: 12,
+  },
+
+  dropdown: {
+    marginTop: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    maxHeight: 320,
+    overflow: "hidden",
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 4,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 12,
+
+    elevation: 6,
+  },
+
+  dropdownEmpty: {
+    padding: 20,
+    alignItems: "center",
+  },
+
+  dropdownEmptyText: {
+    fontSize: 14,
+  },
+
+  dropdownSeparator: {
+    height: 1,
+    marginLeft: 60,
+  },
+
+  dropdownItem: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 12,
+    padding: 14,
+  },
+
+  dropdownIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  dropdownItemText: {
+    flex: 1,
+    gap: 2,
+  },
+
+  dropdownItemName: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
+  dropdownItemDesc: {
+    fontSize: 12,
+  },
+
+  dropdownItemDistance: {
+    fontSize: 12,
+    fontWeight: "500",
+  },
+
+  dismissOverlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 5,
+  },
+
+  /* =======================================================
+     QUICK ACTIONS
+  ======================================================== */
+
+  quickActionsContent: {
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    gap: 8,
+  },
+
   chip: {
     flexDirection: "row",
     alignItems: "center",
@@ -296,51 +710,117 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     borderWidth: 1,
   },
-  chipText: { fontSize: 13, fontWeight: "500" },
+
+  chipText: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+
+  /* =======================================================
+     BOTTOM SHEET
+  ======================================================== */
+
   sheet: {
     position: "absolute",
     left: 0,
     right: 0,
+
     paddingTop: 20,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
+    paddingBottom: 10,
+
+    borderTopLeftRadius: 24,
+    borderTopRightRadius: 24,
   },
+
   sectionHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+
     paddingHorizontal: 20,
     marginBottom: 12,
   },
-  sectionTitle: { fontSize: 18, fontWeight: "700" },
-  seeAll: { fontSize: 13, fontWeight: "500" },
-  placesContent: { paddingHorizontal: 20, gap: 16 },
-  card: { width: 220, borderRadius: 16, overflow: "hidden", borderWidth: 1 },
-  cardImage: { width: "100%", height: 120 },
-  cardBody: { padding: 12, gap: 4 },
-  cardName: { fontSize: 14, fontWeight: "600" },
-  cardDescription: { fontSize: 12, lineHeight: 17 },
+
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: "700",
+  },
+
+  seeAll: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+
+  placesContent: {
+    paddingHorizontal: 20,
+    gap: 16,
+  },
+
+  /* =======================================================
+     PLACE CARD
+  ======================================================== */
+
+  card: {
+    width: 220,
+    borderRadius: 16,
+    overflow: "hidden",
+    borderWidth: 1,
+  },
+
+  cardImage: {
+    width: "100%",
+    height: 120,
+  },
+
+  cardBody: {
+    padding: 12,
+    gap: 4,
+  },
+
+  cardName: {
+    fontSize: 14,
+    fontWeight: "600",
+  },
+
+  cardDescription: {
+    fontSize: 12,
+    lineHeight: 17,
+  },
+
   cardFooter: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
     marginTop: 6,
   },
-  cardDistance: { fontSize: 12 },
+
+  cardDistance: {
+    fontSize: 12,
+  },
+
+  /* =======================================================
+     MAP MARKER
+  ======================================================== */
+
   markerPin: {
     width: 28,
     height: 28,
     borderRadius: 14,
+
     backgroundColor: "#111827",
+
     alignItems: "center",
     justifyContent: "center",
+
     borderWidth: 2,
     borderColor: "#FFFFFF",
   },
+
   markerDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
+
     backgroundColor: "#4DA8FF",
   },
 });
