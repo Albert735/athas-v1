@@ -1,13 +1,17 @@
 export function getManeuverIcon(type?: string, modifier?: string): string {
   if (type === "arrive") {
-    return "map-marker-check";
+    return "location-on";
   }
 
   if (type === "depart") {
     return "navigation";
   }
 
-  if (type === "roundabout" || type === "rotary") {
+  if (
+    type === "roundabout" ||
+    type === "rotary" ||
+    type === "roundabout turn"
+  ) {
     return "rotate-right";
   }
 
