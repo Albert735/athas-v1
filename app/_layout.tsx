@@ -57,6 +57,44 @@ export default function RootLayout() {
               name="notifications/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="place-sheet"
+              options={{
+                headerShown: false,
+                sheetGrabberVisible: true,
+                sheetAllowedDetents: [0.35, 0.6],
+                contentStyle: {
+                  backgroundColor: isLiquidGlassAvailable()
+                    ? "transparent"
+                    : colorScheme === "dark"
+                      ? Colors.dark.card
+                      : Colors.light.card,
+                },
+                headerTransparent: Platform.OS === "ios" ? true : false,
+                headerLargeTitle: false,
+                title: "",
+                presentation:
+                  Platform.OS === "ios"
+                    ? isLiquidGlassAvailable() && osName !== "iPadOS"
+                      ? "formSheet"
+                      : "modal"
+                    : "modal",
+                sheetInitialDetentIndex: 0,
+                headerStyle: {
+                  backgroundColor:
+                    Platform.OS === "ios"
+                      ? "transparent"
+                      : colorScheme === "dark"
+                        ? Colors.dark.card
+                        : Colors.light.card,
+                },
+                headerBlurEffect: isLiquidGlassAvailable()
+                  ? undefined
+                  : colorScheme === "dark"
+                    ? "dark"
+                    : "light",
+              }}
+            />
 
             <Stack.Screen
               name="sheet"

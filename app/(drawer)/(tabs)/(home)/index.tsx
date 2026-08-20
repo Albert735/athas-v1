@@ -118,10 +118,10 @@ export default function HomeScreen() {
     });
 
     setSelectedPlace(place);
-
     setSearchQuery("");
-
     setSearchFocused(false);
+
+    router.push(`/place-sheet?id=${place.id}`);
   };
 
   /*
@@ -258,21 +258,22 @@ export default function HomeScreen() {
               const found = places.find((place) =>
                 place.name.toLowerCase().includes(query.toLowerCase()),
               );
-
-              if (found) {
-                handleMarkerPress(found);
-              }
+              if (found) handleMarkerPress(found);
             }}
             loading={false}
             rightIcon={<Mic size={18} color={iconColor} />}
           />
 
-          {/* Shared search-results dropdown — no more duplicate inline UI */}
-          <PlaceSearchDropdown
-            visible={showDropdown}
-            results={searchResults}
-            onSelect={handleMarkerPress}
-          />
+          {/* Now absolutely positioned so it floats over content instead of pushing it */}
+          {showDropdown && (
+            <View style={styles.dropdownAbsolute}>
+              <PlaceSearchDropdown
+                visible={showDropdown}
+                results={searchResults}
+                onSelect={handleMarkerPress}
+              />
+            </View>
+          )}
         </View>
 
         {/* Quick Actions */}
@@ -383,24 +384,13 @@ const styles = StyleSheet.create({
   searchRow: {
     paddingHorizontal: 20,
     marginTop: 12,
+    zIndex: 20, // ensure dropdown floats above quick actions
   },
-
-  dropdown: {
-    marginTop: 8,
-    borderRadius: 16,
-    borderWidth: 1,
-    maxHeight: 320,
-    overflow: "hidden",
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 12,
-
-    elevation: 6,
+  dropdownAbsolute: {
+    position: "absolute",
+    top: 56, // roughly the height of the search bar — adjust to match yours
+    left: 20,
+    right: 20,
   },
 
   dropdownEmpty: {
