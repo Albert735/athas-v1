@@ -8,9 +8,10 @@ export function getDistanceMeters(
 ): number {
   const [lon1, lat1] = a;
   const [lon2, lat2] = b;
-  const R = 6371000; // Earth radius in meters
 
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const R = 6371000;
+
+  const toRad = (degrees: number) => (degrees * Math.PI) / 180;
 
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
