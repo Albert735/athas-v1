@@ -11,15 +11,14 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, router } from "expo-router";
 
 import { useColor } from "@/hooks/useColor";
+
 import { places } from "@/data/places";
 import { categoryImages } from "@/data/category-images";
 
 import { Star, MapPin, Navigation, Clock3 } from "lucide-react-native";
 
 export default function PlaceSheet() {
-  const { id } = useLocalSearchParams<{
-    id: string;
-  }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
 
   const backgroundColor = useColor("background");
 
@@ -35,22 +34,8 @@ export default function PlaceSheet() {
 
   if (!place) {
     return (
-      <View
-        style={[
-          styles.empty,
-          {
-            backgroundColor,
-          },
-        ]}
-      >
-        <Text
-          style={[
-            styles.emptyText,
-            {
-              color: mutedColor,
-            },
-          ]}
-        >
+      <View style={[styles.empty, { backgroundColor }]}>
+        <Text style={[styles.emptyText, { color: mutedColor }]}>
           Place not found.
         </Text>
       </View>
@@ -63,17 +48,12 @@ export default function PlaceSheet() {
     .join(" ");
 
   const handleGetDirections = () => {
-    router.dismissTo(`/map?buildingId=${place.id}&startDirections=true`);
+    router.dismissTo(`/map?buildingId=${place.id}&startNavigation=true`);
   };
 
   return (
     <ScrollView
-      style={[
-        styles.container,
-        {
-          backgroundColor,
-        },
-      ]}
+      style={[styles.container, { backgroundColor }]}
       contentContainerStyle={styles.content}
       showsVerticalScrollIndicator={false}
     >
@@ -111,25 +91,9 @@ export default function PlaceSheet() {
             ))}
           </View>
 
-          <Text
-            style={[
-              styles.rating,
-              {
-                color: textColor,
-              },
-            ]}
-          >
-            4.8
-          </Text>
+          <Text style={[styles.rating, { color: textColor }]}>4.8</Text>
 
-          <Text
-            style={[
-              styles.ratingLabel,
-              {
-                color: mutedColor,
-              },
-            ]}
-          >
+          <Text style={[styles.ratingLabel, { color: mutedColor }]}>
             Excellent
           </Text>
         </View>
@@ -167,44 +131,16 @@ export default function PlaceSheet() {
       </View>
 
       <View style={styles.infoRow}>
-        <View
-          style={[
-            styles.infoCard,
-            {
-              backgroundColor: cardColor,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.infoIcon,
-              {
-                backgroundColor,
-              },
-            ]}
-          >
+        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+          <View style={[styles.infoIcon, { backgroundColor }]}>
             <Clock3 size={17} color={primaryColor} />
           </View>
 
           <View style={styles.infoText}>
-            <Text
-              style={[
-                styles.infoLabel,
-                {
-                  color: mutedColor,
-                },
-              ]}
-            >
-              Hours
-            </Text>
+            <Text style={[styles.infoLabel, { color: mutedColor }]}>Hours</Text>
 
             <Text
-              style={[
-                styles.infoValue,
-                {
-                  color: textColor,
-                },
-              ]}
+              style={[styles.infoValue, { color: textColor }]}
               numberOfLines={1}
             >
               {place.hours}
@@ -212,44 +148,18 @@ export default function PlaceSheet() {
           </View>
         </View>
 
-        <View
-          style={[
-            styles.infoCard,
-            {
-              backgroundColor: cardColor,
-            },
-          ]}
-        >
-          <View
-            style={[
-              styles.infoIcon,
-              {
-                backgroundColor,
-              },
-            ]}
-          >
+        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+          <View style={[styles.infoIcon, { backgroundColor }]}>
             <MapPin size={17} color={primaryColor} />
           </View>
 
           <View style={styles.infoText}>
-            <Text
-              style={[
-                styles.infoLabel,
-                {
-                  color: mutedColor,
-                },
-              ]}
-            >
+            <Text style={[styles.infoLabel, { color: mutedColor }]}>
               Distance
             </Text>
 
             <Text
-              style={[
-                styles.infoValue,
-                {
-                  color: textColor,
-                },
-              ]}
+              style={[styles.infoValue, { color: textColor }]}
               numberOfLines={1}
             >
               {place.distance}
@@ -259,102 +169,35 @@ export default function PlaceSheet() {
       </View>
 
       <View style={styles.section}>
-        <Text
-          style={[
-            styles.sectionTitle,
-            {
-              color: textColor,
-            },
-          ]}
-        >
-          About
-        </Text>
+        <Text style={[styles.sectionTitle, { color: textColor }]}>About</Text>
 
-        <Text
-          style={[
-            styles.description,
-            {
-              color: mutedColor,
-            },
-          ]}
-        >
+        <Text style={[styles.description, { color: mutedColor }]}>
           {place.description}
         </Text>
       </View>
 
       <View style={styles.section}>
-        <Text
-          style={[
-            styles.sectionTitle,
-            {
-              color: textColor,
-            },
-          ]}
-        >
+        <Text style={[styles.sectionTitle, { color: textColor }]}>
           Opening hours
         </Text>
 
-        <View
-          style={[
-            styles.hoursCard,
-            {
-              backgroundColor: cardColor,
-            },
-          ]}
-        >
+        <View style={[styles.hoursCard, { backgroundColor: cardColor }]}>
           <View style={styles.hoursRow}>
-            <Text
-              style={[
-                styles.hoursLabel,
-                {
-                  color: mutedColor,
-                },
-              ]}
-            >
-              Days
-            </Text>
+            <Text style={[styles.hoursLabel, { color: mutedColor }]}>Days</Text>
 
-            <Text
-              style={[
-                styles.hoursValue,
-                {
-                  color: textColor,
-                },
-              ]}
-            >
+            <Text style={[styles.hoursValue, { color: textColor }]}>
               {place.days}
             </Text>
           </View>
 
-          <View
-            style={[
-              styles.divider,
-              {
-                backgroundColor,
-              },
-            ]}
-          />
+          <View style={[styles.divider, { backgroundColor }]} />
 
           <View style={styles.hoursRow}>
-            <Text
-              style={[
-                styles.hoursLabel,
-                {
-                  color: mutedColor,
-                },
-              ]}
-            >
+            <Text style={[styles.hoursLabel, { color: mutedColor }]}>
               Hours
             </Text>
 
-            <Text
-              style={[
-                styles.hoursValue,
-                {
-                  color: textColor,
-                },
-              ]}
-            >
+            <Text style={[styles.hoursValue, { color: textColor }]}>
               {place.hours}
             </Text>
           </View>
@@ -363,10 +206,13 @@ export default function PlaceSheet() {
 
       <TouchableOpacity
         activeOpacity={0.85}
-        style={[styles.directionsButton, { backgroundColor: primaryColor }]}
-        onPress={() => {
-          router.dismissTo(`/map?buildingId=${place.id}&startNavigation=true`);
-        }}
+        style={[
+          styles.directionsButton,
+          {
+            backgroundColor: primaryColor,
+          },
+        ]}
+        onPress={handleGetDirections}
       >
         <Navigation size={18} color="#FFFFFF" />
 
@@ -412,7 +258,7 @@ const styles = StyleSheet.create({
 
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(0,0,0,0.4)",
   },
 
   heroContent: {
@@ -590,7 +436,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 9,
-    marginTop: 2,
   },
 
   directionsText: {
