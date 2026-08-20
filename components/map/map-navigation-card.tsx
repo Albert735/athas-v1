@@ -2,22 +2,20 @@ import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import { useEffect, useState } from "react";
 
-import { getManeuverIcon } from "@/utils/navigation";
-import {
-  formatDistance,
-  formatDuration,
-  type RouteResult,
-} from "@/utils/directions";
+import { Button } from "../ui/button";
+import { useColor } from "@/hooks/useColor";
+
+import type { RouteResult } from "@/utils/directions";
+import { formatDistance, formatDuration } from "@/utils/directions";
 
 import { useLiveLocation } from "@/hooks/useLiveLocation";
 import { getDistanceMeters } from "@/utils/geo";
-import { useColor } from "@/hooks/useColor";
-import { Button } from "../ui/button";
+import { getManeuverIcon } from "@/utils/navigation";
 
 const ARRIVAL_THRESHOLD_METERS = 15;
 
 interface Props {
-  route: RouteResult;
+  route: RouteResult | null;
   onExit?: () => void;
 }
 
@@ -30,25 +28,28 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
+  const backgroundColor = useColor("background");
   const primaryColor = useColor("primary");
 
-  const step = route.steps[stepIndex];
+  const step = route?.steps[stepIndex] ?? null;
 
-  const isLastStep = stepIndex === route.steps.length - 1;
+  const isLastStep = route ? stepIndex >= route.steps.length - 1 : true;
 
   useEffect(() => {
-    if (!liveLocation || !step) return;
+    if (!liveLocation || !step || !route) {
+      return;
+    }
 
     if (liveLocation.accuracy !== null && liveLocation.accuracy > 20) {
       return;
     }
 
-    const distanceToStep = getDistanceMeters(
+    const distanceToManeuver = getDistanceMeters(
       liveLocation.coords,
       step.maneuver.location,
     );
 
-    if (distanceToStep > ARRIVAL_THRESHOLD_METERS) {
+    if (distanceToManeuver > ARRIVAL_THRESHOLD_METERS) {
       return;
     }
 
@@ -57,60 +58,111 @@ export default function MapNavigationCard({ route, onExit }: Props) {
       return;
     }
 
-    setStepIndex((current) => current + 1);
-  }, [liveLocation, step, isLastStep, onExit]);
+    setStepIndex((currentIndex) => currentIndex + 1);
+  }, [liveLocation, step, route, isLastStep, onExit]);
 
-  if (!step) {
-    return null;
+  useEffect(() => {
+    setStepIndex(0);
+  }, [route]);
+
+  if (!route || !step) {
+    return (
+      <View
+        style={[
+          styles.sheet,
+          {
+            backgroundColor: cardColor,
+          },
+        ]}
+      >
+        <Text
+          style={{
+            color: mutedColor,
+          }}
+        >
+          No route available.
+        </Text>
+
+        <Button
+          onPress={onExit}
+          variant="destructive"
+          style={{
+            marginTop: 16,
+          }}
+        >
+          Exit
+        </Button>
+      </View>
+    );
   }
 
-  const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
-
-  const distanceToManeuver = liveLocation
+  const liveDistance = liveLocation
     ? getDistanceMeters(liveLocation.coords, step.maneuver.location)
     : step.distance;
 
-  const remainingSteps = route.steps.slice(stepIndex + 1);
+  const futureSteps = route.steps.slice(stepIndex + 1);
 
-  const remainingDistance =
-    distanceToManeuver +
-    remainingSteps.reduce((total, item) => total + item.distance, 0);
+  const futureDistance = futureSteps.reduce(
+    (total, currentStep) => total + currentStep.distance,
+    0,
+  );
 
-  const remainingDuration =
-    remainingSteps.reduce((total, item) => total + item.duration, 0) +
-    step.duration *
-      Math.min(distanceToManeuver / Math.max(step.distance, 1), 1);
+  const futureDuration = futureSteps.reduce(
+    (total, currentStep) => total + currentStep.duration,
+    0,
+  );
+
+  const currentStepRatio =
+    step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
+
+  const currentStepRemainingDuration = step.duration * currentStepRatio;
+
+  const totalRemainingDistance = liveDistance + futureDistance;
+
+  const totalRemainingDuration = currentStepRemainingDuration + futureDuration;
+
+  const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
 
   return (
     <View
       style={[
-        styles.container,
+        styles.sheet,
         {
           backgroundColor: cardColor,
-          borderColor,
         },
       ]}
     >
-      {/* Current instruction */}
-      <View style={styles.instructionRow}>
+      <View style={styles.navHeader}>
         <View
           style={[
-            styles.iconContainer,
+            styles.iconCircle,
             {
               backgroundColor: primaryColor,
             },
           ]}
         >
-          <MaterialIcons name={iconName as any} size={28} color="#FFFFFF" />
+          <MaterialIcons name={iconName as any} size={25} color="#FFFFFF" />
         </View>
 
-        <View style={styles.instructionContent}>
-          <Text style={[styles.distance, { color: primaryColor }]}>
-            {formatDistance(distanceToManeuver)}
+        <View style={styles.instructionInfo}>
+          <Text
+            style={[
+              styles.turnDistance,
+              {
+                color: textColor,
+              },
+            ]}
+          >
+            {formatDistance(liveDistance)}
           </Text>
 
           <Text
-            style={[styles.instruction, { color: textColor }]}
+            style={[
+              styles.instructionText,
+              {
+                color: mutedColor,
+              },
+            ]}
             numberOfLines={2}
           >
             {step.instruction}
@@ -118,32 +170,73 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      {/* Trip information */}
-      <View style={[styles.stats, { borderTopColor: borderColor }]}>
-        <View style={styles.stat}>
-          <Text style={[styles.statLabel, { color: mutedColor }]}>
-            Time left
+      <View
+        style={[
+          styles.progressRow,
+          {
+            backgroundColor,
+          },
+        ]}
+      >
+        <View style={styles.statBox}>
+          <Text
+            style={[
+              styles.statLabel,
+              {
+                color: mutedColor,
+              },
+            ]}
+          >
+            Time Left
           </Text>
 
-          <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDuration(remainingDuration)}
+          <Text
+            style={[
+              styles.statValue,
+              {
+                color: textColor,
+              },
+            ]}
+          >
+            {formatDuration(totalRemainingDuration)}
           </Text>
         </View>
 
-        <View style={[styles.divider, { backgroundColor: borderColor }]} />
+        <View
+          style={[
+            styles.divider,
+            {
+              backgroundColor: borderColor,
+            },
+          ]}
+        />
 
-        <View style={styles.stat}>
-          <Text style={[styles.statLabel, { color: mutedColor }]}>
+        <View style={styles.statBox}>
+          <Text
+            style={[
+              styles.statLabel,
+              {
+                color: mutedColor,
+              },
+            ]}
+          >
             Distance
           </Text>
 
-          <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDistance(remainingDistance)}
+          <Text
+            style={[
+              styles.statValue,
+              {
+                color: textColor,
+              },
+            ]}
+          >
+            {formatDistance(totalRemainingDistance)}
           </Text>
         </View>
       </View>
 
-      <Button variant="destructive" onPress={onExit}>
+      <Button onPress={onExit} variant="destructive">
         Exit Navigation
       </Button>
     </View>
@@ -151,79 +244,64 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 }
 
 const styles = StyleSheet.create({
-  container: {
+  sheet: {
     position: "absolute",
-    left: 16,
-    right: 16,
-    bottom: 20,
-
-    padding: 16,
-
-    borderRadius: 24,
-    borderWidth: 1,
-
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 6,
-    },
-    shadowOpacity: 0.15,
-    shadowRadius: 16,
-
-    elevation: 12,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    padding: 20,
+    margin: 16,
+    borderRadius: 40,
   },
 
-  instructionRow: {
+  navHeader: {
     flexDirection: "row",
     alignItems: "center",
+    marginBottom: 16,
     gap: 14,
   },
 
-  iconContainer: {
-    width: 52,
-    height: 52,
-    borderRadius: 26,
-
+  iconCircle: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  instructionContent: {
+  instructionInfo: {
     flex: 1,
   },
 
-  distance: {
+  turnDistance: {
     fontSize: 20,
-    fontWeight: "800",
+    fontWeight: "700",
   },
 
-  instruction: {
-    fontSize: 15,
-    fontWeight: "600",
+  instructionText: {
+    fontSize: 14,
+    fontWeight: "500",
     marginTop: 2,
   },
 
-  stats: {
+  progressRow: {
     flexDirection: "row",
     alignItems: "center",
-
-    marginTop: 16,
-    marginBottom: 16,
-
-    paddingTop: 14,
-
-    borderTopWidth: 1,
+    justifyContent: "space-around",
+    padding: 16,
+    borderRadius: 20,
+    marginBottom: 20,
   },
 
-  stat: {
+  statBox: {
     flex: 1,
     alignItems: "center",
   },
 
   statLabel: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: "500",
-    marginBottom: 3,
+    marginBottom: 4,
   },
 
   statValue: {
@@ -233,6 +311,6 @@ const styles = StyleSheet.create({
 
   divider: {
     width: 1,
-    height: 28,
+    height: 24,
   },
 });

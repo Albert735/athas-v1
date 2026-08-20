@@ -1,35 +1,49 @@
 import { Alert, View, StyleSheet, Pressable } from "react-native";
+
 import { SafeAreaView } from "react-native-safe-area-context";
+
 import { router, useLocalSearchParams } from "expo-router";
+
 import { useEffect, useRef, useState } from "react";
+
 import MapboxGL from "@rnmapbox/maps";
+
 import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
+
 import { Mic } from "lucide-react-native";
 
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
+
 import { MAP_STYLE_URL } from "@/constants/mapbox";
+
 import { useUserLocation } from "@/hooks/useUserLocation";
+
 import { getRoute, type RouteResult } from "@/utils/directions";
+
 import { usePlaceSearch } from "@/hooks/usePlaceSearch";
+
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
+
 import type { SheetState, TransportProfile } from "@/types/map";
-import MapNavigationCard from "@/components/map/map-navigation-card";
 
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
+
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
-type Place = (typeof places)[0];
+type Place = (typeof places)[number];
 
 export default function Map() {
   const icon = useColor("icon");
+
   const primaryColor = useColor("primary");
 
-  const { buildingId } = useLocalSearchParams<{
+  const { buildingId, startDirections } = useLocalSearchParams<{
     buildingId?: string;
+    startDirections?: string;
   }>();
 
   const { location: userLocation, error: locationError } = useUserLocation();
@@ -56,14 +70,6 @@ export default function Map() {
 
   const [searchFocused, setSearchFocused] = useState(false);
 
-  /**
-   * Whether the old MapBottomSheet should be shown.
-   *
-   * We no longer show it when a place is selected because
-   * place details are handled by the Expo Router form sheet.
-   */
-  const [showMapBottomSheet, setShowMapBottomSheet] = useState(false);
-
   const searchResults = usePlaceSearch(searchQuery);
 
   const showDropdown = searchFocused && searchQuery.trim().length > 0;
@@ -81,22 +87,16 @@ export default function Map() {
     ? computeIsOpen(selectedPlace.hours, selectedPlace.days)
     : undefined;
 
-  /**
-   * Show location permission error once.
-   */
   useEffect(() => {
     if (!locationError) return;
 
     Alert.alert(
       "Location Unavailable",
-      "Please enable location access in Settings so we can show directions from your current position.",
+      "Please enable location access so directions can use your current position.",
       [{ text: "OK" }],
     );
   }, [locationError]);
 
-  /**
-   * Moves the camera to a place.
-   */
   const focusPlace = (place: Place) => {
     cameraRef.current?.setCamera({
       centerCoordinate: [place.longitude, place.latitude],
@@ -106,15 +106,10 @@ export default function Map() {
     });
   };
 
-  /**
-   * Opens the place form sheet.
-   *
-   * This is now the only place where the form sheet
-   * navigation happens.
-   */
   const openPlaceSheet = (place: Place) => {
     setSelectedPlace(place);
-    setShowMapBottomSheet(false);
+    setMapState("details");
+    setRoute(null);
 
     setSearchQuery("");
     setSearchFocused(false);
@@ -129,27 +124,14 @@ export default function Map() {
     });
   };
 
-  /**
-   * Search result selected.
-   */
   const handleSearchSelect = (place: Place) => {
     openPlaceSheet(place);
   };
 
-  /**
-   * Map annotation selected.
-   *
-   * IMPORTANT:
-   * Do not use onAnnotationPress here.
-   * This component owns the annotation.
-   */
   const handleAnnotationSelect = (place: Place) => {
     openPlaceSheet(place);
   };
 
-  /**
-   * Wait for the user's location.
-   */
   const waitForLocation = (): Promise<[number, number] | null> =>
     new Promise((resolve) => {
       if (userLocationRef.current) {
@@ -160,6 +142,7 @@ export default function Map() {
       const interval = setInterval(() => {
         if (userLocationRef.current) {
           clearInterval(interval);
+
           resolve(userLocationRef.current);
         }
       }, 200);
@@ -170,15 +153,12 @@ export default function Map() {
       }, 5000);
     });
 
-  /**
-   * Requests directions to the selected place.
-   */
   const handleRequestDirections = async (
     profile: TransportProfile = "walking",
   ) => {
     if (!selectedPlace) return;
 
-    const thisRequestId = ++requestIdRef.current;
+    const requestId = ++requestIdRef.current;
 
     setRouteLoading(true);
 
@@ -189,7 +169,7 @@ export default function Map() {
 
       Alert.alert(
         "Location Unavailable",
-        "We couldn't determine your current location. Please check your settings and try again.",
+        "We couldn't determine your current location.",
         [{ text: "OK" }],
       );
 
@@ -202,34 +182,42 @@ export default function Map() {
       profile,
     );
 
-    if (thisRequestId !== requestIdRef.current) {
+    if (requestId !== requestIdRef.current) {
       return;
     }
 
     setRoute(result);
     setRouteLoading(false);
 
-    if (result) {
-      const coords = result.geometry.coordinates as [number, number][];
+    if (!result) {
+      Alert.alert("No Route", "We couldn't find a route to this destination.");
 
-      const lons = coords.map((coordinate) => coordinate[0]);
-
-      const lats = coords.map((coordinate) => coordinate[1]);
-
-      cameraRef.current?.fitBounds(
-        [Math.max(...lons), Math.max(...lats)],
-        [Math.min(...lons), Math.min(...lats)],
-        60,
-        800,
-      );
+      return;
     }
+
+    const coordinates = result.geometry.coordinates as [number, number][];
+
+    const longitudes = coordinates.map((coordinate) => coordinate[0]);
+
+    const latitudes = coordinates.map((coordinate) => coordinate[1]);
+
+    cameraRef.current?.fitBounds(
+      [Math.max(...longitudes), Math.max(...latitudes)],
+      [Math.min(...longitudes), Math.min(...latitudes)],
+      80,
+      800,
+    );
   };
 
-  /**
-   * Exit navigation mode.
-   */
+  const handleStartNavigation = () => {
+    if (!route) return;
+
+    setMapState("navigating");
+  };
+
   const handleNavigationExit = () => {
     setRoute(null);
+    setMapState("details");
 
     cameraRef.current?.setCamera({
       centerCoordinate: selectedPlace
@@ -241,10 +229,9 @@ export default function Map() {
     });
   };
 
-  /**
-   * Handles opening the map with:
-   *
-   * /map?buildingId=some-place-id
+  /*
+   * Open a place when the map receives
+   * ?buildingId=...
    */
   useEffect(() => {
     if (!buildingId) return;
@@ -253,12 +240,41 @@ export default function Map() {
 
     if (!found) return;
 
-    openPlaceSheet(found);
-  }, [buildingId]);
+    setSelectedPlace(found);
+
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    focusPlace(found);
+
+    /*
+     * PlaceSheet uses startDirections=true.
+     * This means we skip the details state
+     * and immediately show the Directions card.
+     */
+    if (startDirections === "true") {
+      setMapState("directions");
+    } else {
+      setMapState("details");
+    }
+  }, [buildingId, startDirections]);
+
+  /*
+   * Once the selected place and user location
+   * are available, automatically request the
+   * initial walking route when coming from
+   * "Get Directions".
+   */
+  useEffect(() => {
+    if (startDirections !== "true" || !selectedPlace || !userLocation) {
+      return;
+    }
+
+    handleRequestDirections("walking");
+  }, [startDirections, selectedPlace?.id, userLocation]);
 
   return (
     <View style={styles.root}>
-      {/* MAP */}
       <MapboxGL.MapView
         style={styles.map}
         styleURL={MAP_STYLE_URL}
@@ -281,11 +297,14 @@ export default function Map() {
               ? MapboxGL.UserTrackingMode.FollowWithCourse
               : undefined
           }
+          followZoomLevel={18}
+          followPitch={60}
+          animationMode="flyTo"
+          animationDuration={800}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
 
-        {/* 3D BUILDINGS */}
         <MapboxGL.FillExtrusionLayer
           id="3d-buildings"
           sourceID="composite"
@@ -300,14 +319,13 @@ export default function Map() {
           }}
         />
 
-        {/* ROUTE */}
         {route && (
           <MapboxGL.ShapeSource id="routeSource" shape={route.geometry}>
             <MapboxGL.LineLayer
               id="routeLine"
               style={{
                 lineColor: primaryColor,
-                lineWidth: 5,
+                lineWidth: 6,
                 lineCap: "round",
                 lineJoin: "round",
               }}
@@ -315,7 +333,6 @@ export default function Map() {
           </MapboxGL.ShapeSource>
         )}
 
-        {/* PLACE ANNOTATIONS */}
         {places.map((place) => (
           <MapboxGL.PointAnnotation
             key={place.id}
@@ -330,7 +347,6 @@ export default function Map() {
         ))}
       </MapboxGL.MapView>
 
-      {/* SEARCH */}
       {mapState !== "navigating" && (
         <SafeAreaView style={styles.overlay} pointerEvents="box-none">
           <Header title="Map" />
@@ -342,16 +358,9 @@ export default function Map() {
               onChangeText={(text) => {
                 setSearchQuery(text);
                 setSearchFocused(true);
-
-                /*
-                 * While searching, don't show the
-                 * old map bottom sheet.
-                 */
-                setShowMapBottomSheet(false);
               }}
               onFocus={() => {
                 setSearchFocused(true);
-                setShowMapBottomSheet(false);
               }}
               onSearch={(query) => {
                 const found = places.find((place) =>
@@ -375,21 +384,14 @@ export default function Map() {
         </SafeAreaView>
       )}
 
-      {/* SEARCH DISMISS AREA */}
       {showDropdown && (
         <Pressable
           style={styles.dismissOverlay}
           onPress={() => setSearchFocused(false)}
         />
       )}
-      {mapState === "navigating" && route && (
-        <MapNavigationCard route={route} onExit={handleNavigationExit} />
-      )}
 
-      {/* OLD MAP BOTTOM SHEET
-          Intentionally hidden for the new
-          annotation -> form sheet flow. */}
-      {showMapBottomSheet && selectedPlace && (
+      {selectedPlace && (
         <MapBottomSheet
           place={selectedPlace}
           route={route}
@@ -397,14 +399,15 @@ export default function Map() {
           sheetState={mapState}
           onSheetStateChange={setMapState}
           onRequestDirections={handleRequestDirections}
+          onNavigationExit={handleNavigationExit}
           distanceOverride={selectedPlaceDistance}
           isOpenOverride={selectedPlaceIsOpen}
-          onNavigationExit={handleNavigationExit}
           onClose={() => {
             setSelectedPlace(null);
+
             setRoute(null);
+
             setMapState("details");
-            setShowMapBottomSheet(false);
           }}
         />
       )}
