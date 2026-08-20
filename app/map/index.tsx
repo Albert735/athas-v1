@@ -4,11 +4,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { router, useLocalSearchParams } from "expo-router";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import MapboxGL from "@rnmapbox/maps";
 
 import { Header } from "@/components/shared/screen/header";
+
 import { SearchBar } from "@/components/ui/searchbar";
 
 import { Mic } from "lucide-react-native";
@@ -21,9 +22,9 @@ import { MAP_STYLE_URL } from "@/constants/mapbox";
 
 import { useUserLocation } from "@/hooks/useUserLocation";
 
-import { getRoute, type RouteResult } from "@/utils/directions";
-
 import { usePlaceSearch } from "@/hooks/usePlaceSearch";
+
+import { getRoute, type RouteResult } from "@/utils/directions";
 
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
 
@@ -38,23 +39,19 @@ const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 type Place = (typeof places)[number];
 
 export default function Map() {
-  const iconColor = useColor("icon");
   const primaryColor = useColor("primary");
 
-  const { buildingId, startNavigation } = useLocalSearchParams<{
+  const iconColor = useColor("icon");
+
+  const { buildingId } = useLocalSearchParams<{
     buildingId?: string;
-    startNavigation?: string;
   }>();
 
   const { location: userLocation, error: locationError } = useUserLocation();
 
-  const userLocationRef = useRef<[number, number] | null>(null);
-
-  useEffect(() => {
-    userLocationRef.current = userLocation;
-  }, [userLocation]);
-
   const cameraRef = useRef<MapboxGL.Camera>(null);
+
+  const userLocationRef = useRef<[number, number] | null>(null);
 
   const requestIdRef = useRef(0);
 
@@ -72,7 +69,20 @@ export default function Map() {
 
   const searchResults = usePlaceSearch(searchQuery);
 
-  const showDropdown = searchFocused && searchQuery.trim().length > 0;
+  const showSearchDropdown = searchFocused && searchQuery.trim().length > 0;
+
+  useEffect(() => {
+    userLocationRef.current = userLocation;
+  }, [userLocation]);
+
+  useEffect(() => {
+    if (!locationError) return;
+
+    Alert.alert(
+      "Location Unavailable",
+      "Please enable location access so directions can use your current position.",
+    );
+  }, [locationError]);
 
   const selectedPlaceDistance = selectedPlace
     ? computeDistanceString(
@@ -87,66 +97,43 @@ export default function Map() {
     ? computeIsOpen(selectedPlace.hours, selectedPlace.days)
     : undefined;
 
-  useEffect(() => {
-    if (!locationError) {
-      return;
-    }
-
-    Alert.alert(
-      "Location Unavailable",
-      "Please enable location access so directions can use your current position.",
-    );
-  }, [locationError]);
-
-  const focusPlace = (place: Place) => {
+  const focusPlace = useCallback((place: Place) => {
     cameraRef.current?.setCamera({
       centerCoordinate: [place.longitude, place.latitude],
       zoomLevel: 17,
       pitch: 45,
       animationDuration: 600,
     });
-  };
+  }, []);
 
-  const selectPlace = (place: Place) => {
-    setSelectedPlace(place);
+  const openPlace = useCallback(
+    (place: Place) => {
+      setSelectedPlace(place);
+      setRoute(null);
+      setSheetState("details");
 
-    setSearchQuery("");
-    setSearchFocused(false);
+      setSearchQuery("");
+      setSearchFocused(false);
 
-    focusPlace(place);
-  };
-
-  const openPlaceSheet = (place: Place) => {
-    selectPlace(place);
-
-    router.push({
-      pathname: "/place-sheet",
-      params: {
-        id: place.id,
-      },
-    });
-  };
+      focusPlace(place);
+    },
+    [focusPlace],
+  );
 
   const handleSearchSelect = (place: Place) => {
-    openPlaceSheet(place);
+    openPlace(place);
   };
 
   const handleAnnotationSelect = (place: Place) => {
-    if (sheetState === "navigating") {
-      return;
-    }
-
-    openPlaceSheet(place);
+    openPlace(place);
   };
 
-  const waitForLocation = (): Promise<[number, number] | null> =>
-    new Promise((resolve) => {
-      if (userLocationRef.current) {
-        resolve(userLocationRef.current);
+  const waitForLocation = async (): Promise<[number, number] | null> => {
+    if (userLocationRef.current) {
+      return userLocationRef.current;
+    }
 
-        return;
-      }
-
+    return new Promise((resolve) => {
       const interval = setInterval(() => {
         if (userLocationRef.current) {
           clearInterval(interval);
@@ -157,33 +144,33 @@ export default function Map() {
 
       setTimeout(() => {
         clearInterval(interval);
+
         resolve(null);
       }, 5000);
     });
+  };
 
   const handleRequestDirections = async (
     profile: TransportProfile = "walking",
   ) => {
-    if (!selectedPlace) {
-      return;
-    }
+    if (!selectedPlace) return;
 
     const requestId = ++requestIdRef.current;
 
     setRouteLoading(true);
 
-    const origin = userLocationRef.current ?? (await waitForLocation());
-
-    if (requestId !== requestIdRef.current) {
-      return;
-    }
+    const origin = await waitForLocation();
 
     if (!origin) {
+      if (requestId !== requestIdRef.current) {
+        return;
+      }
+
       setRouteLoading(false);
 
       Alert.alert(
         "Location Unavailable",
-        "We couldn't determine your current location. Please check your location settings and try again.",
+        "We couldn't determine your current location.",
       );
 
       return;
@@ -203,81 +190,65 @@ export default function Map() {
     setRouteLoading(false);
 
     if (!result) {
-      Alert.alert(
-        "Route Unavailable",
-        "We couldn't find a route to this place.",
-      );
+      Alert.alert("No Route", "We couldn't find a route to this location.");
 
       return;
     }
 
     const coordinates = result.geometry.coordinates as [number, number][];
 
-    const longitudes = coordinates.map(([longitude]) => longitude);
+    const longitudes = coordinates.map((coordinate) => coordinate[0]);
 
-    const latitudes = coordinates.map(([, latitude]) => latitude);
+    const latitudes = coordinates.map((coordinate) => coordinate[1]);
 
     cameraRef.current?.fitBounds(
       [Math.max(...longitudes), Math.max(...latitudes)],
       [Math.min(...longitudes), Math.min(...latitudes)],
       80,
-      800,
+      900,
     );
   };
 
-  const handleNavigationExit = () => {
-    requestIdRef.current += 1;
+  const startNavigation = () => {
+    if (!route) return;
+
+    setSearchFocused(false);
+    setSearchQuery("");
+
+    setSheetState("navigating");
+
+    cameraRef.current?.setCamera({
+      zoomLevel: 18,
+      pitch: 60,
+      animationDuration: 800,
+    });
+  };
+
+  const exitNavigation = () => {
+    requestIdRef.current++;
 
     setRoute(null);
-    setRouteLoading(false);
     setSheetState("details");
 
     if (selectedPlace) {
-      focusPlace(selectedPlace);
-    } else {
       cameraRef.current?.setCamera({
-        centerCoordinate: CAMPUS_CENTER,
-        zoomLevel: 16,
-        pitch: 0,
+        centerCoordinate: [selectedPlace.longitude, selectedPlace.latitude],
+        zoomLevel: 17,
+        pitch: 45,
         animationDuration: 800,
       });
     }
   };
 
-  /**
-   * Handle:
-   *
-   * /map?buildingId=xxx
-   *
-   * and:
-   *
-   * /map?buildingId=xxx&startNavigation=true
-   */
   useEffect(() => {
-    if (!buildingId) {
-      return;
-    }
+    if (!buildingId) return;
 
     const place = places.find((item) => item.id === buildingId);
 
-    if (!place) {
-      return;
-    }
+    if (!place) return;
 
-    setSelectedPlace(place);
-    setSearchQuery("");
-    setSearchFocused(false);
-
-    focusPlace(place);
-
-    if (startNavigation === "true") {
-      setSheetState("directions");
-
-      handleRequestDirections("walking");
-    } else {
-      setSheetState("details");
-    }
-  }, [buildingId, startNavigation]);
+    openPlace(place);
+  }, [buildingId, openPlace]);
 
   return (
     <View style={styles.root}>
@@ -286,7 +257,7 @@ export default function Map() {
         styleURL={MAP_STYLE_URL}
         logoEnabled={false}
         attributionEnabled={false}
-        compassEnabled={sheetState === "navigating"}
+        compassEnabled={false}
         scaleBarEnabled={false}
         pitchEnabled
       >
@@ -329,13 +300,16 @@ export default function Map() {
         />
 
         {route && (
-          <MapboxGL.ShapeSource id="navigation-route" shape={route.geometry}>
+          <MapboxGL.ShapeSource id="route-source" shape={route.geometry}>
             <MapboxGL.LineLayer
-              id="navigation-route-line"
+              id="route-line"
               style={{
                 lineColor: primaryColor,
-                lineWidth: 5,
+
+                lineWidth: 6,
+
                 lineCap: "round",
+
                 lineJoin: "round",
               }}
             />
@@ -366,6 +340,7 @@ export default function Map() {
               value={searchQuery}
               onChangeText={(text) => {
                 setSearchQuery(text);
+
                 setSearchFocused(true);
               }}
               onFocus={() => {
@@ -385,7 +360,7 @@ export default function Map() {
             />
 
             <PlaceSearchDropdown
-              visible={showDropdown}
+              visible={showSearchDropdown}
               results={searchResults}
               onSelect={handleSearchSelect}
             />
@@ -393,7 +368,7 @@ export default function Map() {
         </SafeAreaView>
       )}
 
-      {showDropdown && (
+      {showSearchDropdown && (
         <Pressable
           style={styles.dismissOverlay}
           onPress={() => setSearchFocused(false)}
@@ -406,19 +381,24 @@ export default function Map() {
           route={route}
           routeLoading={routeLoading}
           sheetState={sheetState}
-          onSheetStateChange={setSheetState}
+          onSheetStateChange={(nextState) => {
+            if (nextState === "navigating") {
+              startNavigation();
+              return;
+            }
+
+            setSheetState(nextState);
+          }}
           onRequestDirections={handleRequestDirections}
           distanceOverride={selectedPlaceDistance}
           isOpenOverride={selectedPlaceIsOpen}
-          onNavigationExit={handleNavigationExit}
+          onNavigationExit={exitNavigation}
           onClose={() => {
-            requestIdRef.current += 1;
+            requestIdRef.current++;
 
             setSelectedPlace(null);
 
             setRoute(null);
-
-            setRouteLoading(false);
 
             setSheetState("details");
           }}
