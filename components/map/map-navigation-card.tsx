@@ -1,49 +1,67 @@
-import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
+
+import { useEffect, useMemo, useState } from "react";
 
 import { Button } from "../ui/button";
 
 import { useColor } from "@/hooks/useColor";
 
-import type { RouteResult } from "@/utils/directions";
+import {
+  formatDistance,
+  formatDuration,
+  type RouteResult,
+} from "@/utils/directions";
 
-import { formatDistance, formatDuration } from "@/utils/directions";
+import { getManeuverIcon } from "@/utils/navigation";
 
 import { useLiveLocation } from "@/hooks/useLiveLocation";
 
 import { getDistanceMeters } from "@/utils/geo";
 
-import { getManeuverIcon } from "@/utils/navigation";
+const ARRIVAL_THRESHOLD = 15;
 
 interface Props {
   route: RouteResult | null;
   onExit?: () => void;
 }
 
-const ARRIVAL_THRESHOLD_METERS = 15;
-
 export default function MapNavigationCard({ route, onExit }: Props) {
+  const [stepIndex, setStepIndex] = useState(0);
+
+  const liveLocation = useLiveLocation(true);
+
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
+
   const primaryColor = useColor("primary");
 
-  const liveLocation = useLiveLocation(Boolean(route));
-
-  const [stepIndex, setStepIndex] = React.useState(0);
+  /**
+   * Reset the instruction index whenever
+   * a completely new route starts.
+   */
+  useEffect(() => {
+    setStepIndex(0);
+  }, [route]);
 
   const step = route?.steps[stepIndex];
 
-  React.useEffect(() => {
-    if (!liveLocation || !route || !step) {
-      return;
-    }
+  const isLastStep = route ? stepIndex >= route.steps.length - 1 : true;
 
-    if (liveLocation.accuracy !== null && liveLocation.accuracy > 20) {
+  /**
+   * Determine whether the current
+   * maneuver has been reached.
+   */
+  useEffect(() => {
+    if (!route) return;
+    if (!step) return;
+    if (!liveLocation) return;
+
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 30) {
       return;
     }
 
@@ -52,31 +70,77 @@ export default function MapNavigationCard({ route, onExit }: Props) {
       step.maneuver.location,
     );
 
-    if (distanceToManeuver > ARRIVAL_THRESHOLD_METERS) {
+    if (distanceToManeuver > ARRIVAL_THRESHOLD) {
       return;
     }
 
-    if (stepIndex >= route.steps.length - 1) {
+    if (isLastStep) {
       onExit?.();
       return;
     }
 
-    setStepIndex((current) => current + 1);
-  }, [liveLocation, route, step, stepIndex, onExit]);
+    setStepIndex((current) => (current === stepIndex ? current + 1 : current));
+  }, [liveLocation, route, step, stepIndex, isLastStep, onExit]);
 
-  React.useEffect(() => {
-    setStepIndex(0);
-  }, [route]);
+  const liveDistance = useMemo(() => {
+    if (!step) return 0;
+
+    if (!liveLocation) {
+      return step.distance;
+    }
+
+    return getDistanceMeters(liveLocation.coords, step.maneuver.location);
+  }, [liveLocation, step]);
+
+  const remainingDistance = useMemo(() => {
+    if (!route || !step) return 0;
+
+    const futureDistance = route.steps
+      .slice(stepIndex + 1)
+      .reduce((total, item) => total + item.distance, 0);
+
+    return liveDistance + futureDistance;
+  }, [route, step, stepIndex, liveDistance]);
+
+  const remainingDuration = useMemo(() => {
+    if (!route || !step) return 0;
+
+    const currentRatio =
+      step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
+
+    const currentRemaining = step.duration * currentRatio;
+
+    const futureDuration = route.steps
+      .slice(stepIndex + 1)
+      .reduce((total, item) => total + item.duration, 0);
+
+    return currentRemaining + futureDuration;
+  }, [route, step, stepIndex, liveDistance]);
 
   if (!route || !step) {
     return (
-      <View style={[styles.sheet, { backgroundColor: cardColor }]}>
-        <Text style={{ color: mutedColor }}>No route available.</Text>
+      <View
+        style={[
+          styles.sheet,
+          {
+            backgroundColor: cardColor,
+          },
+        ]}
+      >
+        <Text
+          style={{
+            color: mutedColor,
+          }}
+        >
+          No route available
+        </Text>
 
         <Button
           variant="destructive"
           onPress={onExit}
-          style={styles.exitButton}
+          style={{
+            marginTop: 16,
+          }}
         >
           Exit
         </Button>
@@ -86,45 +150,46 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 
   const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
 
-  const liveDistance = liveLocation
-    ? getDistanceMeters(liveLocation.coords, step.maneuver.location)
-    : step.distance;
-
-  const remainingSteps = route.steps.slice(stepIndex + 1);
-
-  const futureDistance = remainingSteps.reduce(
-    (total, currentStep) => total + currentStep.distance,
-    0,
-  );
-
-  const futureDuration = remainingSteps.reduce(
-    (total, currentStep) => total + currentStep.duration,
-    0,
-  );
-
-  const currentStepProgress =
-    step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
-
-  const currentStepRemainingDuration = step.duration * currentStepProgress;
-
-  const remainingDistance = liveDistance + futureDistance;
-
-  const remainingDuration = currentStepRemainingDuration + futureDuration;
-
   return (
-    <View style={[styles.sheet, { backgroundColor: cardColor }]}>
-      <View style={styles.instructionRow}>
-        <View style={[styles.iconCircle, { backgroundColor: primaryColor }]}>
-          <MaterialIcons name={iconName as any} size={24} color="#FFFFFF" />
+    <View
+      style={[
+        styles.sheet,
+        {
+          backgroundColor: cardColor,
+        },
+      ]}
+    >
+      <View style={styles.navigationHeader}>
+        <View
+          style={[
+            styles.iconCircle,
+            {
+              backgroundColor: primaryColor,
+            },
+          ]}
+        >
+          <MaterialIcons name={iconName as any} size={26} color="#FFFFFF" />
         </View>
 
-        <View style={styles.instructionInfo}>
-          <Text style={[styles.turnDistance, { color: textColor }]}>
+        <View style={styles.instructionContainer}>
+          <Text
+            style={[
+              styles.turnDistance,
+              {
+                color: textColor,
+              },
+            ]}
+          >
             {formatDistance(liveDistance)}
           </Text>
 
           <Text
-            style={[styles.instruction, { color: mutedColor }]}
+            style={[
+              styles.instruction,
+              {
+                color: mutedColor,
+              },
+            ]}
             numberOfLines={2}
           >
             {step.instruction}
@@ -132,21 +197,67 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      <View style={[styles.progress, { backgroundColor }]}>
+      <View
+        style={[
+          styles.progressCard,
+          {
+            backgroundColor,
+          },
+        ]}
+      >
         <View style={styles.stat}>
-          <Text style={[styles.label, { color: mutedColor }]}>Time left</Text>
+          <Text
+            style={[
+              styles.statLabel,
+              {
+                color: mutedColor,
+              },
+            ]}
+          >
+            Time left
+          </Text>
 
-          <Text style={[styles.value, { color: textColor }]}>
+          <Text
+            style={[
+              styles.statValue,
+              {
+                color: textColor,
+              },
+            ]}
+          >
             {formatDuration(remainingDuration)}
           </Text>
         </View>
 
-        <View style={[styles.divider, { backgroundColor: borderColor }]} />
+        <View
+          style={[
+            styles.divider,
+            {
+              backgroundColor: borderColor,
+            },
+          ]}
+        />
 
         <View style={styles.stat}>
-          <Text style={[styles.label, { color: mutedColor }]}>Distance</Text>
+          <Text
+            style={[
+              styles.statLabel,
+              {
+                color: mutedColor,
+              },
+            ]}
+          >
+            Distance
+          </Text>
 
-          <Text style={[styles.value, { color: textColor }]}>
+          <Text
+            style={[
+              styles.statValue,
+              {
+                color: textColor,
+              },
+            ]}
+          >
             {formatDistance(remainingDistance)}
           </Text>
         </View>
@@ -162,29 +273,30 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 const styles = StyleSheet.create({
   sheet: {
     position: "absolute",
-    left: 16,
-    right: 16,
-    bottom: 16,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    margin: 16,
     padding: 20,
     borderRadius: 32,
   },
 
-  instructionRow: {
+  navigationHeader: {
     flexDirection: "row",
     alignItems: "center",
     gap: 14,
-    marginBottom: 16,
+    marginBottom: 18,
   },
 
   iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+    width: 52,
+    height: 52,
+    borderRadius: 26,
     alignItems: "center",
     justifyContent: "center",
   },
 
-  instructionInfo: {
+  instructionContainer: {
     flex: 1,
   },
 
@@ -196,13 +308,13 @@ const styles = StyleSheet.create({
   instruction: {
     fontSize: 14,
     fontWeight: "500",
-    marginTop: 2,
+    marginTop: 3,
   },
 
-  progress: {
+  progressCard: {
     flexDirection: "row",
     alignItems: "center",
-    borderRadius: 18,
+    borderRadius: 20,
     padding: 16,
     marginBottom: 18,
   },
@@ -212,22 +324,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 
-  label: {
+  statLabel: {
     fontSize: 12,
     marginBottom: 4,
   },
 
-  value: {
-    fontSize: 16,
+  statValue: {
+    fontSize: 17,
     fontWeight: "800",
   },
 
   divider: {
     width: 1,
     height: 28,
-  },
-
-  exitButton: {
-    marginTop: 16,
   },
 });
