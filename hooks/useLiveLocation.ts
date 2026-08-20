@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+
 import * as Location from "expo-location";
 
 export interface LiveLocation {
@@ -33,17 +34,20 @@ export function useLiveLocation(active: boolean) {
       subscriptionRef.current = await Location.watchPositionAsync(
         {
           accuracy: Location.Accuracy.BestForNavigation,
+
           timeInterval: 500,
+
           distanceInterval: 1,
         },
+
         (position) => {
-          if (!mounted) {
-            return;
-          }
+          if (!mounted) return;
 
           setLocation({
             coords: [position.coords.longitude, position.coords.latitude],
+
             accuracy: position.coords.accuracy,
+
             heading: position.coords.heading,
           });
         },
