@@ -1,49 +1,58 @@
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import * as Location from "expo-location";
 
 export interface LiveLocation {
   coords: [number, number];
-  accuracy: number | null; // meters — lower is better
-  heading: number | null; // degrees, direction of travel
+  accuracy: number | null;
+  heading: number | null;
 }
 
 export function useLiveLocation(active: boolean) {
   const [location, setLocation] = useState<LiveLocation | null>(null);
+
   const subscriptionRef = useRef<Location.LocationSubscription | null>(null);
 
   useEffect(() => {
-    if (!active) {
-      subscriptionRef.current?.remove();
-      subscriptionRef.current = null;
-      return;
-    }
+    let mounted = true;
 
-    let isMounted = true;
+    const startTracking = async () => {
+      if (!active) return;
 
-    (async () => {
       const { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") return;
+
+      if (status !== "granted" || !mounted) {
+        return;
+      }
+
+      subscriptionRef.current?.remove();
 
       subscriptionRef.current = await Location.watchPositionAsync(
         {
-          accuracy: Location.Accuracy.BestForNavigation, // strongest GPS mode available
-          timeInterval: 500, // check twice a second instead of once
-          distanceInterval: 1, // update on every 1m of movement
+          accuracy: Location.Accuracy.BestForNavigation,
+          timeInterval: 500,
+          distanceInterval: 1,
         },
         (position) => {
-          if (isMounted) {
-            setLocation({
-              coords: [position.coords.longitude, position.coords.latitude],
-              accuracy: position.coords.accuracy,
-              heading: position.coords.heading,
-            });
-          }
+          if (!mounted) return;
+
+          setLocation({
+            coords: [position.coords.longitude, position.coords.latitude],
+            accuracy: position.coords.accuracy,
+            heading: position.coords.heading,
+          });
         },
       );
-    })();
+    };
+
+    if (active) {
+      startTracking();
+    } else {
+      subscriptionRef.current?.remove();
+      subscriptionRef.current = null;
+    }
 
     return () => {
-      isMounted = false;
+      mounted = false;
       subscriptionRef.current?.remove();
       subscriptionRef.current = null;
     };

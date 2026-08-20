@@ -15,6 +15,7 @@ import { getRoute, type RouteResult } from "@/utils/directions";
 import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
 import type { SheetState, TransportProfile } from "@/types/map";
+import MapNavigationCard from "@/components/map/map-navigation-card";
 
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
@@ -280,10 +281,6 @@ export default function Map() {
               ? MapboxGL.UserTrackingMode.FollowWithCourse
               : undefined
           }
-          followZoomLevel={18}
-          followPitch={60}
-          animationMode="flyTo"
-          animationDuration={mapState === "navigating" ? 800 : 0}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
@@ -384,6 +381,9 @@ export default function Map() {
           style={styles.dismissOverlay}
           onPress={() => setSearchFocused(false)}
         />
+      )}
+      {mapState === "navigating" && route && (
+        <MapNavigationCard route={route} onExit={handleNavigationExit} />
       )}
 
       {/* OLD MAP BOTTOM SHEET

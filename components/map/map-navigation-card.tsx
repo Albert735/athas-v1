@@ -1,127 +1,116 @@
 import { View, Text, StyleSheet } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
+import { useEffect, useState } from "react";
+
 import { getManeuverIcon } from "@/utils/navigation";
-import { useState, useEffect } from "react";
-import { Button } from "../ui/button";
-import { useColor } from "@/hooks/useColor";
-import type { RouteResult } from "@/utils/directions";
-import { formatDistance, formatDuration } from "@/utils/directions";
+import {
+  formatDistance,
+  formatDuration,
+  type RouteResult,
+} from "@/utils/directions";
+
 import { useLiveLocation } from "@/hooks/useLiveLocation";
 import { getDistanceMeters } from "@/utils/geo";
+import { useColor } from "@/hooks/useColor";
+import { Button } from "../ui/button";
 
-// How close (in meters) the user needs to be to a maneuver point
-// before we consider that step "reached" and move to the next one
-// Must match the closeEnough check below — single source of truth.
 const ARRIVAL_THRESHOLD_METERS = 15;
 
 interface Props {
-  route: RouteResult | null;
+  route: RouteResult;
   onExit?: () => void;
 }
 
 export default function MapNavigationCard({ route, onExit }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
 
-  // Actively track the user's live position while this card is mounted (i.e. while navigating)
   const liveLocation = useLiveLocation(true);
-
-  const step = route?.steps[stepIndex];
-  const isLastStep = route ? stepIndex === route.steps.length - 1 : true;
 
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
-  const backgroundColor = useColor("background");
   const primaryColor = useColor("primary");
 
-  // Auto-advance: every time the user's live location updates, check how
-  // close they are to the current step's maneuver point. Once within the
-  // threshold, move to the next step automatically — or exit if it was the last one.
+  const step = route.steps[stepIndex];
+
+  const isLastStep = stepIndex === route.steps.length - 1;
+
   useEffect(() => {
     if (!liveLocation || !step) return;
 
-    // Ignore readings with poor GPS accuracy — these cause false early/late triggers
-    if (liveLocation.accuracy !== null && liveLocation.accuracy > 15) return;
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 20) {
+      return;
+    }
 
-    const distanceToCurrentManeuver = getDistanceMeters(
+    const distanceToStep = getDistanceMeters(
       liveLocation.coords,
       step.maneuver.location,
     );
 
-    const nextStep = route?.steps[stepIndex + 1];
-    const distanceToNextManeuver = nextStep
-      ? getDistanceMeters(liveLocation.coords, nextStep.maneuver.location)
-      : null;
-
-    // Advance only when we're within a tight radius of the current point
-    // AND (if there's a next step) we're now closer to the next point than this one —
-    // this stops the instruction from flipping too early while still approaching
-    const closeEnough = distanceToCurrentManeuver <= ARRIVAL_THRESHOLD_METERS;
-    const pastThisPoint =
-      distanceToNextManeuver === null ||
-      distanceToNextManeuver < distanceToCurrentManeuver;
-
-    if (closeEnough && pastThisPoint) {
-      if (isLastStep) {
-        onExit?.();
-      } else {
-        setStepIndex((i) => i + 1);
-      }
+    if (distanceToStep > ARRIVAL_THRESHOLD_METERS) {
+      return;
     }
-  }, [liveLocation]);
 
-  if (!route || !step) {
-    return (
-      <View style={[styles.sheet, { backgroundColor: cardColor }]}>
-        <Text style={{ color: mutedColor }}>No route available</Text>
-        <Button
-          onPress={onExit}
-          variant="destructive"
-          style={{ marginTop: 16 }}
-        >
-          Exit
-        </Button>
-      </View>
-    );
+    if (isLastStep) {
+      onExit?.();
+      return;
+    }
+
+    setStepIndex((current) => current + 1);
+  }, [liveLocation, step, isLastStep, onExit]);
+
+  if (!step) {
+    return null;
   }
 
   const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
 
-  // ── Live remaining stats ──────────────────────────────────────────────────
-  // Distance from the user to the current step's maneuver point.
-  // Falls back to the step's original distance until the first GPS fix arrives.
-  const liveDistance = liveLocation
+  const distanceToManeuver = liveLocation
     ? getDistanceMeters(liveLocation.coords, step.maneuver.location)
     : step.distance;
 
-  // Sum the distances of every step that comes *after* the current one.
-  const futureSteps = route.steps.slice(stepIndex + 1);
-  const futureDistance = futureSteps.reduce((sum, s) => sum + s.distance, 0);
-  const futureDuration = futureSteps.reduce((sum, s) => sum + s.duration, 0);
+  const remainingSteps = route.steps.slice(stepIndex + 1);
 
-  // Estimate the proportion of the current step already completed,
-  // then scale the step's duration accordingly.
-  const currentStepProportion =
-    step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
-  const currentStepRemainingDuration = step.duration * currentStepProportion;
+  const remainingDistance =
+    distanceToManeuver +
+    remainingSteps.reduce((total, item) => total + item.distance, 0);
 
-  // Total remaining distance and duration update every GPS tick.
-  const totalRemainingDistance = liveDistance + futureDistance;
-  const totalRemainingDuration = currentStepRemainingDuration + futureDuration;
+  const remainingDuration =
+    remainingSteps.reduce((total, item) => total + item.duration, 0) +
+    step.duration *
+      Math.min(distanceToManeuver / Math.max(step.distance, 1), 1);
 
   return (
-    <View style={[styles.sheet, { backgroundColor: cardColor }]}>
-      <View style={styles.navHeader}>
-        <View style={[styles.iconCircle, { backgroundColor: primaryColor }]}>
-          <MaterialIcons name={iconName as any} size={24} color="#FFFFFF" />
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: cardColor,
+          borderColor,
+        },
+      ]}
+    >
+      {/* Current instruction */}
+      <View style={styles.instructionRow}>
+        <View
+          style={[
+            styles.iconContainer,
+            {
+              backgroundColor: primaryColor,
+            },
+          ]}
+        >
+          <MaterialIcons name={iconName as any} size={28} color="#FFFFFF" />
         </View>
-        <View style={styles.instructionInfo}>
-          <Text style={[styles.turnDistance, { color: textColor }]}>
-            {formatDistance(liveDistance)}
+
+        <View style={styles.instructionContent}>
+          <Text style={[styles.distance, { color: primaryColor }]}>
+            {formatDistance(distanceToManeuver)}
           </Text>
+
           <Text
-            style={[styles.instructionText, { color: mutedColor }]}
+            style={[styles.instruction, { color: textColor }]}
             numberOfLines={2}
           >
             {step.instruction}
@@ -129,80 +118,121 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      {/* Progress row — values decrease in real-time as the user moves */}
-      <View style={[styles.progressRow, { backgroundColor }]}>
-        <View style={styles.statBox}>
+      {/* Trip information */}
+      <View style={[styles.stats, { borderTopColor: borderColor }]}>
+        <View style={styles.stat}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>
-            Time Left
+            Time left
           </Text>
+
           <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDuration(totalRemainingDuration)}
+            {formatDuration(remainingDuration)}
           </Text>
         </View>
+
         <View style={[styles.divider, { backgroundColor: borderColor }]} />
-        <View style={styles.statBox}>
+
+        <View style={styles.stat}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>
             Distance
           </Text>
+
           <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDistance(totalRemainingDistance)}
+            {formatDistance(remainingDistance)}
           </Text>
         </View>
       </View>
 
-      <View style={styles.footer}>
-        <Button onPress={onExit} variant="destructive">
-          Exit
-        </Button>
-      </View>
+      <Button variant="destructive" onPress={onExit}>
+        Exit Navigation
+      </Button>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  sheet: {
+  container: {
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 20,
-    margin: 16,
-    borderRadius: 40,
+    left: 16,
+    right: 16,
+    bottom: 20,
+
+    padding: 16,
+
+    borderRadius: 24,
+    borderWidth: 1,
+
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 6,
+    },
+    shadowOpacity: 0.15,
+    shadowRadius: 16,
+
+    elevation: 12,
   },
-  navHeader: {
+
+  instructionRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
     gap: 14,
   },
-  iconCircle: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
+
+  iconContainer: {
+    width: 52,
+    height: 52,
+    borderRadius: 26,
+
     alignItems: "center",
     justifyContent: "center",
   },
-  instructionInfo: { flex: 1 },
-  turnDistance: { fontSize: 20, fontWeight: "700" },
-  instructionText: { fontSize: 14, fontWeight: "500", marginTop: 2 },
-  stepDots: {
+
+  instructionContent: {
+    flex: 1,
+  },
+
+  distance: {
+    fontSize: 20,
+    fontWeight: "800",
+  },
+
+  instruction: {
+    fontSize: 15,
+    fontWeight: "600",
+    marginTop: 2,
+  },
+
+  stats: {
     flexDirection: "row",
-    gap: 6,
+    alignItems: "center",
+
+    marginTop: 16,
     marginBottom: 16,
-    justifyContent: "center",
+
+    paddingTop: 14,
+
+    borderTopWidth: 1,
   },
-  stepDot: { width: 6, height: 6, borderRadius: 3 },
-  progressRow: {
-    flexDirection: "row",
+
+  stat: {
+    flex: 1,
     alignItems: "center",
-    justifyContent: "space-around",
-    padding: 16,
-    borderRadius: 20,
-    marginBottom: 20,
   },
-  statBox: { flex: 1, alignItems: "center" },
-  statLabel: { fontSize: 12, fontWeight: "500", marginBottom: 4 },
-  statValue: { fontSize: 16, fontWeight: "700" },
-  divider: { width: 1, height: 24 },
-  footer: {},
+
+  statLabel: {
+    fontSize: 11,
+    fontWeight: "500",
+    marginBottom: 3,
+  },
+
+  statValue: {
+    fontSize: 16,
+    fontWeight: "700",
+  },
+
+  divider: {
+    width: 1,
+    height: 28,
+  },
 });
