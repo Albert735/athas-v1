@@ -8,12 +8,12 @@ const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
 type Place = (typeof places)[0];
 
-interface HomeMapProps {
+interface Props {
   selectedPlace: Place | null;
   onAnnotationPress?: (place: Place) => void;
 }
 
-export const HomeMap = forwardRef<MapboxGL.Camera, HomeMapProps>(
+export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
   ({ selectedPlace, onAnnotationPress }, cameraRef) => {
     const handleAnnotationSelect = (place: Place) => {
       onAnnotationPress?.(place);
@@ -58,7 +58,7 @@ export const HomeMap = forwardRef<MapboxGL.Camera, HomeMapProps>(
             key={selectedPlace.id}
             id={`marker-${selectedPlace.id}`}
             coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
-            onSelected={() => handleAnnotationSelect(selectedPlace)}
+            onSelected={() => onAnnotationPress?.(selectedPlace)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
