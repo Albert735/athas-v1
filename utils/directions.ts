@@ -4,7 +4,6 @@ export interface RouteStep {
   instruction: string;
   distance: number;
   duration: number;
-
   maneuver: {
     type: string;
     modifier?: string;
@@ -52,13 +51,13 @@ export async function getRoute(
     const route = data.routes[0];
 
     const steps: RouteStep[] = route.legs[0].steps.map((step: any) => ({
-      instruction: step.maneuver.instruction,
-      distance: step.distance,
-      duration: step.duration,
+      instruction: step.maneuver?.instruction ?? "Continue",
+      distance: step.distance ?? 0,
+      duration: step.duration ?? 0,
       maneuver: {
-        type: step.maneuver.type,
-        modifier: step.maneuver.modifier,
-        location: step.maneuver.location,
+        type: step.maneuver?.type ?? "continue",
+        modifier: step.maneuver?.modifier,
+        location: step.maneuver?.location,
       },
     }));
 
