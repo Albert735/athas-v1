@@ -14,6 +14,7 @@ import { SearchBar } from "@/components/ui/searchbar";
 import { Mic } from "lucide-react-native";
 
 import { useColor } from "@/hooks/useColor";
+
 import { places } from "@/data/places";
 
 import { MAP_STYLE_URL } from "@/constants/mapbox";
@@ -37,22 +38,17 @@ const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 type Place = (typeof places)[number];
 
 export default function Map() {
-  const icon = useColor("icon");
-
+  const iconColor = useColor("icon");
   const primaryColor = useColor("primary");
 
-  const { buildingId, startDirections } = useLocalSearchParams<{
+  const { buildingId, startNavigation } = useLocalSearchParams<{
     buildingId?: string;
-    startDirections?: string;
+    startNavigation?: string;
   }>();
 
   const { location: userLocation, error: locationError } = useUserLocation();
 
   const userLocationRef = useRef<[number, number] | null>(null);
-
-  useEffect(() => {
-    userLocationRef.current = userLocation;
-  }, [userLocation]);
 
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
@@ -60,7 +56,7 @@ export default function Map() {
 
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  const [mapState, setMapState] = useState<SheetState>("details");
+  const [sheetState, setSheetState] = useState<SheetState>("details");
 
   const [route, setRoute] = useState<RouteResult | null>(null);
 
@@ -73,6 +69,10 @@ export default function Map() {
   const searchResults = usePlaceSearch(searchQuery);
 
   const showDropdown = searchFocused && searchQuery.trim().length > 0;
+
+  useEffect(() => {
+    userLocationRef.current = userLocation;
+  }, [userLocation]);
 
   const selectedPlaceDistance = selectedPlace
     ? computeDistanceString(
@@ -92,8 +92,7 @@ export default function Map() {
 
     Alert.alert(
       "Location Unavailable",
-      "Please enable location access so directions can use your current position.",
-      [{ text: "OK" }],
+      "Please enable location access so we can provide directions from your current position.",
     );
   }, [locationError]);
 
@@ -104,32 +103,6 @@ export default function Map() {
       pitch: 45,
       animationDuration: 600,
     });
-  };
-
-  const openPlaceSheet = (place: Place) => {
-    setSelectedPlace(place);
-    setMapState("details");
-    setRoute(null);
-
-    setSearchQuery("");
-    setSearchFocused(false);
-
-    focusPlace(place);
-
-    router.push({
-      pathname: "/place-sheet",
-      params: {
-        id: place.id,
-      },
-    });
-  };
-
-  const handleSearchSelect = (place: Place) => {
-    openPlaceSheet(place);
-  };
-
-  const handleAnnotationSelect = (place: Place) => {
-    openPlaceSheet(place);
   };
 
   const waitForLocation = (): Promise<[number, number] | null> =>
@@ -153,12 +126,8 @@ export default function Map() {
       }, 5000);
     });
 
-  const handleRequestDirections = async (
-    profile: TransportProfile = "walking",
-  ) => {
-    if (!selectedPlace) return;
-
-    const requestId = ++requestIdRef.current;
+  const requestDirections = async (place: Place, profile: TransportProfile) => {
+    const thisRequestId = ++requestIdRef.current;
 
     setRouteLoading(true);
 
@@ -169,8 +138,7 @@ export default function Map() {
 
       Alert.alert(
         "Location Unavailable",
-        "We couldn't determine your current location.",
-        [{ text: "OK" }],
+        "We couldn't determine your current location. Please check your location settings.",
       );
 
       return;
@@ -178,11 +146,11 @@ export default function Map() {
 
     const result = await getRoute(
       origin,
-      [selectedPlace.longitude, selectedPlace.latitude],
+      [place.longitude, place.latitude],
       profile,
     );
 
-    if (requestId !== requestIdRef.current) {
+    if (thisRequestId !== requestIdRef.current) {
       return;
     }
 
@@ -190,88 +158,100 @@ export default function Map() {
     setRouteLoading(false);
 
     if (!result) {
-      Alert.alert("No Route", "We couldn't find a route to this destination.");
+      Alert.alert(
+        "No Route Found",
+        "We couldn't find a route to this location.",
+      );
 
       return;
     }
 
     const coordinates = result.geometry.coordinates as [number, number][];
 
-    const longitudes = coordinates.map((coordinate) => coordinate[0]);
+    if (coordinates.length < 2) {
+      return;
+    }
 
-    const latitudes = coordinates.map((coordinate) => coordinate[1]);
+    const lons = coordinates.map((coordinate) => coordinate[0]);
+
+    const lats = coordinates.map((coordinate) => coordinate[1]);
 
     cameraRef.current?.fitBounds(
-      [Math.max(...longitudes), Math.max(...latitudes)],
-      [Math.min(...longitudes), Math.min(...latitudes)],
-      80,
-      800,
+      [Math.max(...lons), Math.max(...lats)],
+      [Math.min(...lons), Math.min(...lats)],
+      70,
+      900,
     );
+  };
+
+  const handleRequestDirections = async (
+    profile: TransportProfile = "walking",
+  ) => {
+    if (!selectedPlace) return;
+
+    await requestDirections(selectedPlace, profile);
   };
 
   const handleStartNavigation = () => {
     if (!route) return;
 
-    setMapState("navigating");
+    setSheetState("navigating");
   };
 
   const handleNavigationExit = () => {
+    requestIdRef.current += 1;
+
     setRoute(null);
-    setMapState("details");
+    setSheetState("details");
 
     cameraRef.current?.setCamera({
       centerCoordinate: selectedPlace
         ? [selectedPlace.longitude, selectedPlace.latitude]
         : CAMPUS_CENTER,
+
       zoomLevel: 17,
+
       pitch: 45,
-      animationDuration: 800,
+
+      animationDuration: 700,
     });
   };
 
-  /*
-   * Open a place when the map receives
-   * ?buildingId=...
-   */
-  useEffect(() => {
-    if (!buildingId) return;
-
-    const found = places.find((place) => place.id === buildingId);
-
-    if (!found) return;
-
-    setSelectedPlace(found);
+  const handlePlaceSelect = (place: Place) => {
+    setSelectedPlace(place);
 
     setSearchQuery("");
     setSearchFocused(false);
 
-    focusPlace(found);
+    setRoute(null);
 
-    /*
-     * PlaceSheet uses startDirections=true.
-     * This means we skip the details state
-     * and immediately show the Directions card.
-     */
-    if (startDirections === "true") {
-      setMapState("directions");
-    } else {
-      setMapState("details");
-    }
-  }, [buildingId, startDirections]);
+    setSheetState("details");
 
-  /*
-   * Once the selected place and user location
-   * are available, automatically request the
-   * initial walking route when coming from
-   * "Get Directions".
-   */
+    focusPlace(place);
+  };
+
   useEffect(() => {
-    if (startDirections !== "true" || !selectedPlace || !userLocation) {
-      return;
-    }
+    if (!buildingId) return;
 
-    handleRequestDirections("walking");
-  }, [startDirections, selectedPlace?.id, userLocation]);
+    const place = places.find((item) => item.id === buildingId);
+
+    if (!place) return;
+
+    setSelectedPlace(place);
+
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    focusPlace(place);
+
+    if (startNavigation === "true") {
+      setSheetState("directions");
+
+      requestDirections(place, "walking");
+    } else {
+      setSheetState("details");
+    }
+  }, [buildingId, startNavigation]);
 
   return (
     <View style={styles.root}>
@@ -286,21 +266,21 @@ export default function Map() {
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={mapState === "navigating" ? 18 : 16}
-          pitch={mapState === "navigating" ? 60 : 0}
+          zoomLevel={sheetState === "navigating" ? 18 : 16}
+          pitch={sheetState === "navigating" ? 60 : 0}
           centerCoordinate={
-            mapState === "navigating" ? undefined : CAMPUS_CENTER
+            sheetState === "navigating" ? undefined : CAMPUS_CENTER
           }
-          followUserLocation={mapState === "navigating"}
+          followUserLocation={sheetState === "navigating"}
           followUserMode={
-            mapState === "navigating"
+            sheetState === "navigating"
               ? MapboxGL.UserTrackingMode.FollowWithCourse
               : undefined
           }
           followZoomLevel={18}
           followPitch={60}
           animationMode="flyTo"
-          animationDuration={800}
+          animationDuration={600}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
@@ -325,7 +305,7 @@ export default function Map() {
               id="routeLine"
               style={{
                 lineColor: primaryColor,
-                lineWidth: 6,
+                lineWidth: 5,
                 lineCap: "round",
                 lineJoin: "round",
               }}
@@ -338,7 +318,7 @@ export default function Map() {
             key={place.id}
             id={`marker-${place.id}`}
             coordinate={[place.longitude, place.latitude]}
-            onSelected={() => handleAnnotationSelect(place)}
+            onSelected={() => handlePlaceSelect(place)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
@@ -347,7 +327,7 @@ export default function Map() {
         ))}
       </MapboxGL.MapView>
 
-      {mapState !== "navigating" && (
+      {sheetState !== "navigating" && (
         <SafeAreaView style={styles.overlay} pointerEvents="box-none">
           <Header title="Map" />
 
@@ -368,17 +348,17 @@ export default function Map() {
                 );
 
                 if (found) {
-                  handleSearchSelect(found);
+                  handlePlaceSelect(found);
                 }
               }}
               loading={false}
-              rightIcon={<Mic size={18} color={icon} />}
+              rightIcon={<Mic size={18} color={iconColor} />}
             />
 
             <PlaceSearchDropdown
               visible={showDropdown}
               results={searchResults}
-              onSelect={handleSearchSelect}
+              onSelect={handlePlaceSelect}
             />
           </View>
         </SafeAreaView>
@@ -396,18 +376,18 @@ export default function Map() {
           place={selectedPlace}
           route={route}
           routeLoading={routeLoading}
-          sheetState={mapState}
-          onSheetStateChange={setMapState}
+          sheetState={sheetState}
+          onSheetStateChange={setSheetState}
           onRequestDirections={handleRequestDirections}
-          onNavigationExit={handleNavigationExit}
           distanceOverride={selectedPlaceDistance}
           isOpenOverride={selectedPlaceIsOpen}
+          onNavigationExit={handleNavigationExit}
           onClose={() => {
+            requestIdRef.current += 1;
+
             setSelectedPlace(null);
-
             setRoute(null);
-
-            setMapState("details");
+            setSheetState("details");
           }}
         />
       )}
