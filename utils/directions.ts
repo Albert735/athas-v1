@@ -1,10 +1,10 @@
 import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
-import type { TransportProfile } from "@/types/map";
 
 export interface RouteStep {
   instruction: string;
   distance: number;
   duration: number;
+
   maneuver: {
     type: string;
     modifier?: string;
@@ -19,12 +19,15 @@ export interface RouteResult {
   steps: RouteStep[];
 }
 
+export type TransportProfile = "walking" | "driving" | "cycling";
+
 export async function getRoute(
   origin: [number, number],
   destination: [number, number],
   profile: TransportProfile = "walking",
 ): Promise<RouteResult | null> {
-  const coordinates = `${origin[0]},${origin[1]};${destination[0]},${destination[1]}`;
+  const coordinates =
+    `${origin[0]},${origin[1]};` + `${destination[0]},${destination[1]}`;
 
   const url =
     `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coordinates}` +
@@ -37,11 +40,7 @@ export async function getRoute(
     const response = await fetch(url);
 
     if (!response.ok) {
-      console.warn(
-        "Directions request failed:",
-        response.status,
-        response.statusText,
-      );
+      console.warn("Directions request failed:", response.status);
 
       return null;
     }
@@ -54,16 +53,22 @@ export async function getRoute(
 
     const route = data.routes[0];
 
-    const steps: RouteStep[] = route.legs[0].steps.map((step: any) => ({
-      instruction: step.maneuver.instruction ?? "Continue",
-      distance: step.distance,
-      duration: step.duration,
-      maneuver: {
-        type: step.maneuver.type,
-        modifier: step.maneuver.modifier,
-        location: step.maneuver.location,
-      },
-    }));
+    const steps: RouteStep[] =
+      route.legs?.[0]?.steps?.map((step: any) => ({
+        instruction: step.maneuver?.instruction ?? "Continue",
+
+        distance: step.distance ?? 0,
+
+        duration: step.duration ?? 0,
+
+        maneuver: {
+          type: step.maneuver?.type ?? "continue",
+
+          modifier: step.maneuver?.modifier,
+
+          location: step.maneuver?.location,
+        },
+      })) ?? [];
 
     return {
       distanceMeters: route.distance,
@@ -73,6 +78,7 @@ export async function getRoute(
     };
   } catch (error) {
     console.warn("Directions API error:", error);
+
     return null;
   }
 }
