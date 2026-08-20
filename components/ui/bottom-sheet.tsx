@@ -3,7 +3,6 @@ import {
   Modal,
   View,
   StyleSheet,
-  TouchableOpacity,
   TouchableWithoutFeedback,
   ViewStyle,
   StyleProp,
@@ -20,7 +19,6 @@ export interface BottomSheetProps {
 
 export function BottomSheet({
   isVisible = true,
-  onClose,
   children,
   style,
   showHandle = true,
@@ -28,21 +26,40 @@ export function BottomSheet({
   const cardColor = useColor("card");
   const handleColor = useColor("icon") || "#D1D5DB";
 
-  if (!isVisible) return null;
+  if (!isVisible) {
+    return null;
+  }
 
   return (
-    <View style={[styles.container, { backgroundColor: cardColor }, style]}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: cardColor,
+        },
+        style,
+      ]}
+    >
       {showHandle && (
         <View style={styles.handleContainer}>
-          <View style={[styles.handle, { backgroundColor: handleColor }]} />
+          <View
+            style={[
+              styles.handle,
+              {
+                backgroundColor: handleColor,
+              },
+            ]}
+          />
         </View>
       )}
+
       {children}
     </View>
   );
 }
 
 export const BottomSheetWrapper = BottomSheet;
+
 export type BottomSheetWrapperProps = BottomSheetProps;
 
 export interface BottomSheetModalProps extends BottomSheetProps {
@@ -69,12 +86,29 @@ export function BottomSheetModal({
       <TouchableWithoutFeedback onPress={onClose}>
         <View style={styles.backdrop} />
       </TouchableWithoutFeedback>
-      <View style={[styles.modalSheet, { backgroundColor: cardColor }, style]}>
+
+      <View
+        style={[
+          styles.modalSheet,
+          {
+            backgroundColor: cardColor,
+          },
+          style,
+        ]}
+      >
         {showHandle && (
           <View style={styles.handleContainer}>
-            <View style={[styles.handle, { backgroundColor: handleColor }]} />
+            <View
+              style={[
+                styles.handle,
+                {
+                  backgroundColor: handleColor,
+                },
+              ]}
+            />
           </View>
         )}
+
         {children}
       </View>
     </Modal>
@@ -86,40 +120,62 @@ export default BottomSheet;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    bottom: 0,
+
     left: 0,
     right: 0,
+    bottom: 0,
+
+    height: "48%",
+
     borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
+
     paddingHorizontal: 20,
-    paddingBottom: 32,
-    paddingTop: 12,
+    paddingTop: 8,
+
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: -4 },
+    shadowOffset: {
+      width: 0,
+      height: -4,
+    },
     shadowOpacity: 0.1,
     shadowRadius: 12,
+
     elevation: 10,
+
+    overflow: "hidden",
   },
+
   modalSheet: {
     position: "absolute",
-    bottom: 0,
+
     left: 0,
     right: 0,
+    bottom: 0,
+
+    height: "85%",
+
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
+
     paddingHorizontal: 20,
-    paddingBottom: 32,
-    paddingTop: 12,
+    paddingTop: 8,
+    paddingBottom: 24,
+
+    overflow: "hidden",
   },
+
   backdrop: {
     flex: 1,
     backgroundColor: "rgba(0,0,0,0.4)",
   },
+
   handleContainer: {
     alignItems: "center",
     paddingVertical: 8,
-    marginBottom: 8,
+    marginBottom: 6,
   },
+
   handle: {
     width: 36,
     height: 4,

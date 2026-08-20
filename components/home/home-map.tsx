@@ -6,12 +6,19 @@ import { forwardRef } from "react";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
-interface Props {
-  selectedPlace: (typeof places)[0] | null;
+type Place = (typeof places)[0];
+
+interface HomeMapProps {
+  selectedPlace: Place | null;
+  onAnnotationPress?: (place: Place) => void;
 }
 
-export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
-  ({ selectedPlace }, cameraRef) => {
+export const HomeMap = forwardRef<MapboxGL.Camera, HomeMapProps>(
+  ({ selectedPlace, onAnnotationPress }, cameraRef) => {
+    const handleAnnotationSelect = (place: Place) => {
+      onAnnotationPress?.(place);
+    };
+
     return (
       <MapboxGL.MapView
         style={styles.map}
@@ -46,12 +53,12 @@ export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
           }}
         />
 
-        {/* Only ever one marker — the currently selected place, if any */}
         {selectedPlace && (
           <MapboxGL.PointAnnotation
             key={selectedPlace.id}
             id={`marker-${selectedPlace.id}`}
             coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
+            onSelected={() => handleAnnotationSelect(selectedPlace)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
@@ -66,7 +73,10 @@ export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
 HomeMap.displayName = "HomeMap";
 
 const styles = StyleSheet.create({
-  map: { flex: 1 },
+  map: {
+    flex: 1,
+  },
+
   markerPin: {
     width: 28,
     height: 28,
@@ -77,6 +87,7 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: "#FFFFFF",
   },
+
   markerDot: {
     width: 8,
     height: 8,

@@ -39,202 +39,176 @@ export default function PlaceSheet() {
     .join(" ");
 
   return (
-    <View style={[styles.container, { backgroundColor }]}>
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.content}
-      >
-        <View style={styles.hero}>
-          <Image
-            source={categoryImages[place.category] ?? categoryImages.library}
-            style={styles.heroImage}
-            contentFit="cover"
-          />
+    <ScrollView
+      style={[styles.container, { backgroundColor }]}
+      contentContainerStyle={styles.content}
+      showsVerticalScrollIndicator={false}
+    >
+      {/* Hero */}
+      <View style={styles.hero}>
+        <Image
+          source={categoryImages[place.category] ?? categoryImages.library}
+          style={styles.heroImage}
+          contentFit="cover"
+        />
 
-          <View style={styles.heroOverlay} />
+        <View style={styles.heroOverlay} />
 
-          <View style={styles.heroContent}>
-            <View
-              style={[
-                styles.categoryBadge,
-                { backgroundColor: "rgba(255,255,255,0.92)" },
-              ]}
-            >
-              <Text style={[styles.categoryText, { color: textColor }]}>
-                {categoryLabel}
-              </Text>
-            </View>
+        <View style={styles.heroContent}>
+          <View style={styles.categoryBadge}>
+            <Text style={styles.categoryText}>{categoryLabel}</Text>
+          </View>
 
-            <Text style={styles.heroTitle}>{place.name}</Text>
+          <Text style={styles.heroTitle}>{place.name}</Text>
 
-            <View style={styles.heroLocation}>
-              <MapPin size={15} color="#FFFFFF" />
-              <Text style={styles.heroLocationText}>{place.distance} away</Text>
-            </View>
+          <View style={styles.heroLocation}>
+            <MapPin size={15} color="#FFFFFF" />
+
+            <Text style={styles.heroLocationText}>{place.distance} away</Text>
           </View>
         </View>
+      </View>
 
-        <View style={styles.ratingSection}>
-          <View style={styles.ratingLeft}>
-            <View style={styles.ratingStars}>
-              {Array.from({ length: 5 }).map((_, index) => (
-                <Star key={index} size={16} color="#F59E0B" fill="#F59E0B" />
-              ))}
-            </View>
-
-            <Text style={[styles.ratingValue, { color: textColor }]}>4.8</Text>
-
-            <Text style={[styles.ratingLabel, { color: mutedColor }]}>
-              Excellent
-            </Text>
+      {/* Rating + Status */}
+      <View style={styles.ratingSection}>
+        <View style={styles.ratingContainer}>
+          <View style={styles.stars}>
+            {Array.from({ length: 5 }).map((_, index) => (
+              <Star key={index} size={16} color="#F59E0B" fill="#F59E0B" />
+            ))}
           </View>
 
+          <Text style={[styles.rating, { color: textColor }]}>4.8</Text>
+
+          <Text style={[styles.ratingLabel, { color: mutedColor }]}>
+            Excellent
+          </Text>
+        </View>
+
+        <View
+          style={[
+            styles.statusBadge,
+            {
+              backgroundColor: place.isOpen
+                ? "rgba(34,197,94,0.12)"
+                : "rgba(239,68,68,0.12)",
+            },
+          ]}
+        >
           <View
             style={[
-              styles.statusBadge,
+              styles.statusDot,
               {
-                backgroundColor: place.isOpen
-                  ? "rgba(34,197,94,0.12)"
-                  : "rgba(239,68,68,0.12)",
+                backgroundColor: place.isOpen ? "#22C55E" : "#EF4444",
+              },
+            ]}
+          />
+
+          <Text
+            style={[
+              styles.statusText,
+              {
+                color: place.isOpen ? "#16A34A" : "#DC2626",
               },
             ]}
           >
-            <View
-              style={[
-                styles.statusDot,
-                {
-                  backgroundColor: place.isOpen ? "#22C55E" : "#EF4444",
-                },
-              ]}
-            />
+            {place.isOpen ? "Open now" : "Closed"}
+          </Text>
+        </View>
+      </View>
+
+      {/* Quick information */}
+      <View style={styles.infoRow}>
+        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+          <View style={[styles.infoIcon, { backgroundColor }]}>
+            <Clock3 size={17} color={primaryColor} />
+          </View>
+
+          <View style={styles.infoText}>
+            <Text style={[styles.infoLabel, { color: mutedColor }]}>Hours</Text>
 
             <Text
-              style={[
-                styles.statusText,
-                {
-                  color: place.isOpen ? "#16A34A" : "#DC2626",
-                },
-              ]}
+              style={[styles.infoValue, { color: textColor }]}
+              numberOfLines={1}
             >
-              {place.isOpen ? "Open now" : "Closed"}
+              {place.hours}
             </Text>
           </View>
         </View>
 
-        <View style={styles.infoGrid}>
-          <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
-            <View
-              style={[
-                styles.iconContainer,
-                { backgroundColor: backgroundColor },
-              ]}
+        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+          <View style={[styles.infoIcon, { backgroundColor }]}>
+            <MapPin size={17} color={primaryColor} />
+          </View>
+
+          <View style={styles.infoText}>
+            <Text style={[styles.infoLabel, { color: mutedColor }]}>
+              Distance
+            </Text>
+
+            <Text
+              style={[styles.infoValue, { color: textColor }]}
+              numberOfLines={1}
             >
-              <Clock3 size={17} color={primaryColor} />
-            </View>
-
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: mutedColor }]}>
-                Hours
-              </Text>
-              <Text
-                style={[styles.infoValue, { color: textColor }]}
-                numberOfLines={1}
-              >
-                {place.hours}
-              </Text>
-            </View>
-          </View>
-
-          <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
-            <View
-              style={[
-                styles.iconContainer,
-                { backgroundColor: backgroundColor },
-              ]}
-            >
-              <MapPin size={17} color={primaryColor} />
-            </View>
-
-            <View style={styles.infoContent}>
-              <Text style={[styles.infoLabel, { color: mutedColor }]}>
-                Distance
-              </Text>
-              <Text
-                style={[styles.infoValue, { color: textColor }]}
-                numberOfLines={1}
-              >
-                {place.distance}
-              </Text>
-            </View>
+              {place.distance}
+            </Text>
           </View>
         </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>
-            About this place
-          </Text>
-
-          <Text style={[styles.description, { color: mutedColor }]}>
-            {place.description}
-          </Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: textColor }]}>
-            Opening hours
-          </Text>
-
-          <View style={[styles.hoursCard, { backgroundColor: cardColor }]}>
-            <View style={styles.hoursRow}>
-              <Text style={[styles.hoursLabel, { color: mutedColor }]}>
-                Days
-              </Text>
-
-              <Text style={[styles.hoursValue, { color: textColor }]}>
-                {place.days}
-              </Text>
-            </View>
-
-            <View
-              style={[styles.divider, { backgroundColor: backgroundColor }]}
-            />
-
-            <View style={styles.hoursRow}>
-              <Text style={[styles.hoursLabel, { color: mutedColor }]}>
-                Hours
-              </Text>
-
-              <Text style={[styles.hoursValue, { color: textColor }]}>
-                {place.hours}
-              </Text>
-            </View>
-          </View>
-        </View>
-
-        <View style={styles.bottomSpace} />
-      </ScrollView>
-
-      <View
-        style={[
-          styles.footer,
-          {
-            backgroundColor,
-            borderTopColor: cardColor,
-          },
-        ]}
-      >
-        <TouchableOpacity
-          activeOpacity={0.85}
-          style={[styles.directionsButton, { backgroundColor: primaryColor }]}
-          onPress={() => {
-            router.dismissTo(`/map?buildingId=${place.id}`);
-          }}
-        >
-          <Navigation size={18} color="#FFFFFF" />
-          <Text style={styles.directionsText}>Get Directions</Text>
-        </TouchableOpacity>
       </View>
-    </View>
+
+      {/* About */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: textColor }]}>About</Text>
+
+        <Text style={[styles.description, { color: mutedColor }]}>
+          {place.description}
+        </Text>
+      </View>
+
+      {/* Opening hours */}
+      <View style={styles.section}>
+        <Text style={[styles.sectionTitle, { color: textColor }]}>
+          Opening hours
+        </Text>
+
+        <View style={[styles.hoursCard, { backgroundColor: cardColor }]}>
+          <View style={styles.hoursRow}>
+            <Text style={[styles.hoursLabel, { color: mutedColor }]}>Days</Text>
+
+            <Text style={[styles.hoursValue, { color: textColor }]}>
+              {place.days}
+            </Text>
+          </View>
+
+          <View style={[styles.divider, { backgroundColor }]} />
+
+          <View style={styles.hoursRow}>
+            <Text style={[styles.hoursLabel, { color: mutedColor }]}>
+              Hours
+            </Text>
+
+            <Text style={[styles.hoursValue, { color: textColor }]}>
+              {place.hours}
+            </Text>
+          </View>
+        </View>
+      </View>
+
+      {/* Directions */}
+      <TouchableOpacity
+        activeOpacity={0.85}
+        style={[styles.directionsButton, { backgroundColor: primaryColor }]}
+        onPress={() => {
+          router.dismissTo(`/map?buildingId=${place.id}`);
+        }}
+      >
+        <Navigation size={18} color="#FFFFFF" />
+
+        <Text style={styles.directionsText}>Get Directions</Text>
+      </TouchableOpacity>
+
+      <View style={styles.bottomSpace} />
+    </ScrollView>
   );
 }
 
@@ -245,7 +219,8 @@ const styles = StyleSheet.create({
 
   content: {
     paddingHorizontal: 16,
-    paddingTop: 8,
+    paddingTop: 12,
+    paddingBottom: 30,
   },
 
   empty: {
@@ -256,15 +231,13 @@ const styles = StyleSheet.create({
 
   emptyText: {
     fontSize: 15,
-    fontWeight: "500",
   },
 
   hero: {
-    height: 230,
+    height: 220,
     borderRadius: 22,
     overflow: "hidden",
     marginBottom: 18,
-    position: "relative",
   },
 
   heroImage: {
@@ -273,7 +246,7 @@ const styles = StyleSheet.create({
 
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.38)",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
 
   heroContent: {
@@ -284,6 +257,7 @@ const styles = StyleSheet.create({
 
   categoryBadge: {
     alignSelf: "flex-start",
+    backgroundColor: "rgba(255,255,255,0.94)",
     paddingHorizontal: 10,
     paddingVertical: 6,
     borderRadius: 20,
@@ -293,13 +267,13 @@ const styles = StyleSheet.create({
   categoryText: {
     fontSize: 11,
     fontWeight: "700",
+    color: "#111827",
   },
 
   heroTitle: {
     color: "#FFFFFF",
     fontSize: 26,
     fontWeight: "800",
-    letterSpacing: -0.5,
     marginBottom: 7,
   },
 
@@ -322,18 +296,18 @@ const styles = StyleSheet.create({
     marginBottom: 18,
   },
 
-  ratingLeft: {
+  ratingContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
 
-  ratingStars: {
+  stars: {
     flexDirection: "row",
     gap: 2,
     marginRight: 8,
   },
 
-  ratingValue: {
+  rating: {
     fontSize: 15,
     fontWeight: "800",
   },
@@ -363,7 +337,7 @@ const styles = StyleSheet.create({
     fontWeight: "700",
   },
 
-  infoGrid: {
+  infoRow: {
     flexDirection: "row",
     gap: 10,
     marginBottom: 26,
@@ -378,7 +352,7 @@ const styles = StyleSheet.create({
     gap: 10,
   },
 
-  iconContainer: {
+  infoIcon: {
     width: 36,
     height: 36,
     borderRadius: 11,
@@ -386,13 +360,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  infoContent: {
+  infoText: {
     flex: 1,
   },
 
   infoLabel: {
     fontSize: 11,
-    fontWeight: "500",
     marginBottom: 3,
   },
 
@@ -444,21 +417,6 @@ const styles = StyleSheet.create({
     height: StyleSheet.hairlineWidth,
   },
 
-  bottomSpace: {
-    height: 100,
-  },
-
-  footer: {
-    position: "absolute",
-    left: 0,
-    right: 0,
-    bottom: 0,
-    paddingHorizontal: 16,
-    paddingTop: 10,
-    paddingBottom: 20,
-    borderTopWidth: StyleSheet.hairlineWidth,
-  },
-
   directionsButton: {
     height: 54,
     borderRadius: 27,
@@ -466,11 +424,16 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 9,
+    marginTop: 2,
   },
 
   directionsText: {
     color: "#FFFFFF",
     fontSize: 15,
     fontWeight: "800",
+  },
+
+  bottomSpace: {
+    height: 10,
   },
 });

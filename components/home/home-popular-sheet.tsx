@@ -1,6 +1,7 @@
 import { View, Text, FlatList, Pressable, StyleSheet } from "react-native";
 import { Image } from "expo-image";
-import { MapPin } from "lucide-react-native";
+import { MapPin, ChevronRight } from "lucide-react-native";
+
 import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
@@ -11,12 +12,14 @@ interface Props {
   selectedCategory: string;
   onCategoryChange: (category: string) => void;
   onPlacePress: (place: (typeof places)[0]) => void;
+  visible?: boolean;
 }
 
 export function HomePopularSheet({
   selectedCategory,
   onCategoryChange,
   onPlacePress,
+  visible = true,
 }: Props) {
   const cardColor = useColor("card");
   const backgroundColor = useColor("background");
@@ -30,45 +33,68 @@ export function HomePopularSheet({
   const filteredPlaces =
     selectedCategory === "all"
       ? places
-      : places.filter((p) => p.category === selectedCategory);
+      : places.filter((place) => place.category === selectedCategory);
 
   const selectedLabel = quickActions.find(
-    (a) => a.category === selectedCategory,
+    (action) => action.category === selectedCategory,
   )?.label;
 
+  const title = selectedLabel ? `${selectedLabel} nearby` : "Popular places";
+
+  if (!visible) {
+    return null;
+  }
+
   return (
-    <BottomSheet style={styles.sheet}>
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: textColor }]}>
-          {selectedLabel
-            ? `${selectedLabel} near you`
-            : "Popular places on campus"}
+    <BottomSheet isVisible={visible} style={styles.sheet}>
+      {/* Header */}
+      <View style={styles.header}>
+        <Text
+          style={[
+            styles.title,
+            {
+              color: textColor,
+            },
+          ]}
+          numberOfLines={1}
+        >
+          {title}
+        </Text>
+
+        <Text
+          style={[
+            styles.subtitle,
+            {
+              color: mutedColor,
+            },
+          ]}
+        >
+          {filteredPlaces.length}{" "}
+          {filteredPlaces.length === 1 ? "place" : "places"}
         </Text>
       </View>
 
-      {/* Category pills */}
+      {/* Categories */}
       <FlatList
         horizontal
         data={quickActions}
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
-        scrollEnabled
-        nestedScrollEnabled={false}
-        directionalLockEnabled
         bounces={false}
-        contentContainerStyle={styles.pillsContent}
-        style={styles.pillsList}
+        style={styles.categoryList}
+        contentContainerStyle={styles.categoryContent}
         renderItem={({ item }) => {
           const isSelected = selectedCategory === item.category;
+
           const Icon = item.icon;
 
           return (
             <Pressable
+              onPress={() => onCategoryChange(item.category)}
               style={[
-                styles.pill,
+                styles.category,
                 {
-                  backgroundColor,
+                  backgroundColor: cardColor,
                   borderColor,
                 },
                 isSelected && {
@@ -76,20 +102,21 @@ export function HomePopularSheet({
                   borderColor: primaryColor,
                 },
               ]}
-              onPress={() => onCategoryChange(item.category)}
             >
               <Icon
                 size={14}
                 color={isSelected ? primaryForeground : iconColor}
+                strokeWidth={2}
               />
 
               <Text
                 style={[
-                  styles.pillText,
+                  styles.categoryText,
                   {
                     color: isSelected ? primaryForeground : textColor,
                   },
                 ]}
+                numberOfLines={1}
               >
                 {item.label}
               </Text>
@@ -97,44 +124,115 @@ export function HomePopularSheet({
           );
         }}
       />
-      {/* Place list */}
+
+      {/* Places */}
       <FlatList
         data={filteredPlaces}
         keyExtractor={(item) => item.id}
         showsVerticalScrollIndicator={false}
+        style={styles.placesList}
         contentContainerStyle={styles.listContent}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         renderItem={({ item }) => (
           <Pressable
-            style={[styles.card, { backgroundColor: cardColor, borderColor }]}
             onPress={() => onPlacePress(item)}
+            style={({ pressed }) => [
+              styles.placeCard,
+              {
+                backgroundColor: cardColor,
+                borderColor,
+                opacity: pressed ? 0.7 : 1,
+              },
+            ]}
           >
             <Image
               source={categoryImages[item.category] ?? categoryImages.library}
-              style={styles.cardImage}
+              style={styles.placeImage}
               contentFit="cover"
             />
-            <View style={styles.cardBody}>
+
+            <View style={styles.placeInfo}>
               <Text
-                style={[styles.cardName, { color: textColor }]}
+                style={[
+                  styles.placeName,
+                  {
+                    color: textColor,
+                  },
+                ]}
                 numberOfLines={1}
               >
                 {item.name}
               </Text>
+
               <Text
-                style={[styles.cardDescription, { color: mutedColor }]}
-                numberOfLines={2}
+                style={[
+                  styles.placeDescription,
+                  {
+                    color: mutedColor,
+                  },
+                ]}
+                numberOfLines={1}
               >
                 {item.description}
               </Text>
-              <View style={styles.cardFooter}>
-                <MapPin size={12} color={primaryColor} />
-                <Text style={[styles.cardDistance, { color: mutedColor }]}>
+
+              <View style={styles.placeMeta}>
+                <MapPin size={12} color={primaryColor} strokeWidth={2.5} />
+
+                <Text
+                  style={[
+                    styles.distance,
+                    {
+                      color: mutedColor,
+                    },
+                  ]}
+                >
                   {item.distance}
+                </Text>
+
+                <View style={styles.metaDot} />
+
+                <Text
+                  style={[
+                    styles.openStatus,
+                    {
+                      color: item.isOpen ? "#16A34A" : "#DC2626",
+                    },
+                  ]}
+                >
+                  {item.isOpen ? "Open" : "Closed"}
                 </Text>
               </View>
             </View>
+
+            <ChevronRight size={18} color={mutedColor} strokeWidth={1.8} />
           </Pressable>
         )}
+        ListEmptyComponent={
+          <View style={styles.empty}>
+            <Text
+              style={[
+                styles.emptyTitle,
+                {
+                  color: textColor,
+                },
+              ]}
+            >
+              No places found
+            </Text>
+
+            <Text
+              style={[
+                styles.emptyText,
+                {
+                  color: mutedColor,
+                },
+              ]}
+            >
+              Try another category.
+            </Text>
+          </View>
+        }
       />
     </BottomSheet>
   );
@@ -142,68 +240,134 @@ export function HomePopularSheet({
 
 const styles = StyleSheet.create({
   sheet: {
-    maxHeight: "60%",
-    gap: 16,
+    height: "48%",
+    paddingHorizontal: 16,
+    paddingTop: 4,
   },
-  sectionHeader: { paddingHorizontal: 4, marginBottom: 8 },
-  sectionTitle: { fontSize: 18, fontWeight: "700" },
 
-  pillsList: {
-    height: 52,
+  header: {
+    marginBottom: 10,
+  },
+
+  title: {
+    fontSize: 18,
+    fontWeight: "800",
+    letterSpacing: -0.3,
+  },
+
+  subtitle: {
+    fontSize: 12,
+    marginTop: 2,
+  },
+
+  categoryList: {
     flexGrow: 0,
+    marginHorizontal: -16,
+    marginBottom: 4,
   },
 
-  pillsContainer: {
-    flexDirection: "row",
-    flexWrap: "wrap",
+  categoryContent: {
+    paddingHorizontal: 16,
     gap: 8,
-    // paddingHorizontal: 20,
-    // paddingVertical: 12,
   },
 
-  pillsContent: {
-    // paddingHorizontal: 20,
-    alignItems: "center",
-    gap: 8,
-  },
-  pill: {
-    height: 36,
+  category: {
+    height: 34,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
-    paddingHorizontal: 14,
-    borderRadius: 18,
+    paddingHorizontal: 12,
+    borderRadius: 17,
     borderWidth: 1,
   },
 
-  pillText: {
-    fontSize: 13,
-    fontWeight: "500",
+  categoryText: {
+    fontSize: 12,
+    fontWeight: "600",
+  },
+
+  placesList: {
+    flex: 1,
   },
 
   listContent: {
-    gap: 12,
-    paddingTop: 16,
-    paddingHorizontal: 4,
-    paddingBottom: 60,
+    paddingTop: 12,
+    paddingBottom: 20,
   },
 
-  card: {
+  separator: {
+    height: 8,
+  },
+
+  placeCard: {
+    minHeight: 82,
     flexDirection: "row",
+    alignItems: "center",
     borderRadius: 16,
     borderWidth: 1,
-    overflow: "hidden",
+    padding: 8,
   },
 
-  cardImage: { width: 90, height: 90 },
-  cardBody: { flex: 1, padding: 10, gap: 3, justifyContent: "center" },
-  cardName: { fontSize: 14, fontWeight: "600" },
-  cardDescription: { fontSize: 12, lineHeight: 16 },
-  cardFooter: {
+  placeImage: {
+    width: 68,
+    height: 68,
+    borderRadius: 11,
+  },
+
+  placeInfo: {
+    flex: 1,
+    marginLeft: 11,
+    marginRight: 8,
+  },
+
+  placeName: {
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 3,
+  },
+
+  placeDescription: {
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 6,
+  },
+
+  placeMeta: {
     flexDirection: "row",
     alignItems: "center",
     gap: 4,
-    marginTop: 2,
   },
-  cardDistance: { fontSize: 11 },
+
+  distance: {
+    fontSize: 11,
+    fontWeight: "500",
+  },
+
+  metaDot: {
+    width: 3,
+    height: 3,
+    borderRadius: 2,
+    backgroundColor: "#9CA3AF",
+    marginHorizontal: 2,
+  },
+
+  openStatus: {
+    fontSize: 11,
+    fontWeight: "600",
+  },
+
+  empty: {
+    alignItems: "center",
+    paddingVertical: 30,
+  },
+
+  emptyTitle: {
+    fontSize: 14,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+
+  emptyText: {
+    fontSize: 12,
+  },
 });
