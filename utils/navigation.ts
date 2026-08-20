@@ -7,12 +7,7 @@ export function getManeuverIcon(type?: string, modifier?: string): string {
     return "navigation";
   }
 
-  if (
-    type === "roundabout" ||
-    type === "rotary" ||
-    type === "exit roundabout" ||
-    type === "exit rotary"
-  ) {
+  if (type === "roundabout" || type === "rotary") {
     return "rotate-right";
   }
 
