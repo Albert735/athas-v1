@@ -1,5 +1,4 @@
 import { places } from "@/data/places";
-
 import MapDetailsCard from "@/components/map/map-details-card";
 import MapDirectionsCard from "@/components/map/map-directions-card";
 import MapNavigationCard from "@/components/map/map-navigation-card";
@@ -64,7 +63,9 @@ export default function MapBottomSheet({
         routeLoading={routeLoading}
         onModeChange={onRequestDirections}
         onStart={() => {
-          if (!route) return;
+          if (!route) {
+            return;
+          }
 
           onSheetStateChange("navigating");
         }}
