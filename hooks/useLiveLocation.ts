@@ -37,7 +37,9 @@ export function useLiveLocation(active: boolean) {
           distanceInterval: 1,
         },
         (position) => {
-          if (!mounted) return;
+          if (!mounted) {
+            return;
+          }
 
           setLocation({
             coords: [position.coords.longitude, position.coords.latitude],
