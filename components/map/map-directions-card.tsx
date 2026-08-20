@@ -5,21 +5,34 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+
 import { ArrowLeft, Footprints, Car, Bike } from "lucide-react-native";
-import { Button } from "../ui/button";
+
 import { useState } from "react";
+
+import { Button } from "../ui/button";
+
 import { useColor } from "@/hooks/useColor";
-import type { RouteResult } from "@/utils/directions";
-import { formatDistance, formatDuration } from "@/utils/directions";
+
 import { places } from "@/data/places";
+
+import type { RouteResult } from "@/utils/directions";
+
+import { formatDistance, formatDuration } from "@/utils/directions";
+
 import type { TransportProfile } from "@/types/map";
 
 interface Props {
   place: (typeof places)[number];
+
   route: RouteResult | null;
+
   routeLoading: boolean;
+
   onModeChange: (profile: TransportProfile) => void;
+
   onStart?: () => void;
+
   onBack?: () => void;
 }
 
@@ -46,88 +59,41 @@ export default function MapDirectionsCard({
   };
 
   return (
-    <View
-      style={[
-        styles.sheet,
-        {
-          backgroundColor: cardColor,
-        },
-      ]}
-    >
+    <View style={[styles.sheet, { backgroundColor: cardColor }]}>
       <View style={styles.header}>
         <TouchableOpacity
-          style={[
-            styles.backButton,
-            {
-              backgroundColor,
-            },
-          ]}
+          style={[styles.backButton, { backgroundColor }]}
           onPress={onBack}
         >
           <ArrowLeft size={20} color={textColor} />
         </TouchableOpacity>
 
-        <Text
-          style={[
-            styles.headerTitle,
-            {
-              color: textColor,
-            },
-          ]}
-        >
+        <Text style={[styles.headerTitle, { color: textColor }]}>
           Directions
         </Text>
       </View>
 
-      <View
-        style={[
-          styles.routeContainer,
-          {
-            backgroundColor,
-          },
-        ]}
-      >
+      <View style={[styles.routeContainer, { backgroundColor }]}>
         <View style={styles.routeItem}>
           <View style={[styles.dot, styles.originDot]} />
 
-          <Text
-            style={[
-              styles.locationText,
-              {
-                color: mutedColor,
-              },
-            ]}
-          >
+          <Text style={[styles.locationText, { color: mutedColor }]}>
             Your Current Location
           </Text>
         </View>
 
-        <View
-          style={[
-            styles.routeLine,
-            {
-              backgroundColor: borderColor,
-            },
-          ]}
-        />
+        <View style={[styles.routeLine, { backgroundColor: borderColor }]} />
 
         <View style={styles.routeItem}>
           <View style={[styles.dot, styles.destinationDot]} />
 
-          <Text
-            style={[
-              styles.destinationText,
-              {
-                color: textColor,
-              },
-            ]}
-          >
+          <Text style={[styles.destinationText, { color: textColor }]}>
             {place.name}
           </Text>
         </View>
       </View>
 
-      <View style={styles.modesContainer}>
+      <View style={styles.modes}>
         {[
           {
             mode: "walking" as const,
@@ -152,9 +118,7 @@ export default function MapDirectionsCard({
               key={mode}
               style={[
                 styles.modeButton,
-                {
-                  backgroundColor,
-                },
+                { backgroundColor },
                 active && styles.modeButtonActive,
               ]}
               onPress={() => selectMode(mode)}
@@ -176,31 +140,17 @@ export default function MapDirectionsCard({
         })}
       </View>
 
-      <View
-        style={[
-          styles.summaryRow,
-          {
-            borderTopColor: borderColor,
-          },
-        ]}
-      >
+      <View style={[styles.summary, { borderTopColor: borderColor }]}>
         {routeLoading ? (
           <ActivityIndicator color={mutedColor} />
         ) : route ? (
           <>
             <View>
-              <Text style={styles.durationText}>
+              <Text style={styles.duration}>
                 {formatDuration(route.durationSeconds)}
               </Text>
 
-              <Text
-                style={[
-                  styles.distanceText,
-                  {
-                    color: mutedColor,
-                  },
-                ]}
-              >
+              <Text style={[styles.distance, { color: mutedColor }]}>
                 {formatDistance(route.distanceMeters)}
               </Text>
             </View>
@@ -210,24 +160,13 @@ export default function MapDirectionsCard({
             </View>
           </>
         ) : (
-          <Text
-            style={[
-              styles.distanceText,
-              {
-                color: mutedColor,
-              },
-            ]}
-          >
-            Unable to calculate route
+          <Text style={[styles.distance, { color: mutedColor }]}>
+            No route available
           </Text>
         )}
       </View>
 
-      <Button
-        variant="default"
-        onPress={onStart}
-        disabled={!route || routeLoading}
-      >
+      <Button onPress={onStart} disabled={!route || routeLoading}>
         Start Navigation
       </Button>
     </View>
@@ -237,19 +176,18 @@ export default function MapDirectionsCard({
 const styles = StyleSheet.create({
   sheet: {
     position: "absolute",
-    bottom: 0,
-    left: 0,
-    right: 0,
+    left: 16,
+    right: 16,
+    bottom: 16,
     padding: 20,
-    margin: 16,
-    borderRadius: 40,
+    borderRadius: 32,
   },
 
   header: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 20,
     gap: 12,
+    marginBottom: 20,
   },
 
   backButton: {
@@ -262,7 +200,7 @@ const styles = StyleSheet.create({
 
   headerTitle: {
     fontSize: 18,
-    fontWeight: "700",
+    fontWeight: "800",
   },
 
   routeContainer: {
@@ -293,7 +231,7 @@ const styles = StyleSheet.create({
 
   routeLine: {
     width: 2,
-    height: 16,
+    height: 18,
     marginLeft: 4,
     marginVertical: 4,
   },
@@ -305,12 +243,12 @@ const styles = StyleSheet.create({
 
   destinationText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: "700",
   },
 
-  modesContainer: {
+  modes: {
     flexDirection: "row",
-    gap: 12,
+    gap: 10,
     marginBottom: 20,
   },
 
@@ -329,42 +267,41 @@ const styles = StyleSheet.create({
   },
 
   modeLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-  },
-
-  summaryRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingTop: 16,
-    borderTopWidth: 1,
-    marginBottom: 20,
-    minHeight: 44,
-  },
-
-  durationText: {
-    fontSize: 22,
+    fontSize: 13,
     fontWeight: "700",
+  },
+
+  summary: {
+    minHeight: 50,
+    borderTopWidth: 1,
+    paddingTop: 16,
+    marginBottom: 20,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+
+  duration: {
+    fontSize: 22,
+    fontWeight: "800",
     color: "#10B981",
   },
 
-  distanceText: {
+  distance: {
     fontSize: 14,
-    fontWeight: "500",
     marginTop: 2,
   },
 
   fastestBadge: {
-    backgroundColor: "#ECFDF5",
     paddingHorizontal: 12,
     paddingVertical: 6,
     borderRadius: 100,
+    backgroundColor: "#ECFDF5",
   },
 
   fastestText: {
-    fontSize: 12,
-    fontWeight: "600",
     color: "#10B981",
+    fontSize: 12,
+    fontWeight: "700",
   },
 });
