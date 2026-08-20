@@ -1,14 +1,19 @@
 import { places } from "@/data/places";
+
 import MapDetailsCard from "@/components/map/map-details-card";
 import MapDirectionsCard from "@/components/map/map-directions-card";
 import MapNavigationCard from "@/components/map/map-navigation-card";
+
 import type { RouteResult } from "@/utils/directions";
 import type { SheetState, TransportProfile } from "@/types/map";
 
 interface Props {
   place: (typeof places)[number];
+
   route: RouteResult | null;
+
   routeLoading: boolean;
+
   sheetState: SheetState;
 
   onSheetStateChange: (state: SheetState) => void;
@@ -59,6 +64,8 @@ export default function MapBottomSheet({
         routeLoading={routeLoading}
         onModeChange={onRequestDirections}
         onStart={() => {
+          if (!route) return;
+
           onSheetStateChange("navigating");
         }}
         onBack={() => {
@@ -68,5 +75,13 @@ export default function MapBottomSheet({
     );
   }
 
-  return <MapNavigationCard route={route} onExit={onNavigationExit} />;
+  return (
+    <MapNavigationCard
+      route={route}
+      onExit={() => {
+        onSheetStateChange("details");
+        onNavigationExit?.();
+      }}
+    />
+  );
 }
