@@ -11,7 +11,9 @@ export function getDistanceMeters(
 
   const R = 6371000;
 
-  const toRad = (degrees: number) => (degrees * Math.PI) / 180;
+  const toRad = (degrees: number) => {
+    return (degrees * Math.PI) / 180;
+  };
 
   const dLat = toRad(lat2 - lat1);
   const dLon = toRad(lon2 - lon1);
