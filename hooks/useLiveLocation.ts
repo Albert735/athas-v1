@@ -16,11 +16,15 @@ export function useLiveLocation(active: boolean) {
     let mounted = true;
 
     const startTracking = async () => {
-      if (!active) return;
+      if (!active) {
+        subscriptionRef.current?.remove();
+        subscriptionRef.current = null;
+        return;
+      }
 
       const { status } = await Location.requestForegroundPermissionsAsync();
 
-      if (status !== "granted" || !mounted) {
+      if (status !== "granted") {
         return;
       }
 
@@ -44,15 +48,11 @@ export function useLiveLocation(active: boolean) {
       );
     };
 
-    if (active) {
-      startTracking();
-    } else {
-      subscriptionRef.current?.remove();
-      subscriptionRef.current = null;
-    }
+    startTracking();
 
     return () => {
       mounted = false;
+
       subscriptionRef.current?.remove();
       subscriptionRef.current = null;
     };
