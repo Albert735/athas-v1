@@ -50,6 +50,10 @@ export default function Map() {
 
   const userLocationRef = useRef<[number, number] | null>(null);
 
+  useEffect(() => {
+    userLocationRef.current = userLocation;
+  }, [userLocation]);
+
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const requestIdRef = useRef(0);
@@ -70,10 +74,6 @@ export default function Map() {
 
   const showDropdown = searchFocused && searchQuery.trim().length > 0;
 
-  useEffect(() => {
-    userLocationRef.current = userLocation;
-  }, [userLocation]);
-
   const selectedPlaceDistance = selectedPlace
     ? computeDistanceString(
         userLocation,
@@ -88,11 +88,13 @@ export default function Map() {
     : undefined;
 
   useEffect(() => {
-    if (!locationError) return;
+    if (!locationError) {
+      return;
+    }
 
     Alert.alert(
       "Location Unavailable",
-      "Please enable location access so we can provide directions from your current position.",
+      "Please enable location access so directions can use your current position.",
     );
   }, [locationError]);
 
@@ -105,10 +107,43 @@ export default function Map() {
     });
   };
 
+  const selectPlace = (place: Place) => {
+    setSelectedPlace(place);
+
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    focusPlace(place);
+  };
+
+  const openPlaceSheet = (place: Place) => {
+    selectPlace(place);
+
+    router.push({
+      pathname: "/place-sheet",
+      params: {
+        id: place.id,
+      },
+    });
+  };
+
+  const handleSearchSelect = (place: Place) => {
+    openPlaceSheet(place);
+  };
+
+  const handleAnnotationSelect = (place: Place) => {
+    if (sheetState === "navigating") {
+      return;
+    }
+
+    openPlaceSheet(place);
+  };
+
   const waitForLocation = (): Promise<[number, number] | null> =>
     new Promise((resolve) => {
       if (userLocationRef.current) {
         resolve(userLocationRef.current);
+
         return;
       }
 
@@ -126,19 +161,29 @@ export default function Map() {
       }, 5000);
     });
 
-  const requestDirections = async (place: Place, profile: TransportProfile) => {
-    const thisRequestId = ++requestIdRef.current;
+  const handleRequestDirections = async (
+    profile: TransportProfile = "walking",
+  ) => {
+    if (!selectedPlace) {
+      return;
+    }
+
+    const requestId = ++requestIdRef.current;
 
     setRouteLoading(true);
 
     const origin = userLocationRef.current ?? (await waitForLocation());
+
+    if (requestId !== requestIdRef.current) {
+      return;
+    }
 
     if (!origin) {
       setRouteLoading(false);
 
       Alert.alert(
         "Location Unavailable",
-        "We couldn't determine your current location. Please check your location settings.",
+        "We couldn't determine your current location. Please check your location settings and try again.",
       );
 
       return;
@@ -146,11 +191,11 @@ export default function Map() {
 
     const result = await getRoute(
       origin,
-      [place.longitude, place.latitude],
+      [selectedPlace.longitude, selectedPlace.latitude],
       profile,
     );
 
-    if (thisRequestId !== requestIdRef.current) {
+    if (requestId !== requestIdRef.current) {
       return;
     }
 
@@ -159,8 +204,8 @@ export default function Map() {
 
     if (!result) {
       Alert.alert(
-        "No Route Found",
-        "We couldn't find a route to this location.",
+        "Route Unavailable",
+        "We couldn't find a route to this place.",
       );
 
       return;
@@ -168,77 +213,58 @@ export default function Map() {
 
     const coordinates = result.geometry.coordinates as [number, number][];
 
-    if (coordinates.length < 2) {
-      return;
-    }
+    const longitudes = coordinates.map(([longitude]) => longitude);
 
-    const lons = coordinates.map((coordinate) => coordinate[0]);
-
-    const lats = coordinates.map((coordinate) => coordinate[1]);
+    const latitudes = coordinates.map(([, latitude]) => latitude);
 
     cameraRef.current?.fitBounds(
-      [Math.max(...lons), Math.max(...lats)],
-      [Math.min(...lons), Math.min(...lats)],
-      70,
-      900,
+      [Math.max(...longitudes), Math.max(...latitudes)],
+      [Math.min(...longitudes), Math.min(...latitudes)],
+      80,
+      800,
     );
-  };
-
-  const handleRequestDirections = async (
-    profile: TransportProfile = "walking",
-  ) => {
-    if (!selectedPlace) return;
-
-    await requestDirections(selectedPlace, profile);
-  };
-
-  const handleStartNavigation = () => {
-    if (!route) return;
-
-    setSheetState("navigating");
   };
 
   const handleNavigationExit = () => {
     requestIdRef.current += 1;
 
     setRoute(null);
+    setRouteLoading(false);
     setSheetState("details");
 
-    cameraRef.current?.setCamera({
-      centerCoordinate: selectedPlace
-        ? [selectedPlace.longitude, selectedPlace.latitude]
-        : CAMPUS_CENTER,
-
-      zoomLevel: 17,
-
-      pitch: 45,
-
-      animationDuration: 700,
-    });
+    if (selectedPlace) {
+      focusPlace(selectedPlace);
+    } else {
+      cameraRef.current?.setCamera({
+        centerCoordinate: CAMPUS_CENTER,
+        zoomLevel: 16,
+        pitch: 0,
+        animationDuration: 800,
+      });
+    }
   };
 
-  const handlePlaceSelect = (place: Place) => {
-    setSelectedPlace(place);
-
-    setSearchQuery("");
-    setSearchFocused(false);
-
-    setRoute(null);
-
-    setSheetState("details");
-
-    focusPlace(place);
-  };
-
+  /**
+   * Handle:
+   *
+   * /map?buildingId=xxx
+   *
+   * and:
+   *
+   * /map?buildingId=xxx&startNavigation=true
+   */
   useEffect(() => {
-    if (!buildingId) return;
+    if (!buildingId) {
+      return;
+    }
 
     const place = places.find((item) => item.id === buildingId);
 
-    if (!place) return;
+    if (!place) {
+      return;
+    }
 
     setSelectedPlace(place);
-
     setSearchQuery("");
     setSearchFocused(false);
 
@@ -247,7 +273,7 @@ export default function Map() {
     if (startNavigation === "true") {
       setSheetState("directions");
 
-      requestDirections(place, "walking");
+      handleRequestDirections("walking");
     } else {
       setSheetState("details");
     }
@@ -260,7 +286,7 @@ export default function Map() {
         styleURL={MAP_STYLE_URL}
         logoEnabled={false}
         attributionEnabled={false}
-        compassEnabled={false}
+        compassEnabled={sheetState === "navigating"}
         scaleBarEnabled={false}
         pitchEnabled
       >
@@ -280,7 +306,7 @@ export default function Map() {
           followZoomLevel={18}
           followPitch={60}
           animationMode="flyTo"
-          animationDuration={600}
+          animationDuration={800}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
@@ -293,16 +319,19 @@ export default function Map() {
           maxZoomLevel={22}
           style={{
             fillExtrusionColor: "#D1D5DB",
+
             fillExtrusionHeight: ["get", "height"],
+
             fillExtrusionBase: ["get", "min_height"],
+
             fillExtrusionOpacity: 0.8,
           }}
         />
 
         {route && (
-          <MapboxGL.ShapeSource id="routeSource" shape={route.geometry}>
+          <MapboxGL.ShapeSource id="navigation-route" shape={route.geometry}>
             <MapboxGL.LineLayer
-              id="routeLine"
+              id="navigation-route-line"
               style={{
                 lineColor: primaryColor,
                 lineWidth: 5,
@@ -318,7 +347,7 @@ export default function Map() {
             key={place.id}
             id={`marker-${place.id}`}
             coordinate={[place.longitude, place.latitude]}
-            onSelected={() => handlePlaceSelect(place)}
+            onSelected={() => handleAnnotationSelect(place)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
@@ -348,7 +377,7 @@ export default function Map() {
                 );
 
                 if (found) {
-                  handlePlaceSelect(found);
+                  handleSearchSelect(found);
                 }
               }}
               loading={false}
@@ -358,7 +387,7 @@ export default function Map() {
             <PlaceSearchDropdown
               visible={showDropdown}
               results={searchResults}
-              onSelect={handlePlaceSelect}
+              onSelect={handleSearchSelect}
             />
           </View>
         </SafeAreaView>
@@ -386,7 +415,11 @@ export default function Map() {
             requestIdRef.current += 1;
 
             setSelectedPlace(null);
+
             setRoute(null);
+
+            setRouteLoading(false);
+
             setSheetState("details");
           }}
         />
