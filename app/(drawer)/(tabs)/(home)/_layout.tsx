@@ -5,6 +5,14 @@ export default function HomeLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="popular-places/index" />
+      <Stack.Screen
+        name="maps-sheet/index"
+        options={{
+          presentation: "formSheet",
+          sheetAllowedDetents: [0.5, 1],
+          sheetGrabberVisible: true,
+        }}
+      />
     </Stack>
   );
 }

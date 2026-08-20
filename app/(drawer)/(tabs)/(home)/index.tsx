@@ -1,11 +1,12 @@
 import { useMemo, useRef, useState } from "react";
 import {
-  Dimensions,
+  Alert,
   FlatList,
   Pressable,
   StyleSheet,
   TouchableOpacity,
   View,
+  useWindowDimensions,
 } from "react-native";
 import {
   SafeAreaView,
@@ -24,6 +25,11 @@ import { useColor } from "@/hooks/useColor";
 import { MAP_STYLE_URL } from "@/constants/mapbox";
 import { SearchBar } from "@/components/ui/searchbar";
 import { Text } from "@/components/ui/text";
+import { usePlaceSearch } from "@/hooks/usePlaceSearch";
+import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
+import { useUserLocation } from "@/hooks/useUserLocation";
+import MapsSheet from "./maps-sheet";
+import { Button } from "@/components/ui/button";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
@@ -44,13 +50,15 @@ export default function HomeScreen() {
 
   const insets = useSafeAreaInsets();
 
-  const { height } = Dimensions.get("window");
+  // useWindowDimensions is the correct hook for responsive layouts
+  // (Dimensions.get is a one-time snapshot, not reactive to orientation changes)
+  const { height } = useWindowDimensions();
 
   /*
    * Map occupies approximately 56% of the screen.
    * This keeps the layout responsive across devices.
    */
-  const MAP_HEIGHT = height * 0.56;
+  // const MAP_HEIGHT = height * 0.56;
 
   /*
    * Theme colors
@@ -84,29 +92,11 @@ export default function HomeScreen() {
     (item) => item.category === selectedQuickAction,
   )?.label;
 
-  /*
-   * Search results.
-   *
-   * Places that START with the search term are ranked first.
-   */
-  const searchResults = useMemo(() => {
-    const query = searchQuery.trim().toLowerCase();
+  // Shared search hook — same logic as the map screen, no duplication
+  const searchResults = usePlaceSearch(searchQuery);
 
-    if (!query) {
-      return [];
-    }
-
-    return places
-      .filter((place) => place.name.toLowerCase().includes(query))
-      .sort((a, b) => {
-        const aStarts = a.name.toLowerCase().startsWith(query) ? 0 : 1;
-
-        const bStarts = b.name.toLowerCase().startsWith(query) ? 0 : 1;
-
-        return aStarts - bStarts;
-      })
-      .slice(0, 8);
-  }, [searchQuery]);
+  // User GPS location — used to show an alert if permission is denied
+  const { error: locationError } = useUserLocation();
 
   /*
    * Only display the dropdown when:
@@ -143,6 +133,15 @@ export default function HomeScreen() {
     router.push(`/building/${place.id}`);
   };
 
+  // Show a one-time alert if location permission was denied
+  if (locationError) {
+    Alert.alert(
+      "Location Unavailable",
+      "Enable location access in Settings so we can compute accurate distances and directions.",
+      [{ text: "OK" }],
+    );
+  }
+
   return (
     <View
       style={[
@@ -160,7 +159,8 @@ export default function HomeScreen() {
         style={[
           styles.mapContainer,
           {
-            height: MAP_HEIGHT,
+            // height: MAP_HEIGHT,
+            height: "100%",
             backgroundColor: cardColor,
           },
         ]}
@@ -202,19 +202,24 @@ export default function HomeScreen() {
             }}
           />
 
-          {/* Selected place marker */}
-
-          {selectedPlace && (
+          {/* All category-filtered markers — not just the selected one */}
+          {filteredPlaces.map((place) => (
             <MapboxGL.PointAnnotation
-              key={selectedPlace.id}
-              id={`marker-${selectedPlace.id}`}
-              coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
+              key={place.id}
+              id={`marker-${place.id}`}
+              coordinate={[place.longitude, place.latitude]}
+              onSelected={() => handleMarkerPress(place)}
             >
-              <View style={styles.markerPin}>
+              <View
+                style={[
+                  styles.markerPin,
+                  selectedPlace?.id === place.id && styles.markerPinSelected,
+                ]}
+              >
                 <View style={styles.markerDot} />
               </View>
             </MapboxGL.PointAnnotation>
-          )}
+          ))}
         </MapboxGL.MapView>
       </View>
 
@@ -262,104 +267,12 @@ export default function HomeScreen() {
             rightIcon={<Mic size={18} color={iconColor} />}
           />
 
-          {/* Search dropdown */}
-
-          {showDropdown && (
-            <View
-              style={[
-                styles.dropdown,
-                {
-                  backgroundColor: cardColor,
-                  borderColor,
-                },
-              ]}
-            >
-              {searchResults.length === 0 ? (
-                <View style={styles.dropdownEmpty}>
-                  <Text
-                    style={[
-                      styles.dropdownEmptyText,
-                      {
-                        color: textMuted,
-                      },
-                    ]}
-                  >
-                    No places found
-                  </Text>
-                </View>
-              ) : (
-                <FlatList
-                  data={searchResults}
-                  keyExtractor={(item) => item.id}
-                  keyboardShouldPersistTaps="handled"
-                  showsVerticalScrollIndicator={false}
-                  ItemSeparatorComponent={() => (
-                    <View
-                      style={[
-                        styles.dropdownSeparator,
-                        {
-                          backgroundColor: borderColor,
-                        },
-                      ]}
-                    />
-                  )}
-                  renderItem={({ item }) => (
-                    <Pressable
-                      style={styles.dropdownItem}
-                      onPress={() => handleMarkerPress(item)}
-                    >
-                      <View
-                        style={[
-                          styles.dropdownIcon,
-                          {
-                            backgroundColor,
-                          },
-                        ]}
-                      >
-                        <MapPin size={16} color={primaryColor} />
-                      </View>
-
-                      <View style={styles.dropdownItemText}>
-                        <Text
-                          style={[
-                            styles.dropdownItemName,
-                            {
-                              color: textColor,
-                            },
-                          ]}
-                        >
-                          {item.name}
-                        </Text>
-
-                        <Text
-                          style={[
-                            styles.dropdownItemDesc,
-                            {
-                              color: textMuted,
-                            },
-                          ]}
-                          numberOfLines={1}
-                        >
-                          {item.description}
-                        </Text>
-                      </View>
-
-                      <Text
-                        style={[
-                          styles.dropdownItemDistance,
-                          {
-                            color: textMuted,
-                          },
-                        ]}
-                      >
-                        {item.distance}
-                      </Text>
-                    </Pressable>
-                  )}
-                />
-              )}
-            </View>
-          )}
+          {/* Shared search-results dropdown — no more duplicate inline UI */}
+          <PlaceSearchDropdown
+            visible={showDropdown}
+            results={searchResults}
+            onSelect={handleMarkerPress}
+          />
         </View>
 
         {/* Quick Actions */}
@@ -413,149 +326,9 @@ export default function HomeScreen() {
           />
         )}
       </SafeAreaView>
-
-      {/* =====================================================
-          DISMISS SEARCH DROPDOWN
-      ====================================================== */}
-
-      {showDropdown && (
-        <Pressable
-          style={styles.dismissOverlay}
-          onPress={() => setSearchFocused(false)}
-        />
-      )}
-
-      {/* =====================================================
-          BOTTOM SHEET
-      ====================================================== */}
-
-      <View
-        style={[
-          styles.sheet,
-          {
-            top: MAP_HEIGHT - 20,
-            backgroundColor,
-          },
-        ]}
-      >
-        {/* Section header */}
-
-        <View style={styles.sectionHeader}>
-          <Text
-            style={[
-              styles.sectionTitle,
-              {
-                color: textColor,
-              },
-            ]}
-          >
-            {selectedCategoryLabel
-              ? `${selectedCategoryLabel} near you`
-              : "Popular places on campus"}
-          </Text>
-
-          <TouchableOpacity
-            activeOpacity={0.7}
-            onPress={() => router.push("/popular-places")}
-          >
-            <Text
-              style={[
-                styles.seeAll,
-                {
-                  color: textMuted,
-                },
-              ]}
-            >
-              See All
-            </Text>
-          </TouchableOpacity>
-        </View>
-
-        {/* Places */}
-
-        <FlatList
-          horizontal
-          data={filteredPlaces}
-          keyExtractor={(item) => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={[
-            styles.placesContent,
-            {
-              paddingBottom: bottomInset,
-            },
-          ]}
-          renderItem={({ item }) => (
-            <Pressable
-              style={[
-                styles.card,
-                {
-                  backgroundColor: cardColor,
-                  borderColor,
-                },
-              ]}
-              onPress={() => handlePlacePress(item)}
-            >
-              {/* Image */}
-
-              <Image
-                source={categoryImages[item.category]}
-                style={styles.cardImage}
-                contentFit="cover"
-              />
-
-              {/* Card body */}
-
-              <View style={styles.cardBody}>
-                <Text
-                  style={[
-                    styles.cardName,
-                    {
-                      color: textColor,
-                    },
-                  ]}
-                  numberOfLines={1}
-                >
-                  {item.name}
-                </Text>
-
-                <Text
-                  style={[
-                    styles.cardDescription,
-                    {
-                      color: textMuted,
-                    },
-                  ]}
-                  numberOfLines={2}
-                >
-                  {item.description}
-                </Text>
-
-                <View style={styles.cardFooter}>
-                  <MapPin size={12} color={primaryColor} />
-
-                  <Text
-                    style={[
-                      styles.cardDistance,
-                      {
-                        color: textMuted,
-                      },
-                    ]}
-                  >
-                    {item.distance}
-                  </Text>
-                </View>
-              </View>
-            </Pressable>
-          )}
-        />
-      </View>
     </View>
   );
 }
-
-/* =========================================================
-   STYLES
-========================================================= */
 
 const styles = StyleSheet.create({
   root: {
@@ -573,10 +346,6 @@ const styles = StyleSheet.create({
   map: {
     flex: 1,
   },
-
-  /* =======================================================
-     TOP OVERLAY
-  ======================================================== */
 
   overlay: {
     position: "absolute",
@@ -806,21 +575,24 @@ const styles = StyleSheet.create({
     width: 28,
     height: 28,
     borderRadius: 14,
-
     backgroundColor: "#111827",
-
     alignItems: "center",
     justifyContent: "center",
-
     borderWidth: 2,
     borderColor: "#FFFFFF",
+  },
+
+  /** Highlighted variant shown on the currently-selected marker. */
+  markerPinSelected: {
+    backgroundColor: "#4DA8FF",
+    borderColor: "#FFFFFF",
+    transform: [{ scale: 1.2 }],
   },
 
   markerDot: {
     width: 8,
     height: 8,
     borderRadius: 4,
-
     backgroundColor: "#4DA8FF",
   },
 });

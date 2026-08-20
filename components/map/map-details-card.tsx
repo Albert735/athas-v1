@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useColor } from "@/hooks/useColor";
 import { router } from "expo-router";
 import { MAP_ACTIONS } from "@/data/map-actions";
-import { Clock, Navigation } from "lucide-react-native";
+import { Clock, Navigation, X } from "lucide-react-native";
 import { Button } from "../ui/button";
 import { Image } from "expo-image";
 import { categoryImages } from "@/data/category-images";
@@ -11,17 +11,45 @@ import { categoryImages } from "@/data/category-images";
 interface Props {
   place: (typeof places)[number];
   onDirections?: () => void;
+  /** Called when the user taps the X button to dismiss the card. */
+  onClose?: () => void;
+  /** Live-computed distance string; falls back to place.distance when undefined. */
+  distanceOverride?: string;
+  /** Live-computed open/closed; falls back to place.isOpen when undefined. */
+  isOpenOverride?: boolean;
 }
 
-export default function MapDetailsCard({ place, onDirections }: Props) {
+export default function MapDetailsCard({
+  place,
+  onDirections,
+  onClose,
+  distanceOverride,
+  isOpenOverride,
+}: Props) {
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
 
+  // Use dynamically-computed values when available, fall back to static data
+  const distanceLabel = distanceOverride ?? place.distance;
+  const isCurrentlyOpen = isOpenOverride ?? place.isOpen;
+
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
+      {/* Close button — top-right corner */}
+      {onClose && (
+        <TouchableOpacity
+          style={[styles.closeButton, { backgroundColor }]}
+          onPress={onClose}
+          activeOpacity={0.7}
+          hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
+        >
+          <X size={16} color={mutedColor} />
+        </TouchableOpacity>
+      )}
+
       <View style={styles.imageWrapper}>
         <Image
           source={categoryImages[place.category] ?? categoryImages.library}
@@ -44,7 +72,7 @@ export default function MapDetailsCard({ place, onDirections }: Props) {
           </Text>
         </View>
         <View style={styles.distanceInfo}>
-          <Text style={styles.duration}>{place.distance}</Text>
+          <Text style={styles.duration}>{distanceLabel}</Text>
         </View>
       </View>
 
@@ -95,16 +123,16 @@ export default function MapDetailsCard({ place, onDirections }: Props) {
         <View
           style={[
             styles.statusBadge,
-            place.isOpen ? styles.statusOpen : styles.statusClosed,
+            isCurrentlyOpen ? styles.statusOpen : styles.statusClosed,
           ]}
         >
           <Text
             style={[
               styles.statusText,
-              place.isOpen ? styles.statusTextOpen : styles.statusTextClosed,
+              isCurrentlyOpen ? styles.statusTextOpen : styles.statusTextClosed,
             ]}
           >
-            {place.isOpen ? "Open" : "Closed"}
+            {isCurrentlyOpen ? "Open" : "Closed"}
           </Text>
         </View>
       </View>
@@ -117,7 +145,7 @@ export default function MapDetailsCard({ place, onDirections }: Props) {
       {/* Direction button */}
       <View style={styles.footer}>
         <Button variant="default" icon={Navigation} onPress={onDirections}>
-          Direction
+          Directions
         </Button>
       </View>
     </View>
@@ -133,6 +161,17 @@ const styles = StyleSheet.create({
     padding: 20,
     margin: 16,
     borderRadius: 40,
+  },
+  closeButton: {
+    position: "absolute",
+    top: 16,
+    right: 16,
+    zIndex: 10,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    alignItems: "center",
+    justifyContent: "center",
   },
   imageWrapper: {
     height: 150,

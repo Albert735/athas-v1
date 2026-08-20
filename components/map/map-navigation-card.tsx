@@ -11,6 +11,7 @@ import { getDistanceMeters } from "@/utils/geo";
 
 // How close (in meters) the user needs to be to a maneuver point
 // before we consider that step "reached" and move to the next one
+// Must match the closeEnough check below — single source of truth.
 const ARRIVAL_THRESHOLD_METERS = 15;
 
 interface Props {
@@ -56,7 +57,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     // Advance only when we're within a tight radius of the current point
     // AND (if there's a next step) we're now closer to the next point than this one —
     // this stops the instruction from flipping too early while still approaching
-    const closeEnough = distanceToCurrentManeuver <= 10;
+    const closeEnough = distanceToCurrentManeuver <= ARRIVAL_THRESHOLD_METERS;
     const pastThisPoint =
       distanceToNextManeuver === null ||
       distanceToNextManeuver < distanceToCurrentManeuver;
@@ -87,11 +88,27 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 
   const iconName = getManeuverIcon(step.maneuver.type, step.maneuver.modifier);
 
-  // Live distance remaining to the current maneuver, recalculated as the user moves —
-  // falls back to the step's original distance until the first GPS fix comes in
+  // ── Live remaining stats ──────────────────────────────────────────────────
+  // Distance from the user to the current step's maneuver point.
+  // Falls back to the step's original distance until the first GPS fix arrives.
   const liveDistance = liveLocation
     ? getDistanceMeters(liveLocation.coords, step.maneuver.location)
     : step.distance;
+
+  // Sum the distances of every step that comes *after* the current one.
+  const futureSteps = route.steps.slice(stepIndex + 1);
+  const futureDistance = futureSteps.reduce((sum, s) => sum + s.distance, 0);
+  const futureDuration = futureSteps.reduce((sum, s) => sum + s.duration, 0);
+
+  // Estimate the proportion of the current step already completed,
+  // then scale the step's duration accordingly.
+  const currentStepProportion =
+    step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
+  const currentStepRemainingDuration = step.duration * currentStepProportion;
+
+  // Total remaining distance and duration update every GPS tick.
+  const totalRemainingDistance = liveDistance + futureDistance;
+  const totalRemainingDuration = currentStepRemainingDuration + futureDuration;
 
   return (
     <View style={[styles.sheet, { backgroundColor: cardColor }]}>
@@ -112,13 +129,14 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
+      {/* Progress row — values decrease in real-time as the user moves */}
       <View style={[styles.progressRow, { backgroundColor }]}>
         <View style={styles.statBox}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>
             Time Left
           </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDuration(route.durationSeconds)}
+            {formatDuration(totalRemainingDuration)}
           </Text>
         </View>
         <View style={[styles.divider, { backgroundColor: borderColor }]} />
@@ -127,7 +145,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
             Distance
           </Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {formatDistance(route.distanceMeters)}
+            {formatDistance(totalRemainingDistance)}
           </Text>
         </View>
       </View>
