@@ -1,10 +1,10 @@
-import { Icon } from '@/components/ui/icon';
-import { Text } from '@/components/ui/text';
-import { View } from '@/components/ui/view';
-import { useColor } from '@/hooks/useColor';
-import { CORNERS, FONT_SIZE, HEIGHT } from '@/theme/globals';
-import { Search, X } from 'lucide-react-native';
-import React, { useCallback, useRef, useState } from 'react';
+import { Icon } from "@/components/ui/icon";
+import { Text } from "@/components/ui/text";
+import { View } from "@/components/ui/view";
+import { useColor } from "@/hooks/useColor";
+import { CORNERS, FONT_SIZE, HEIGHT } from "@/theme/globals";
+import { Search, X } from "lucide-react-native";
+import React, { useCallback, useState } from "react";
 import {
   ActivityIndicator,
   TextInput,
@@ -12,9 +12,9 @@ import {
   TextStyle,
   TouchableOpacity,
   ViewStyle,
-} from 'react-native';
+} from "react-native";
 
-interface SearchBarProps extends Omit<TextInputProps, 'style'> {
+interface SearchBarProps extends Omit<TextInputProps, "style"> {
   loading?: boolean;
   onSearch?: (query: string) => void;
   onClear?: () => void;
@@ -23,7 +23,6 @@ interface SearchBarProps extends Omit<TextInputProps, 'style'> {
   rightIcon?: React.ReactNode;
   containerStyle?: ViewStyle | ViewStyle[];
   inputStyle?: TextStyle | TextStyle[];
-  debounceMs?: number;
 }
 
 export function SearchBar({
@@ -35,64 +34,56 @@ export function SearchBar({
   rightIcon,
   containerStyle,
   inputStyle,
-  debounceMs = 300,
-  placeholder = 'Search...',
+  placeholder = "Search...",
   value,
   onChangeText,
+  onSubmitEditing,
   ...props
 }: SearchBarProps) {
-  const [internalValue, setInternalValue] = useState(value || '');
-  const debounceRef = useRef<NodeJS.Timeout | null>(null);
-  const inputRef = useRef<TextInput>(null);
+  const [internalValue, setInternalValue] = useState(value || "");
 
-  // Theme colors
-  const cardColor = useColor('card');
-  const textColor = useColor('text');
-  const muted = useColor('textMuted');
-  const icon = useColor('icon');
+  const cardColor = useColor("card");
+  const textColor = useColor("text");
+  const muted = useColor("textMuted");
+  const icon = useColor("icon");
 
-  // Handle text change with debouncing
   const handleTextChange = useCallback(
     (text: string) => {
       setInternalValue(text);
       onChangeText?.(text);
-
-      if (onSearch && debounceMs > 0) {
-        if (debounceRef.current) {
-          clearTimeout(debounceRef.current);
-        }
-        (debounceRef.current as any) = setTimeout(() => {
-          onSearch(text);
-        }, debounceMs);
-      } else if (onSearch) {
-        onSearch(text);
-      }
     },
-    [onChangeText, onSearch, debounceMs]
+    [onChangeText],
   );
 
-  // Handle clear button press
-  const handleClear = useCallback(() => {
-    setInternalValue('');
-    onChangeText?.('');
-    onClear?.();
-    onSearch?.('');
-    if (debounceRef.current) {
-      clearTimeout(debounceRef.current);
-    }
-  }, [onChangeText, onClear, onSearch]);
+  const handleSubmitEditing = useCallback(
+    (event: Parameters<NonNullable<TextInputProps["onSubmitEditing"]>>[0]) => {
+      const query = event.nativeEvent.text.trim();
 
-  // Get container style based on variant and size
+      if (query) {
+        onSearch?.(query);
+      }
+
+      onSubmitEditing?.(event);
+    },
+    [onSearch, onSubmitEditing],
+  );
+
+  const handleClear = useCallback(() => {
+    setInternalValue("");
+    onChangeText?.("");
+    onClear?.();
+  }, [onChangeText, onClear]);
+
   const baseStyle: ViewStyle = {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: cardColor,
     height: HEIGHT,
     paddingHorizontal: 16,
     borderRadius: CORNERS,
   };
 
-  const baseInputStyle = {
+  const baseInputStyle: TextStyle = {
     flex: 1,
     fontSize: FONT_SIZE,
     color: textColor,
@@ -104,30 +95,28 @@ export function SearchBar({
 
   return (
     <View style={[baseStyle, containerStyle]}>
-      {/* Left Icon */}
       {leftIcon || <Icon name={Search} size={16} color={muted} />}
 
-      {/* Text Input */}
       <TextInput
-        ref={inputRef}
+        {...props}
+        ref={undefined}
         style={[baseInputStyle, inputStyle]}
         placeholder={placeholder}
         placeholderTextColor={muted}
         value={displayValue}
         onChangeText={handleTextChange}
-        {...props}
+        onSubmitEditing={handleSubmitEditing}
+        returnKeyType="search"
       />
 
-      {/* Loading Indicator */}
       {loading && (
         <ActivityIndicator
-          size='small'
+          size="small"
           color={muted}
           style={{ marginRight: 4 }}
         />
       )}
 
-      {/* Clear Button */}
       {showClear && !loading && (
         <TouchableOpacity
           onPress={handleClear}
@@ -143,12 +132,10 @@ export function SearchBar({
         </TouchableOpacity>
       )}
 
-      {/* Right Icon */}
       {rightIcon && !showClear && !loading && rightIcon}
     </View>
   );
 }
-
 // SearchBar with suggestions dropdown
 interface SearchBarWithSuggestionsProps extends SearchBarProps {
   suggestions?: string[];
@@ -166,14 +153,14 @@ export function SearchBarWithSuggestions({
   ...searchBarProps
 }: SearchBarWithSuggestionsProps) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const cardColor = useColor('card');
-  const borderColor = useColor('border');
+  const cardColor = useColor("card");
+  const borderColor = useColor("border");
 
   const filteredSuggestions = suggestions
     .filter((suggestion) =>
       suggestion
         .toLowerCase()
-        .includes((searchBarProps.value || '').toLowerCase())
+        .includes((searchBarProps.value || "").toLowerCase()),
     )
     .slice(0, maxSuggestions);
 
@@ -181,7 +168,7 @@ export function SearchBarWithSuggestions({
     showSuggestions &&
     isExpanded &&
     filteredSuggestions.length > 0 &&
-    (searchBarProps.value || '').length > 0;
+    (searchBarProps.value || "").length > 0;
 
   const handleSuggestionPress = (suggestion: string) => {
     onSuggestionPress?.(suggestion);
@@ -189,7 +176,7 @@ export function SearchBarWithSuggestions({
   };
 
   return (
-    <View style={[{ width: '100%' }, containerStyle]}>
+    <View style={[{ width: "100%" }, containerStyle]}>
       <SearchBar
         {...searchBarProps}
         onFocus={(e) => {
@@ -207,8 +194,8 @@ export function SearchBarWithSuggestions({
       {shouldShowSuggestions && (
         <View
           style={{
-            position: 'absolute',
-            top: '100%',
+            position: "absolute",
+            top: "100%",
             left: 0,
             right: 0,
             backgroundColor: cardColor,

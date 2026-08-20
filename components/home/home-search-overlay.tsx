@@ -32,12 +32,6 @@ export function HomeSearchOverlay({
         value={query}
         onChangeText={onQueryChange}
         onFocus={onFocus}
-        onSearch={(q) => {
-          const found = places.find((p) =>
-            p.name.toLowerCase().includes(q.toLowerCase()),
-          );
-          if (found) onSelect(found);
-        }}
         loading={false}
         rightIcon={<Mic size={18} color={iconColor} />}
       />

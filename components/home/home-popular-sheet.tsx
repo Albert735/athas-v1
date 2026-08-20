@@ -52,15 +52,25 @@ export function HomePopularSheet({
         data={quickActions}
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled
+        nestedScrollEnabled={false}
+        directionalLockEnabled
+        bounces={false}
         contentContainerStyle={styles.pillsContent}
+        style={styles.pillsList}
         renderItem={({ item }) => {
           const isSelected = selectedCategory === item.category;
           const Icon = item.icon;
+
           return (
             <Pressable
               style={[
                 styles.pill,
-                { backgroundColor, borderColor },
+                {
+                  backgroundColor,
+                  borderColor,
+                },
                 isSelected && {
                   backgroundColor: primaryColor,
                   borderColor: primaryColor,
@@ -72,10 +82,13 @@ export function HomePopularSheet({
                 size={14}
                 color={isSelected ? primaryForeground : iconColor}
               />
+
               <Text
                 style={[
                   styles.pillText,
-                  { color: isSelected ? primaryForeground : textColor },
+                  {
+                    color: isSelected ? primaryForeground : textColor,
+                  },
                 ]}
               >
                 {item.label}
@@ -84,7 +97,6 @@ export function HomePopularSheet({
           );
         }}
       />
-
       {/* Place list */}
       <FlatList
         data={filteredPlaces}
@@ -131,27 +143,58 @@ export function HomePopularSheet({
 const styles = StyleSheet.create({
   sheet: {
     maxHeight: "60%",
+    gap: 16,
   },
   sectionHeader: { paddingHorizontal: 4, marginBottom: 8 },
   sectionTitle: { fontSize: 18, fontWeight: "700" },
-  pillsContent: { gap: 8, paddingVertical: 8 },
+
+  pillsList: {
+    height: 52,
+    flexGrow: 0,
+  },
+
+  pillsContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    gap: 8,
+    // paddingHorizontal: 20,
+    // paddingVertical: 12,
+  },
+
+  pillsContent: {
+    // paddingHorizontal: 20,
+    alignItems: "center",
+    gap: 8,
+  },
   pill: {
+    height: 36,
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 18,
     borderWidth: 1,
   },
-  pillText: { fontSize: 13, fontWeight: "500" },
-  listContent: { gap: 12, paddingTop: 8, paddingBottom: 20 },
+
+  pillText: {
+    fontSize: 13,
+    fontWeight: "500",
+  },
+
+  listContent: {
+    gap: 12,
+    paddingTop: 16,
+    paddingHorizontal: 4,
+    paddingBottom: 60,
+  },
+
   card: {
     flexDirection: "row",
     borderRadius: 16,
     borderWidth: 1,
     overflow: "hidden",
   },
+
   cardImage: { width: 90, height: 90 },
   cardBody: { flex: 1, padding: 10, gap: 3, justifyContent: "center" },
   cardName: { fontSize: 14, fontWeight: "600" },

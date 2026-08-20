@@ -1,7 +1,7 @@
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
-import { useRef, useState } from "react";
+import { router, useFocusEffect } from "expo-router";
+import { useRef, useState, useCallback } from "react";
 import MapboxGL from "@rnmapbox/maps";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
@@ -40,10 +40,20 @@ export default function HomeScreen() {
     router.push(`/place-sheet?id=${place.id}`);
   };
 
-  // Reset marker + return to popular-places state whenever nothing is selected
-  // (called when the place-sheet is dismissed — wire this via a focus effect
-  // or a param-based reset if you want it automatic on navigation back)
-  const clearSelection = () => setSelectedPlace(null);
+  // Every time Home regains focus (e.g. the place-sheet was dismissed,
+  // or the user backed out of Building Details), clear the selection so
+  // the map annotation disappears and the popular-places sheet returns.
+  const hasMountedRef = useRef(false);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (hasMountedRef.current) {
+        // We're refocusing after having navigated away (e.g. place-sheet closed)
+        setSelectedPlace(null);
+      }
+      hasMountedRef.current = true;
+    }, []),
+  );
 
   return (
     <View style={[styles.root, { backgroundColor }]}>

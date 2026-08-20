@@ -12,7 +12,6 @@ export default function HomeLayout() {
 
           sheetAllowedDetents: [0.5, 1],
           sheetGrabberVisible: true,
-          sheetLargestUndimmedDetentIndex: 0,
         }}
       />
     </Stack>
