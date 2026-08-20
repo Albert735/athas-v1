@@ -212,7 +212,9 @@ export default function PlaceSheet() {
             backgroundColor: primaryColor,
           },
         ]}
-        onPress={handleGetDirections}
+        onPress={() => {
+          router.dismissTo(`/map?buildingId=${place.id}`);
+        }}
       >
         <Navigation size={18} color="#FFFFFF" />
 
