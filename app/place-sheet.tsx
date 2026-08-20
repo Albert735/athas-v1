@@ -363,13 +363,10 @@ export default function PlaceSheet() {
 
       <TouchableOpacity
         activeOpacity={0.85}
-        style={[
-          styles.directionsButton,
-          {
-            backgroundColor: primaryColor,
-          },
-        ]}
-        onPress={handleGetDirections}
+        style={[styles.directionsButton, { backgroundColor: primaryColor }]}
+        onPress={() => {
+          router.dismissTo(`/map?buildingId=${place.id}&startNavigation=true`);
+        }}
       >
         <Navigation size={18} color="#FFFFFF" />
 
