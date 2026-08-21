@@ -279,6 +279,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     borderRadius: 17,
     borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
 
   categoryText: {
@@ -304,7 +305,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     borderRadius: 16,
-    borderWidth: 1,
     padding: 8,
   },
 
