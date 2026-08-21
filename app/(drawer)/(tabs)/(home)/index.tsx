@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router } from "expo-router";
+import { router, useFocusEffect } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import MapboxGL from "@rnmapbox/maps";
 
@@ -29,11 +29,28 @@ export default function HomeScreen() {
 
   const [showBottomSheet, setShowBottomSheet] = useState(true);
 
+  /*
+   * Whenever Home becomes the active screen again,
+   * return it to its default state.
+   *
+   * This is important because Expo Router can keep
+   * the Home screen mounted while another screen is
+   * pushed on top of it.
+   */
+  useFocusEffect(
+    useCallback(() => {
+      setSelectedPlace(null);
+      setSelectedCategory("all");
+      setSearchQuery("");
+      setSearchFocused(false);
+      setShowBottomSheet(true);
+
+      return undefined;
+    }, []),
+  );
+
   const openPlace = useCallback((place: Place) => {
     setSelectedPlace(place);
-
-    // The home Places sheet must remain hidden
-    // once we leave Home for the map.
     setShowBottomSheet(false);
 
     setSearchQuery("");
@@ -93,14 +110,6 @@ export default function HomeScreen() {
   const handleSearchBlur = useCallback(() => {
     setSearchFocused(false);
 
-    /*
-     * Only restore the home Places sheet when
-     * the search has actually been cleared.
-     *
-     * Selecting a result clears the query and
-     * immediately leaves Home, so the sheet
-     * remains hidden.
-     */
     if (searchQuery.trim().length === 0) {
       setShowBottomSheet(true);
     }
