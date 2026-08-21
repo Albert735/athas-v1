@@ -1,6 +1,6 @@
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { router, useFocusEffect } from "expo-router";
+import { router } from "expo-router";
 import { useCallback, useRef, useState } from "react";
 import MapboxGL from "@rnmapbox/maps";
 
@@ -14,12 +14,7 @@ import {
   HomeSearchOverlay,
 } from "@/components/home";
 
-interface HomeMapProps {
-  selectedPlace: Place | null;
-  onAnnotationPress?: (place: Place) => void;
-}
-
-type Place = (typeof places)[0];
+type Place = (typeof places)[number];
 
 export default function HomeScreen() {
   const backgroundColor = useColor("background");
@@ -27,38 +22,22 @@ export default function HomeScreen() {
   const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-
   const [selectedCategory, setSelectedCategory] = useState("all");
 
   const [searchQuery, setSearchQuery] = useState("");
-
   const [searchFocused, setSearchFocused] = useState(false);
 
   const [showBottomSheet, setShowBottomSheet] = useState(true);
 
-  /**
-   * Used to tell useFocusEffect that we are returning
-   * from the place form sheet.
-   */
-  const openedPlaceSheet = useRef(false);
-
-  /**
-   * Select a place and open its form sheet.
-   *
-   * This is used by:
-   * - Search results
-   * - Popular places
-   * - Map annotations
-   */
   const openPlace = useCallback((place: Place) => {
     setSelectedPlace(place);
 
+    // The home Places sheet must remain hidden
+    // once we leave Home for the map.
     setShowBottomSheet(false);
 
     setSearchQuery("");
     setSearchFocused(false);
-
-    openedPlaceSheet.current = true;
 
     cameraRef.current?.setCamera({
       centerCoordinate: [place.longitude, place.latitude],
@@ -71,13 +50,11 @@ export default function HomeScreen() {
       pathname: "/place-sheet",
       params: {
         id: place.id,
+        source: "home",
       },
     });
   }, []);
 
-  /**
-   * Search result selected.
-   */
   const handleSearchSelect = useCallback(
     (place: Place) => {
       openPlace(place);
@@ -85,9 +62,6 @@ export default function HomeScreen() {
     [openPlace],
   );
 
-  /**
-   * Popular place selected.
-   */
   const handlePlacePress = useCallback(
     (place: Place) => {
       openPlace(place);
@@ -95,47 +69,45 @@ export default function HomeScreen() {
     [openPlace],
   );
 
-  /**
-   * Map annotation selected.
-   */
-  const handleAnnotationPress = useCallback(
-    (place: Place) => {
-      openPlace(place);
-    },
-    [openPlace],
-  );
+  const handleAnnotationPress = useCallback((place: Place) => {
+    setSelectedPlace(place);
+    setShowBottomSheet(false);
 
-  /**
-   * When the place form sheet is dismissed,
-   * restore the normal map state.
-   */
-  useFocusEffect(
-    useCallback(() => {
-      if (!openedPlaceSheet.current) {
-        return;
-      }
+    setSearchQuery("");
+    setSearchFocused(false);
 
-      openedPlaceSheet.current = false;
+    router.push({
+      pathname: "/place-sheet",
+      params: {
+        id: place.id,
+        source: "home",
+      },
+    });
+  }, []);
 
-      setSelectedPlace(null);
+  const handleSearchFocus = useCallback(() => {
+    setSearchFocused(true);
+    setShowBottomSheet(false);
+  }, []);
 
+  const handleSearchBlur = useCallback(() => {
+    setSearchFocused(false);
+
+    /*
+     * Only restore the home Places sheet when
+     * the search has actually been cleared.
+     *
+     * Selecting a result clears the query and
+     * immediately leaves Home, so the sheet
+     * remains hidden.
+     */
+    if (searchQuery.trim().length === 0) {
       setShowBottomSheet(true);
-
-      setSearchQuery("");
-      setSearchFocused(false);
-    }, []),
-  );
+    }
+  }, [searchQuery]);
 
   return (
-    <View
-      style={[
-        styles.root,
-        {
-          backgroundColor,
-        },
-      ]}
-    >
-      {/* MAP */}
+    <View style={[styles.root, { backgroundColor }]}>
       <View style={styles.mapContainer}>
         <HomeMap
           ref={cameraRef}
@@ -144,7 +116,6 @@ export default function HomeScreen() {
         />
       </View>
 
-      {/* HEADER + SEARCH */}
       <SafeAreaView style={styles.overlay} pointerEvents="box-none">
         <HomeHeader />
 
@@ -152,15 +123,12 @@ export default function HomeScreen() {
           query={searchQuery}
           onQueryChange={setSearchQuery}
           focused={searchFocused}
-          onFocus={() => {
-            setSearchFocused(true);
-            setShowBottomSheet(false);
-          }}
+          onFocus={handleSearchFocus}
+          onBlur={handleSearchBlur}
           onSelect={handleSearchSelect}
         />
       </SafeAreaView>
 
-      {/* POPULAR PLACES */}
       <HomePopularSheet
         visible={showBottomSheet}
         selectedCategory={selectedCategory}

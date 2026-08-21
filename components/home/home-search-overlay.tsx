@@ -6,19 +6,23 @@ import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 
+type Place = (typeof places)[number];
+
 interface Props {
   query: string;
-  onQueryChange: (query: string) => void;
+  onQueryChange: (text: string) => void;
   focused: boolean;
   onFocus: () => void;
-  onSelect: (place: (typeof places)[0]) => void;
+  onBlur: () => void;
+  onSelect: (place: Place) => void;
 }
 
-export function HomeSearchOverlay({
+export default function HomeSearchOverlay({
   query,
   onQueryChange,
   focused,
   onFocus,
+  onBlur,
   onSelect,
 }: Props) {
   const iconColor = useColor("icon");
@@ -32,6 +36,7 @@ export function HomeSearchOverlay({
         value={query}
         onChangeText={onQueryChange}
         onFocus={onFocus}
+        onBlur={onBlur}
         loading={false}
         rightIcon={<Mic size={18} color={iconColor} />}
       />

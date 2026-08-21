@@ -1,24 +1,21 @@
-import { View, StyleSheet } from "react-native";
+import React, { forwardRef } from "react";
+import { StyleSheet, View } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
-import { MAP_STYLE_URL } from "@/constants/mapbox";
+
 import { places } from "@/data/places";
-import { forwardRef } from "react";
+import { MAP_STYLE_URL } from "@/constants/mapbox";
 
-const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
+type Place = (typeof places)[number];
 
-type Place = (typeof places)[0];
-
-interface Props {
+export interface Props {
   selectedPlace: Place | null;
-  onAnnotationPress?: (place: Place) => void;
+  onAnnotationPress: (place: Place) => void;
 }
 
-export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
-  ({ selectedPlace, onAnnotationPress }, cameraRef) => {
-    const handleAnnotationSelect = (place: Place) => {
-      onAnnotationPress?.(place);
-    };
+export type CameraRef = MapboxGL.Camera;
 
+const HomeMap = forwardRef<CameraRef, Props>(
+  ({ selectedPlace, onAnnotationPress }, ref) => {
     return (
       <MapboxGL.MapView
         style={styles.map}
@@ -30,17 +27,18 @@ export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
         pitchEnabled
       >
         <MapboxGL.Camera
-          ref={cameraRef}
+          ref={ref}
           zoomLevel={16}
-          centerCoordinate={CAMPUS_CENTER}
-          animationMode="flyTo"
-          animationDuration={0}
+          pitch={0}
+          centerCoordinate={[-0.1869, 5.6508]}
+          animationMode="easeTo"
+          animationDuration={700}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
 
         <MapboxGL.FillExtrusionLayer
-          id="3d-buildings"
+          id="home-3d-buildings"
           sourceID="composite"
           sourceLayerID="building"
           minZoomLevel={15}
@@ -55,10 +53,9 @@ export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
 
         {selectedPlace && (
           <MapboxGL.PointAnnotation
-            key={selectedPlace.id}
-            id={`marker-${selectedPlace.id}`}
+            id={`home-marker-${selectedPlace.id}`}
             coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
-            onSelected={() => onAnnotationPress?.(selectedPlace)}
+            onSelected={() => onAnnotationPress(selectedPlace)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
@@ -71,6 +68,8 @@ export const HomeMap = forwardRef<MapboxGL.Camera, Props>(
 );
 
 HomeMap.displayName = "HomeMap";
+
+export default HomeMap;
 
 const styles = StyleSheet.create({
   map: {

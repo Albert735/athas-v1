@@ -9,23 +9,15 @@ import type { SheetState, TransportProfile } from "@/types/map";
 
 interface Props {
   place: (typeof places)[number];
-
   route: RouteResult | null;
-
   routeLoading: boolean;
-
   sheetState: SheetState;
-
   onSheetStateChange: (state: SheetState) => void;
-
   onRequestDirections: (profile?: TransportProfile) => void;
-
   onClose?: () => void;
-
   onNavigationExit?: () => void;
-
+  onStart?: () => void;
   distanceOverride?: string;
-
   isOpenOverride?: boolean;
 }
 
@@ -38,6 +30,7 @@ export default function MapBottomSheet({
   onRequestDirections,
   onClose,
   onNavigationExit,
+  onStart,
   distanceOverride,
   isOpenOverride,
 }: Props) {
@@ -64,12 +57,8 @@ export default function MapBottomSheet({
         route={route}
         routeLoading={routeLoading}
         onModeChange={onRequestDirections}
-        onStart={() => {
-          onSheetStateChange("navigating");
-        }}
-        onBack={() => {
-          onSheetStateChange("details");
-        }}
+        onStart={onStart}
+        onBack={() => onSheetStateChange("details")}
       />
     );
   }

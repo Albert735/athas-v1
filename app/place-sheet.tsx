@@ -5,32 +5,26 @@ import {
   ScrollView,
   TouchableOpacity,
 } from "react-native";
-
 import { Image } from "expo-image";
-
 import { useLocalSearchParams, router } from "expo-router";
-
 import { useColor } from "@/hooks/useColor";
-
 import { places } from "@/data/places";
 import { categoryImages } from "@/data/category-images";
-
 import { Star, MapPin, Navigation, Clock3 } from "lucide-react-native";
 
 export default function PlaceSheet() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, source } = useLocalSearchParams<{
+    id: string;
+    source?: string;
+  }>();
 
   const backgroundColor = useColor("background");
-
   const cardColor = useColor("card");
-
   const textColor = useColor("text");
-
   const mutedColor = useColor("textMuted");
-
   const primaryColor = useColor("primary");
 
-  const place = places.find((item) => item.id === id);
+  const place = places.find((p) => p.id === id);
 
   if (!place) {
     return (
@@ -47,8 +41,27 @@ export default function PlaceSheet() {
     .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
     .join(" ");
 
-  const handleGetDirections = () => {
-    router.dismissTo(`/map?buildingId=${place.id}&startNavigation=true`);
+  const handleDirections = () => {
+    /*
+     * Home flow:
+     *
+     * Home
+     *   → Place Sheet
+     *   → Directions
+     *
+     * Other flow:
+     *
+     * Other screen
+     *   → Place Sheet
+     *   → Map details
+     *   → Directions
+     */
+    if (source === "home") {
+      router.dismissTo(`/map?buildingId=${place.id}&source=home`);
+      return;
+    }
+
+    router.dismissTo(`/map?buildingId=${place.id}&source=external`);
   };
 
   return (
@@ -84,9 +97,7 @@ export default function PlaceSheet() {
       <View style={styles.ratingSection}>
         <View style={styles.ratingContainer}>
           <View style={styles.stars}>
-            {Array.from({
-              length: 5,
-            }).map((_, index) => (
+            {Array.from({ length: 5 }).map((_, index) => (
               <Star key={index} size={16} color="#F59E0B" fill="#F59E0B" />
             ))}
           </View>
@@ -206,15 +217,8 @@ export default function PlaceSheet() {
 
       <TouchableOpacity
         activeOpacity={0.85}
-        style={[
-          styles.directionsButton,
-          {
-            backgroundColor: primaryColor,
-          },
-        ]}
-        onPress={() => {
-          router.dismissTo(`/map?buildingId=${place.id}`);
-        }}
+        style={[styles.directionsButton, { backgroundColor: primaryColor }]}
+        onPress={handleDirections}
       >
         <Navigation size={18} color="#FFFFFF" />
 
@@ -260,7 +264,7 @@ const styles = StyleSheet.create({
 
   heroOverlay: {
     ...StyleSheet.absoluteFillObject,
-    backgroundColor: "rgba(0,0,0,0.4)",
+    backgroundColor: "rgba(0, 0, 0, 0.4)",
   },
 
   heroContent: {
@@ -438,6 +442,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: 9,
+    marginTop: 2,
   },
 
   directionsText: {

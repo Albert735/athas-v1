@@ -9,49 +9,46 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import MapboxGL from "@rnmapbox/maps";
 
 import { Header } from "@/components/shared/screen/header";
-
 import { SearchBar } from "@/components/ui/searchbar";
-
 import { Mic } from "lucide-react-native";
 
 import { useColor } from "@/hooks/useColor";
-
 import { places } from "@/data/places";
-
 import { MAP_STYLE_URL } from "@/constants/mapbox";
 
 import { useUserLocation } from "@/hooks/useUserLocation";
 
-import { usePlaceSearch } from "@/hooks/usePlaceSearch";
-
 import { getRoute, type RouteResult } from "@/utils/directions";
+
+import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
 
 import type { SheetState, TransportProfile } from "@/types/map";
 
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
-
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
 type Place = (typeof places)[number];
 
+type CameraMode = "normal" | "route" | "navigation";
+
 export default function Map() {
+  const icon = useColor("icon");
   const primaryColor = useColor("primary");
 
-  const iconColor = useColor("icon");
-
-  const { buildingId } = useLocalSearchParams<{
+  const { buildingId, source = "external" } = useLocalSearchParams<{
     buildingId?: string;
+    source?: string;
   }>();
 
   const { location: userLocation, error: locationError } = useUserLocation();
 
-  const cameraRef = useRef<MapboxGL.Camera>(null);
-
   const userLocationRef = useRef<[number, number] | null>(null);
+
+  const cameraRef = useRef<MapboxGL.Camera>(null);
 
   const requestIdRef = useRef(0);
 
@@ -67,22 +64,15 @@ export default function Map() {
 
   const [searchFocused, setSearchFocused] = useState(false);
 
+  const [cameraMode, setCameraMode] = useState<CameraMode>("normal");
+
   const searchResults = usePlaceSearch(searchQuery);
 
-  const showSearchDropdown = searchFocused && searchQuery.trim().length > 0;
+  const showDropdown = searchFocused && searchQuery.trim().length > 0;
 
   useEffect(() => {
     userLocationRef.current = userLocation;
   }, [userLocation]);
-
-  useEffect(() => {
-    if (!locationError) return;
-
-    Alert.alert(
-      "Location Unavailable",
-      "Please enable location access so directions can use your current position.",
-    );
-  }, [locationError]);
 
   const selectedPlaceDistance = selectedPlace
     ? computeDistanceString(
@@ -97,20 +87,45 @@ export default function Map() {
     ? computeIsOpen(selectedPlace.hours, selectedPlace.days)
     : undefined;
 
+  useEffect(() => {
+    if (!locationError) {
+      return;
+    }
+
+    Alert.alert(
+      "Location Unavailable",
+      "Please enable location access in Settings so we can show directions from your current position.",
+      [{ text: "OK" }],
+    );
+  }, [locationError]);
+
   const focusPlace = useCallback((place: Place) => {
-    cameraRef.current?.setCamera({
-      centerCoordinate: [place.longitude, place.latitude],
-      zoomLevel: 17,
-      pitch: 45,
-      animationDuration: 600,
+    setCameraMode("normal");
+
+    requestAnimationFrame(() => {
+      cameraRef.current?.setCamera({
+        centerCoordinate: [place.longitude, place.latitude],
+        zoomLevel: 17,
+        pitch: 45,
+        animationDuration: 700,
+      });
     });
   }, []);
 
-  const openPlace = useCallback(
+  /*
+   * Search inside the Map screen.
+   *
+   * Search results should select the place
+   * and show the normal Details Card.
+   *
+   * We DO NOT push /place-sheet here.
+   */
+  const handleSearchSelect = useCallback(
     (place: Place) => {
       setSelectedPlace(place);
-      setRoute(null);
       setSheetState("details");
+      setRoute(null);
+      setRouteLoading(false);
 
       setSearchQuery("");
       setSearchFocused(false);
@@ -120,20 +135,38 @@ export default function Map() {
     [focusPlace],
   );
 
-  const handleSearchSelect = (place: Place) => {
-    openPlace(place);
-  };
+  /*
+   * Annotation taps happen while we are already
+   * on the Map screen.
+   *
+   * Therefore they must NEVER push another sheet.
+   *
+   * They simply open the Details Card.
+   */
+  const handleAnnotationSelect = useCallback(
+    (place: Place) => {
+      requestIdRef.current += 1;
 
-  const handleAnnotationSelect = (place: Place) => {
-    openPlace(place);
-  };
+      setSelectedPlace(place);
+      setSheetState("details");
+      setRoute(null);
+      setRouteLoading(false);
 
-  const waitForLocation = async (): Promise<[number, number] | null> => {
-    if (userLocationRef.current) {
-      return userLocationRef.current;
-    }
+      setSearchQuery("");
+      setSearchFocused(false);
 
+      focusPlace(place);
+    },
+    [focusPlace],
+  );
+
+  const waitForLocation = useCallback((): Promise<[number, number] | null> => {
     return new Promise((resolve) => {
+      if (userLocationRef.current) {
+        resolve(userLocationRef.current);
+        return;
+      }
+
       const interval = setInterval(() => {
         if (userLocationRef.current) {
           clearInterval(interval);
@@ -144,111 +177,221 @@ export default function Map() {
 
       setTimeout(() => {
         clearInterval(interval);
-
         resolve(null);
       }, 5000);
     });
-  };
+  }, []);
 
-  const handleRequestDirections = async (
-    profile: TransportProfile = "walking",
-  ) => {
-    if (!selectedPlace) return;
-
-    const requestId = ++requestIdRef.current;
-
-    setRouteLoading(true);
-
-    const origin = await waitForLocation();
-
-    if (!origin) {
-      if (requestId !== requestIdRef.current) {
-        return;
-      }
-
-      setRouteLoading(false);
-
-      Alert.alert(
-        "Location Unavailable",
-        "We couldn't determine your current location.",
-      );
-
-      return;
-    }
-
-    const result = await getRoute(
-      origin,
-      [selectedPlace.longitude, selectedPlace.latitude],
-      profile,
-    );
-
-    if (requestId !== requestIdRef.current) {
-      return;
-    }
-
-    setRoute(result);
-    setRouteLoading(false);
-
-    if (!result) {
-      Alert.alert("No Route", "We couldn't find a route to this location.");
-
-      return;
-    }
-
+  const fitRouteOnMap = useCallback((result: RouteResult) => {
     const coordinates = result.geometry.coordinates as [number, number][];
+
+    if (!coordinates.length) {
+      return;
+    }
 
     const longitudes = coordinates.map((coordinate) => coordinate[0]);
 
     const latitudes = coordinates.map((coordinate) => coordinate[1]);
 
-    cameraRef.current?.fitBounds(
-      [Math.max(...longitudes), Math.max(...latitudes)],
-      [Math.min(...longitudes), Math.min(...latitudes)],
-      80,
-      900,
-    );
-  };
+    const east = Math.max(...longitudes);
 
-  const startNavigation = () => {
-    if (!route) return;
+    const west = Math.min(...longitudes);
 
-    setSearchFocused(false);
-    setSearchQuery("");
+    const north = Math.max(...latitudes);
 
-    setSheetState("navigating");
+    const south = Math.min(...latitudes);
 
-    cameraRef.current?.setCamera({
-      zoomLevel: 18,
-      pitch: 60,
-      animationDuration: 800,
+    setCameraMode("route");
+
+    requestAnimationFrame(() => {
+      cameraRef.current?.fitBounds([east, north], [west, south], 80, 900);
     });
-  };
+  }, []);
 
-  const exitNavigation = () => {
-    requestIdRef.current++;
+  const handleRequestDirections = useCallback(
+    async (profile: TransportProfile = "walking") => {
+      if (!selectedPlace) {
+        return;
+      }
+
+      const thisRequestId = ++requestIdRef.current;
+
+      setRouteLoading(true);
+
+      const origin = userLocationRef.current ?? (await waitForLocation());
+
+      if (!origin) {
+        if (thisRequestId === requestIdRef.current) {
+          setRouteLoading(false);
+        }
+
+        Alert.alert(
+          "Location Unavailable",
+          "We couldn't determine your current location. Please check your settings and try again.",
+          [{ text: "OK" }],
+        );
+
+        return;
+      }
+
+      const result = await getRoute(
+        origin,
+        [selectedPlace.longitude, selectedPlace.latitude],
+        profile,
+      );
+
+      if (thisRequestId !== requestIdRef.current) {
+        return;
+      }
+
+      setRoute(result);
+      setRouteLoading(false);
+
+      if (result) {
+        fitRouteOnMap(result);
+      }
+    },
+    [selectedPlace, waitForLocation, fitRouteOnMap],
+  );
+
+  const startNavigation = useCallback(() => {
+    if (!route) {
+      return;
+    }
+
+    setCameraMode("navigation");
+    setSheetState("navigating");
+  }, [route]);
+
+  /*
+   * Navigation → Details
+   *
+   * The selected place stays alive.
+   * The route disappears.
+   */
+  const handleNavigationExit = useCallback(() => {
+    requestIdRef.current += 1;
 
     setRoute(null);
-    setSheetState("details");
+    setRouteLoading(false);
 
-    if (selectedPlace) {
+    setSheetState("details");
+    setCameraMode("normal");
+
+    requestAnimationFrame(() => {
       cameraRef.current?.setCamera({
-        centerCoordinate: [selectedPlace.longitude, selectedPlace.latitude],
+        centerCoordinate: selectedPlace
+          ? [selectedPlace.longitude, selectedPlace.latitude]
+          : CAMPUS_CENTER,
+
         zoomLevel: 17,
         pitch: 45,
         animationDuration: 800,
       });
-    }
-  };
+    });
+  }, [selectedPlace]);
 
+  /*
+   * Deep-link / navigation into Map.
+   *
+   * external:
+   *   Explore → Map → Details
+   *
+   * home:
+   *   Home → Map → Directions
+   */
   useEffect(() => {
-    if (!buildingId) return;
+    if (!buildingId) {
+      return;
+    }
 
-    const place = places.find((item) => item.id === buildingId);
+    const found = places.find((place) => place.id === buildingId);
 
-    if (!place) return;
+    if (!found) {
+      return;
+    }
 
-    openPlace(place);
-  }, [buildingId, openPlace]);
+    setSelectedPlace(found);
+
+    setRoute(null);
+    setRouteLoading(false);
+
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    if (source === "home") {
+      setSheetState("directions");
+
+      requestAnimationFrame(() => {
+        focusPlace(found);
+      });
+    } else {
+      setSheetState("details");
+
+      requestAnimationFrame(() => {
+        focusPlace(found);
+      });
+    }
+  }, [buildingId, source, focusPlace]);
+
+  /*
+   * Home → Directions.
+   *
+   * Automatically fetch the initial
+   * walking route.
+   */
+  useEffect(() => {
+    if (source !== "home" || sheetState !== "directions" || !selectedPlace) {
+      return;
+    }
+
+    if (route || routeLoading) {
+      return;
+    }
+
+    handleRequestDirections("walking");
+  }, [
+    source,
+    sheetState,
+    selectedPlace,
+    route,
+    routeLoading,
+    handleRequestDirections,
+  ]);
+
+  const navigationActive = sheetState === "navigating";
+
+  /*
+   * Close Details Card.
+   *
+   * This is NOT navigation back to Home.
+   *
+   * It simply clears the selected place
+   * while staying on the Map.
+   *
+   * The annotations remain visible.
+   */
+  const clearSelectedPlace = useCallback(() => {
+    requestIdRef.current += 1;
+
+    setSelectedPlace(null);
+    setRoute(null);
+    setRouteLoading(false);
+    setSheetState("details");
+    setCameraMode("normal");
+
+    setSearchQuery("");
+    setSearchFocused(false);
+
+    requestAnimationFrame(() => {
+      cameraRef.current?.setCamera({
+        centerCoordinate: CAMPUS_CENTER,
+        zoomLevel: 16,
+        pitch: 0,
+        animationDuration: 600,
+      });
+    });
+  }, []);
 
   return (
     <View style={styles.root}>
@@ -263,21 +406,19 @@ export default function Map() {
       >
         <MapboxGL.Camera
           ref={cameraRef}
-          zoomLevel={sheetState === "navigating" ? 18 : 16}
-          pitch={sheetState === "navigating" ? 60 : 0}
-          centerCoordinate={
-            sheetState === "navigating" ? undefined : CAMPUS_CENTER
-          }
-          followUserLocation={sheetState === "navigating"}
+          zoomLevel={navigationActive ? 18 : 16}
+          pitch={navigationActive ? 60 : 0}
+          centerCoordinate={navigationActive ? undefined : CAMPUS_CENTER}
+          followUserLocation={navigationActive}
           followUserMode={
-            sheetState === "navigating"
+            navigationActive
               ? MapboxGL.UserTrackingMode.FollowWithCourse
               : undefined
           }
           followZoomLevel={18}
           followPitch={60}
-          animationMode="flyTo"
-          animationDuration={800}
+          animationMode="easeTo"
+          animationDuration={700}
         />
 
         <MapboxGL.UserLocation visible showsUserHeadingIndicator />
@@ -290,47 +431,42 @@ export default function Map() {
           maxZoomLevel={22}
           style={{
             fillExtrusionColor: "#D1D5DB",
-
             fillExtrusionHeight: ["get", "height"],
-
             fillExtrusionBase: ["get", "min_height"],
-
             fillExtrusionOpacity: 0.8,
           }}
         />
 
         {route && (
-          <MapboxGL.ShapeSource id="route-source" shape={route.geometry}>
+          <MapboxGL.ShapeSource id="navigationRoute" shape={route.geometry}>
             <MapboxGL.LineLayer
-              id="route-line"
+              id="navigationRouteLine"
               style={{
                 lineColor: primaryColor,
-
-                lineWidth: 6,
-
+                lineWidth: navigationActive ? 6 : 5,
                 lineCap: "round",
-
                 lineJoin: "round",
+                lineOpacity: 0.95,
               }}
             />
           </MapboxGL.ShapeSource>
         )}
 
-        {places.map((place) => (
+        {selectedPlace && (
           <MapboxGL.PointAnnotation
-            key={place.id}
-            id={`marker-${place.id}`}
-            coordinate={[place.longitude, place.latitude]}
-            onSelected={() => handleAnnotationSelect(place)}
+            key={selectedPlace.id}
+            id={`marker-${selectedPlace.id}`}
+            coordinate={[selectedPlace.longitude, selectedPlace.latitude]}
+            onSelected={() => handleAnnotationSelect(selectedPlace)}
           >
             <View style={styles.markerPin}>
               <View style={styles.markerDot} />
             </View>
           </MapboxGL.PointAnnotation>
-        ))}
+        )}
       </MapboxGL.MapView>
 
-      {sheetState !== "navigating" && (
+      {!navigationActive && (
         <SafeAreaView style={styles.overlay} pointerEvents="box-none">
           <Header title="Map" />
 
@@ -340,7 +476,6 @@ export default function Map() {
               value={searchQuery}
               onChangeText={(text) => {
                 setSearchQuery(text);
-
                 setSearchFocused(true);
               }}
               onFocus={() => {
@@ -356,11 +491,11 @@ export default function Map() {
                 }
               }}
               loading={false}
-              rightIcon={<Mic size={18} color={iconColor} />}
+              rightIcon={<Mic size={18} color={icon} />}
             />
 
             <PlaceSearchDropdown
-              visible={showSearchDropdown}
+              visible={showDropdown}
               results={searchResults}
               onSelect={handleSearchSelect}
             />
@@ -368,7 +503,7 @@ export default function Map() {
         </SafeAreaView>
       )}
 
-      {showSearchDropdown && (
+      {showDropdown && (
         <Pressable
           style={styles.dismissOverlay}
           onPress={() => setSearchFocused(false)}
@@ -381,27 +516,13 @@ export default function Map() {
           route={route}
           routeLoading={routeLoading}
           sheetState={sheetState}
-          onSheetStateChange={(nextState) => {
-            if (nextState === "navigating") {
-              startNavigation();
-              return;
-            }
-
-            setSheetState(nextState);
-          }}
+          onSheetStateChange={setSheetState}
           onRequestDirections={handleRequestDirections}
           distanceOverride={selectedPlaceDistance}
           isOpenOverride={selectedPlaceIsOpen}
-          onNavigationExit={exitNavigation}
-          onClose={() => {
-            requestIdRef.current++;
-
-            setSelectedPlace(null);
-
-            setRoute(null);
-
-            setSheetState("details");
-          }}
+          onNavigationExit={handleNavigationExit}
+          onClose={clearSelectedPlace}
+          onStart={startNavigation}
         />
       )}
     </View>

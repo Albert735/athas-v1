@@ -75,10 +75,8 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     }
 
     if (isLastStep) {
-      onExit?.();
       return;
     }
-
     setStepIndex((current) => (current === stepIndex ? current + 1 : current));
   }, [liveLocation, route, step, stepIndex, isLastStep, onExit]);
 
