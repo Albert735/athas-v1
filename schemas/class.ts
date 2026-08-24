@@ -19,9 +19,9 @@ export const addClassSchema = z
     message: "Select at least one day",
     path: ["selectedDays"],
   })
-  .refine((data) => data.startTime < data.endTime, {
-    message: "End time must be after start time",
-    path: ["endTime"],
+  .refine((data) => data.selectedDays.length > 0, {
+    message: "Select at least one day",
+    path: ["selectedDays"],
   });
 
 export type AddClassData = z.infer<typeof addClassSchema>;

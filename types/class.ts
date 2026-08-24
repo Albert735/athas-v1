@@ -6,7 +6,6 @@ export interface ScheduledClass {
   endTime: string;
   room: string;
   building: string;
-  lecturer: string;
   day: string;
   repeatEnabled: boolean;
   repeatType: string;

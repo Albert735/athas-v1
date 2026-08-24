@@ -3,14 +3,16 @@ import { Text, View, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
 import { Clock, MapPin, Navigation, User } from "lucide-react-native";
-import { useLocalSearchParams } from "expo-router";
-import { MOCK_UPCOMING_CLASS } from "@/data/upcoming-class";
+import { useLocalSearchParams, useRouter } from "expo-router";
 import { useColor } from "@/hooks/useColor";
+import { useTimetable } from "@/providers/timetable-context";
 
 export default function ScheduledClassDetails() {
+  const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
+  const { classes, loading } = useTimetable();
 
-  const selectedClass = MOCK_UPCOMING_CLASS.find((item) => item.id === id);
+  const selectedClass = classes.find((item) => item.id === id);
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
@@ -20,6 +22,17 @@ export default function ScheduledClassDetails() {
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
   const redColor = useColor("red");
+
+  if (loading) {
+    return (
+      <SafeAreaView
+        style={[styles.screen, { backgroundColor }]}
+        edges={["top", "bottom"]}
+      >
+        <Header title="Class Details" />
+      </SafeAreaView>
+    );
+  }
 
   if (!selectedClass) {
     return (
@@ -72,7 +85,7 @@ export default function ScheduledClassDetails() {
             <Text style={[styles.label, { color: textMuted }]}>Time</Text>
 
             <Text style={[styles.value, { color: textColor }]}>
-              {selectedClass.time}
+              {selectedClass.startTime} - {selectedClass.endTime}
             </Text>
           </View>
         </View>
@@ -91,7 +104,7 @@ export default function ScheduledClassDetails() {
         </View>
 
         {/* Lecturer */}
-        {selectedClass.lecturer && (
+        {/* {selectedClass.lecturer && (
           <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
             <User size={22} color={primaryColor} />
 
@@ -103,10 +116,16 @@ export default function ScheduledClassDetails() {
               </Text>
             </View>
           </View>
-        )}
+        )} */}
 
         {/* Navigation Action */}
         <Pressable
+          onPress={() =>
+            router.push({
+              pathname: "/(schedule)/[id]" as any,
+              params: { id },
+            })
+          }
           style={({ pressed }) => [
             styles.navigateButton,
             { backgroundColor: primaryColor, opacity: pressed ? 0.8 : 1 },

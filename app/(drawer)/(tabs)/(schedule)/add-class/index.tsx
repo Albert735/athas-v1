@@ -20,13 +20,14 @@ import { useTimetable } from "@/hooks/useTimetable";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addClassSchema, type AddClassData } from "@/schemas/class";
+import type { ScheduledClass } from "@/types/class";
 
 const SPACING = 20;
 
 export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
   const { toast } = useToast();
-  const { setClasses } = useTimetable();
+  const { addClass } = useTimetable();
 
   const {
     control,
@@ -56,10 +57,38 @@ export default function AddClassScreen() {
   };
 
   const onSubmit = async (data: AddClassData) => {
-    console.log("New class:", data);
-    // TODO: setClasses(prev => [...prev, data]);
-    router.replace("/(drawer)/(tabs)/(schedule)/scheduled-class-list");
-    showToast();
+    try {
+      const days = data.repeatEnabled
+        ? data.selectedDays
+        : [data.selectedDays[0]];
+
+      const newClasses: ScheduledClass[] = days.map((day) => ({
+        id: `${Date.now()}-${day}-${Math.random().toString(36).slice(2, 8)}`,
+        course: data.courseName.trim(),
+        code: data.courseCode.trim().toUpperCase(),
+        startTime: data.startTime,
+        endTime: data.endTime,
+        room: data.hall,
+        building: data.building,
+        day,
+        repeatEnabled: data.repeatEnabled,
+        repeatType: data.repeatType,
+      }));
+
+      await addClass(newClasses);
+
+      showToast();
+
+      router.replace("/(drawer)/(tabs)/(schedule)/scheduled-class-list");
+    } catch (error) {
+      console.error("Failed to create class:", error);
+
+      toast({
+        title: "Something went wrong",
+        description: "The class could not be saved.",
+        variant: "error",
+      });
+    }
   };
 
   return (

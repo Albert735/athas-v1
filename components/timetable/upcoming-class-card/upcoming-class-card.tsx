@@ -22,7 +22,8 @@ export type UpcomingClassCardProps = ScheduledClass & {
 export function UpcomingClassCard({
   id,
   course,
-  time,
+  startTime,
+  endTime,
   room,
   building,
   onNavigate,
@@ -46,7 +47,9 @@ export function UpcomingClassCard({
       <View style={styles.mainContent}>
         {/* Time Section */}
         <View style={styles.timeContainer}>
-          <Text style={[styles.time, { color: textColor }]}>{time}</Text>
+          <Text style={[styles.time, { color: textColor }]}>
+            {startTime} - {endTime}
+          </Text>
           <View style={[styles.statusBadge, { backgroundColor: cardColor }]}>
             <Text style={[styles.statusText, { color: mutedColor }]}>
               UPCOMING

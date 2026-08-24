@@ -1,5 +1,4 @@
 import { ActiveClassCard, UpcomingClassCard } from "@/components/timetable";
-import { MOCK_UPCOMING_CLASS } from "@/data/upcoming-class";
 import {
   StyleSheet,
   Text,
@@ -16,9 +15,13 @@ import { useState } from "react";
 import { Header } from "@/components/shared/screen/header";
 import { router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
+import { useTimetable } from "@/providers/timetable-context";
 
 export default function ScheduledClassListScreen() {
   const [selectedDate, setSelectedDate] = useState(new Date());
+
+  const { classes, loading } = useTimetable();
+
   const weekDates = getWeekDates();
 
   const backgroundColor = useColor("background");
@@ -26,6 +29,22 @@ export default function ScheduledClassListScreen() {
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const iconColor = useColor("icon");
+
+  const selectedDayName = selectedDate.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
+  const filteredClasses = classes.filter(
+    (item) => item.day.toLowerCase() === selectedDayName.toLowerCase(),
+  );
+
+  if (loading) {
+    return (
+      <SafeAreaView style={[styles.screen, { backgroundColor }]}>
+        <Header title="My Schedule" showBack={false} />
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={[styles.screen, { backgroundColor }]}>
@@ -43,7 +62,7 @@ export default function ScheduledClassListScreen() {
         }
       />
       <FlatList
-        data={MOCK_UPCOMING_CLASS}
+        data={filteredClasses}
         keyExtractor={(_, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}

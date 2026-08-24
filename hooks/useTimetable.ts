@@ -1,10 +1,1 @@
-import { useState } from "react";
-
-export function useTimetable() {
-  const [classes, setClasses] = useState<any[]>([]);
-
-  return {
-    classes,
-    setClasses,
-  };
-}
+export { useTimetable } from "@/providers/timetable-context";
