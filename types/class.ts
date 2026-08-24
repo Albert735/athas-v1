@@ -2,9 +2,12 @@ export interface ScheduledClass {
   id: string;
   course: string;
   code: string;
-  time: string;
+  startTime: string;
+  endTime: string;
   room: string;
   building: string;
   lecturer: string;
   day: string;
+  repeatEnabled: boolean;
+  repeatType: string;
 }
