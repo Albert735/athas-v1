@@ -39,7 +39,7 @@ export function UpcomingClassCard({
       style={styles.container}
       onPress={() => {
         router.push({
-          pathname: "/(schedule)/[id]" as any,
+          pathname: "/(drawer)/(tabs)/(schedule)/[id]",
           params: { id },
         });
       }}

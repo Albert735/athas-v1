@@ -1,16 +1,16 @@
-import { Text, View, StyleSheet, Pressable } from "react-native";
-
+import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
-import { Clock, MapPin, Navigation, User } from "lucide-react-native";
+import { Clock, MapPin, Navigation, Pencil } from "lucide-react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { useTimetable } from "@/providers/timetable-context";
+import { Button } from "@/components/ui/button";
 
 export default function ScheduledClassDetails() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { classes, loading } = useTimetable();
+  const { classes, loading, deleteClass } = useTimetable();
 
   const selectedClass = classes.find((item) => item.id === id);
 
@@ -21,7 +21,19 @@ export default function ScheduledClassDetails() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
+  const iconColor = useColor("icon");
   const redColor = useColor("red");
+
+  const handleEdit = () => {
+    if (!id) {
+      return;
+    }
+
+    router.push({
+      pathname: "/(drawer)/(tabs)/(schedule)/[id]/edit",
+      params: { id },
+    });
+  };
 
   if (loading) {
     return (
@@ -41,6 +53,7 @@ export default function ScheduledClassDetails() {
         edges={["top", "bottom"]}
       >
         <Header title="Class Details" />
+
         <View style={styles.container}>
           <Text style={[styles.error, { color: redColor }]}>
             Class not found
@@ -50,17 +63,68 @@ export default function ScheduledClassDetails() {
     );
   }
 
+  const handleDelete = () => {
+    if (!selectedClass) {
+      return;
+    }
+
+    Alert.alert(
+      "Delete Class",
+      `Are you sure you want to delete ${selectedClass.course}?`,
+      [
+        {
+          text: "Cancel",
+          style: "cancel",
+        },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: async () => {
+            try {
+              await deleteClass(selectedClass.id);
+
+              router.replace(
+                "/(drawer)/(tabs)/(schedule)/scheduled-class-list",
+              );
+            } catch (error) {
+              console.error("Failed to delete class:", error);
+            }
+          },
+        },
+      ],
+    );
+  };
+
   return (
     <SafeAreaView
       style={[styles.screen, { backgroundColor }]}
       edges={["top", "bottom"]}
     >
-      <Header title="Class Details" />
+      <Header
+        title="Class Details"
+        rightAction={
+          <Pressable
+            onPress={handleEdit}
+            hitSlop={10}
+            style={({ pressed }) => ({
+              opacity: pressed ? 0.6 : 1,
+            })}
+          >
+            <Pencil size={20} color={iconColor} />
+          </Pressable>
+        }
+      />
 
       <View style={styles.container}>
         {/* Course Header */}
         <View
-          style={[styles.heroCard, { backgroundColor: cardColor, borderColor }]}
+          style={[
+            styles.heroCard,
+            {
+              backgroundColor: cardColor,
+              borderColor,
+            },
+          ]}
         >
           <Text style={[styles.course, { color: textColor }]}>
             {selectedClass.course}
@@ -70,15 +134,36 @@ export default function ScheduledClassDetails() {
             {selectedClass.code}
           </Text>
 
-          <View style={[styles.status, { backgroundColor: primaryColor }]}>
-            <Text style={[styles.statusText, { color: primaryForeground }]}>
+          <View
+            style={[
+              styles.status,
+              {
+                backgroundColor: primaryColor,
+              },
+            ]}
+          >
+            <Text
+              style={[
+                styles.statusText,
+                {
+                  color: primaryForeground,
+                },
+              ]}
+            >
               UPCOMING
             </Text>
           </View>
         </View>
 
         {/* Time */}
-        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+        <View
+          style={[
+            styles.infoCard,
+            {
+              backgroundColor: cardColor,
+            },
+          ]}
+        >
           <Clock size={22} color={primaryColor} />
 
           <View>
@@ -91,7 +176,14 @@ export default function ScheduledClassDetails() {
         </View>
 
         {/* Location */}
-        <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
+        <View
+          style={[
+            styles.infoCard,
+            {
+              backgroundColor: cardColor,
+            },
+          ]}
+        >
           <MapPin size={22} color={primaryColor} />
 
           <View>
@@ -103,40 +195,53 @@ export default function ScheduledClassDetails() {
           </View>
         </View>
 
-        {/* Lecturer */}
-        {/* {selectedClass.lecturer && (
-          <View style={[styles.infoCard, { backgroundColor: cardColor }]}>
-            <User size={22} color={primaryColor} />
-
-            <View>
-              <Text style={[styles.label, { color: textMuted }]}>Lecturer</Text>
-
-              <Text style={[styles.value, { color: textColor }]}>
-                {selectedClass.lecturer}
-              </Text>
-            </View>
-          </View>
-        )} */}
-
-        {/* Navigation Action */}
+        {/* Edit Action */}
         <Pressable
           onPress={() =>
             router.push({
-              pathname: "/(schedule)/[id]" as any,
-              params: { id },
+              pathname: "/(drawer)/(tabs)/(schedule)/[id]/edit",
+              params: { id: selectedClass.id },
             })
           }
           style={({ pressed }) => [
-            styles.navigateButton,
-            { backgroundColor: primaryColor, opacity: pressed ? 0.8 : 1 },
+            styles.editButton,
+            {
+              borderColor,
+              opacity: pressed ? 0.7 : 1,
+            },
           ]}
+        >
+          <Pencil size={20} color={textColor} />
+
+          <Text style={[styles.editText, { color: textColor }]}>
+            Edit Class
+          </Text>
+        </Pressable>
+
+        {/* Navigation Action */}
+        <Button
+          onPress={() => {
+            // Navigation flow will be connected to the map here.
+          }}
         >
           <Navigation size={20} color={primaryForeground} />
 
           <Text style={[styles.navigateText, { color: primaryForeground }]}>
             Navigate to Class
           </Text>
-        </Pressable>
+        </Button>
+
+        <Button onPress={handleDelete} style={{ backgroundColor: redColor }}>
+          <Text
+            style={{
+              color: primaryForeground,
+              fontSize: 15,
+              fontWeight: "600",
+            }}
+          >
+            Delete Class
+          </Text>
+        </Button>
       </View>
     </SafeAreaView>
   );
@@ -217,6 +322,36 @@ const styles = StyleSheet.create({
 
   error: {
     fontSize: 16,
+    fontWeight: "600",
+  },
+
+  editButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+
+  editText: {
+    fontSize: 15,
+    fontWeight: "600",
+  },
+
+  deleteButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 8,
+    padding: 14,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginTop: 10,
+  },
+
+  deleteText: {
+    fontSize: 15,
     fontWeight: "600",
   },
 });
