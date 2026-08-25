@@ -55,12 +55,20 @@ export default function AddClassScreen() {
       variant: "success",
     });
   };
-
   const onSubmit = async (data: AddClassData) => {
     try {
       const days = data.repeatEnabled
         ? data.selectedDays
-        : [data.selectedDays[0]];
+        : data.selectedDays.slice(0, 1);
+
+      if (days.length === 0) {
+        toast({
+          title: "Select a day",
+          description: "Please select at least one day for the class.",
+          variant: "error",
+        });
+        return;
+      }
 
       const newClasses: ScheduledClass[] = days.map((day) => ({
         id: `${Date.now()}-${day}-${Math.random().toString(36).slice(2, 8)}`,
@@ -68,8 +76,9 @@ export default function AddClassScreen() {
         code: data.courseCode.trim().toUpperCase(),
         startTime: data.startTime,
         endTime: data.endTime,
-        room: data.hall,
+        hall: data.hall,
         building: data.building,
+        lecturer: "",
         day,
         repeatEnabled: data.repeatEnabled,
         repeatType: data.repeatType,
@@ -90,7 +99,6 @@ export default function AddClassScreen() {
       });
     }
   };
-
   return (
     <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
       <Header title="Add Class" showBack />
