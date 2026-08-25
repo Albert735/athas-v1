@@ -48,74 +48,52 @@ export function TimetableProvider({ children }: { children: React.ReactNode }) {
 
   const persistClasses = useCallback(
     async (updatedClasses: ScheduledClass[]) => {
-      try {
-        await AsyncStorage.setItem(
-          TIMETABLE_STORAGE_KEY,
-          JSON.stringify(updatedClasses),
-        );
-      } catch (error) {
-        console.error("Failed to save timetable:", error);
-        throw error;
-      }
+      await AsyncStorage.setItem(
+        TIMETABLE_STORAGE_KEY,
+        JSON.stringify(updatedClasses),
+      );
     },
     [],
   );
 
   const addClass = useCallback(
     async (newClasses: ScheduledClass[]) => {
-      setClasses((currentClasses) => {
-        const updatedClasses = [...currentClasses, ...newClasses];
+      const updatedClasses = [...classes, ...newClasses];
 
-        persistClasses(updatedClasses).catch((error) => {
-          console.error("Failed to persist new classes:", error);
-        });
+      setClasses(updatedClasses);
 
-        return updatedClasses;
-      });
+      await persistClasses(updatedClasses);
     },
-    [persistClasses],
+    [classes, persistClasses],
   );
 
   const updateClass = useCallback(
     async (id: string, updates: Partial<ScheduledClass>) => {
-      setClasses((currentClasses) => {
-        const updatedClasses = currentClasses.map((item) =>
-          item.id === id ? { ...item, ...updates } : item,
-        );
+      const updatedClasses = classes.map((item) =>
+        item.id === id ? { ...item, ...updates } : item,
+      );
 
-        persistClasses(updatedClasses).catch((error) => {
-          console.error("Failed to persist updated class:", error);
-        });
+      setClasses(updatedClasses);
 
-        return updatedClasses;
-      });
+      await persistClasses(updatedClasses);
     },
-    [persistClasses],
+    [classes, persistClasses],
   );
 
   const deleteClass = useCallback(
     async (id: string) => {
-      setClasses((currentClasses) => {
-        const updatedClasses = currentClasses.filter((item) => item.id !== id);
+      const updatedClasses = classes.filter((item) => item.id !== id);
 
-        persistClasses(updatedClasses).catch((error) => {
-          console.error("Failed to persist deleted class:", error);
-        });
+      setClasses(updatedClasses);
 
-        return updatedClasses;
-      });
+      await persistClasses(updatedClasses);
     },
-    [persistClasses],
+    [classes, persistClasses],
   );
 
   const clearClasses = useCallback(async () => {
-    try {
-      await AsyncStorage.removeItem(TIMETABLE_STORAGE_KEY);
-      setClasses([]);
-    } catch (error) {
-      console.error("Failed to clear timetable:", error);
-      throw error;
-    }
+    await AsyncStorage.removeItem(TIMETABLE_STORAGE_KEY);
+    setClasses([]);
   }, []);
 
   const value = useMemo(

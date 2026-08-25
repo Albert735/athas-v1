@@ -78,7 +78,6 @@ export default function AddClassScreen() {
         endTime: data.endTime,
         hall: data.hall,
         building: data.building,
-        lecturer: "",
         day,
         repeatEnabled: data.repeatEnabled,
         repeatType: data.repeatType,
