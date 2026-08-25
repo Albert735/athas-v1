@@ -101,6 +101,15 @@ export default function ScheduledClassListScreen() {
         keyExtractor={(_, index) => index.toString()}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
+        ListEmptyComponent={
+          <View
+            style={[styles.noUpcomingClasses, { backgroundColor: cardColor }]}
+          >
+            <Text style={[styles.noUpcomingClassesText, { color: mutedColor }]}>
+              No more classes for this day
+            </Text>
+          </View>
+        }
         ListHeaderComponent={
           <>
             {/* Date Row */}
@@ -172,11 +181,9 @@ export default function ScheduledClassListScreen() {
 
             {/* Upcoming Header */}
             <View style={styles.upcomingHeader}>
-              <TouchableOpacity>
-                <Text style={[styles.seeAllText, { color: mutedColor }]}>
-                  See All
-                </Text>
-              </TouchableOpacity>
+              <Text style={[styles.sectionTitle, { color: textColor }]}>
+                Upcoming Classes
+              </Text>
             </View>
           </>
         }
@@ -217,9 +224,10 @@ const styles = StyleSheet.create({
   },
   upcomingHeader: {
     flexDirection: "row",
-    justifyContent: "flex-end",
+    justifyContent: "flex-start",
     alignItems: "center",
     marginTop: 24,
+    paddingBottom: 10,
   },
   seeAllText: {
     fontSize: 14,
@@ -258,6 +266,14 @@ const styles = StyleSheet.create({
   },
 
   noActiveClassText: {
+    fontSize: 14,
+  },
+  noUpcomingClasses: {
+    padding: 16,
+    borderRadius: 16,
+    alignItems: "center",
+  },
+  noUpcomingClassesText: {
     fontSize: 14,
   },
 });
