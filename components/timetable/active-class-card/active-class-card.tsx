@@ -30,7 +30,7 @@ export function ActiveClassCard({ class: activeClass }: ActiveClassCardProps) {
         <View style={[styles.row, { backgroundColor }]}>
           <DoorOpen size={18} color={iconColor} />
           <Text style={[styles.meta, { color: textColor }]}>
-            {activeClass.room}
+            {activeClass.hall}
           </Text>
         </View>
 

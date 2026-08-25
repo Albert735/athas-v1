@@ -24,7 +24,7 @@ export function UpcomingClassCard({
   course,
   startTime,
   endTime,
-  room,
+  hall,
   building,
   onNavigate,
 }: UpcomingClassCardProps) {
@@ -68,7 +68,7 @@ export function UpcomingClassCard({
           <View style={styles.locationContainer}>
             <MapPin size={14} color={iconColor} />
             <Text style={[styles.location, { color: mutedColor }]}>
-              {room} • {building}
+              {hall} • {building}
             </Text>
           </View>
         </View>
