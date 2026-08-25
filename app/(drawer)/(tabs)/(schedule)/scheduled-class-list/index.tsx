@@ -59,9 +59,19 @@ export default function ScheduledClassListScreen() {
     weekday: "long",
   });
 
-  const filteredClasses = classes.filter(
-    (item) => item.day.toLowerCase() === selectedDayName.toLowerCase(),
-  );
+  const filteredClasses = classes.filter((item) => {
+    if (item.day.toLowerCase() !== selectedDayName.toLowerCase()) {
+      return false;
+    }
+
+    if (item.day.toLowerCase() !== currentDay.toLowerCase()) {
+      return true;
+    }
+
+    const endMinutes = getTimeInMinutes(item.endTime);
+
+    return endMinutes > currentMinutes;
+  });
 
   if (loading) {
     return (
