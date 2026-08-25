@@ -3,14 +3,13 @@ import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { DoorOpen, School, Navigation } from "lucide-react-native";
 import { router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
+import type { ScheduledClass } from "@/types/class";
 
-/**
- * ActiveClassCard Component
- *
- * Featured card displayed at the top of the schedule page for the current/ongoing lecture.
- * Displays active class time, course name, room, building, and a one-tap navigation launcher.
- */
-export function ActiveClassCard() {
+interface ActiveClassCardProps {
+  class: ScheduledClass;
+}
+
+export function ActiveClassCard({ class: activeClass }: ActiveClassCardProps) {
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
@@ -20,29 +19,42 @@ export function ActiveClassCard() {
   return (
     <View style={[styles.container, { backgroundColor: cardColor }]}>
       <Text style={[styles.time, { color: mutedColor }]}>
-        9:30 AM - 11:20 AM
+        {activeClass.startTime} - {activeClass.endTime}
       </Text>
 
       <Text style={[styles.title, { color: textColor }]}>
-        Advanced Web Programming
+        {activeClass.course}
       </Text>
 
       <View style={styles.footer}>
         <View style={[styles.row, { backgroundColor }]}>
           <DoorOpen size={18} color={iconColor} />
-          <Text style={[styles.meta, { color: textColor }]}>Room 2</Text>
+          <Text style={[styles.meta, { color: textColor }]}>
+            {activeClass.room}
+          </Text>
         </View>
 
         <View style={[styles.row, { backgroundColor }]}>
           <School size={18} color={iconColor} />
-          <Text style={[styles.meta, { color: textColor }]}>NNB</Text>
+          <Text style={[styles.meta, { color: textColor }]}>
+            {activeClass.building}
+          </Text>
         </View>
       </View>
 
       <TouchableOpacity
         style={styles.navButton}
         activeOpacity={0.85}
-        onPress={() => router.push("/(drawer)/(tabs)/(map)")}
+        onPress={() =>
+          router.push({
+            pathname: "/map",
+            params: {
+              latitude: 6.514575797730119,
+              longitude: -1.5747159259048997,
+              name: activeClass.building,
+            },
+          })
+        }
       >
         <Navigation size={16} color="#FFFFFF" />
         <Text style={styles.navButtonText}>Start Navigation</Text>

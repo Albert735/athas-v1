@@ -22,6 +22,31 @@ export default function ScheduledClassListScreen() {
 
   const { classes, loading } = useTimetable();
 
+  const getTimeInMinutes = (time: string) => {
+    const [hours, minutes] = time.split(":").map(Number);
+
+    return hours * 60 + minutes;
+  };
+
+  const now = new Date();
+
+  const currentDay = now.toLocaleDateString("en-US", {
+    weekday: "long",
+  });
+
+  const currentMinutes = now.getHours() * 60 + now.getMinutes();
+
+  const activeClass = classes.find((item) => {
+    if (item.day.toLowerCase() !== currentDay.toLowerCase()) {
+      return false;
+    }
+
+    const startMinutes = getTimeInMinutes(item.startTime);
+    const endMinutes = getTimeInMinutes(item.endTime);
+
+    return currentMinutes >= startMinutes && currentMinutes < endMinutes;
+  });
+
   const weekDates = getWeekDates();
 
   const backgroundColor = useColor("background");
@@ -120,7 +145,19 @@ export default function ScheduledClassListScreen() {
                   </View>
                 </Badge>
               </View>
-              <ActiveClassCard />
+              {activeClass ? (
+                <ActiveClassCard class={activeClass} />
+              ) : (
+                <View
+                  style={[styles.noActiveClass, { backgroundColor: cardColor }]}
+                >
+                  <Text
+                    style={[styles.noActiveClassText, { color: mutedColor }]}
+                  >
+                    No class is currently ongoing
+                  </Text>
+                </View>
+              )}
             </View>
 
             {/* Upcoming Header */}
@@ -203,5 +240,14 @@ const styles = StyleSheet.create({
   date: {
     fontSize: 14,
     fontWeight: "600",
+  },
+  noActiveClass: {
+    padding: 20,
+    borderRadius: 20,
+    alignItems: "center",
+  },
+
+  noActiveClassText: {
+    fontSize: 14,
   },
 });
