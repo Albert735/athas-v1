@@ -39,8 +39,8 @@ export function UpcomingClassCard({
       style={styles.container}
       onPress={() => {
         router.push({
-          pathname: "/(schedule)/[Id]" as any,
-          params: { Id: id },
+          pathname: "/(schedule)/[id]" as any,
+          params: { id },
         });
       }}
     >

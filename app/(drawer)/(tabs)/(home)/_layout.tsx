@@ -5,7 +5,7 @@ export default function HomeLayout() {
     <Stack screenOptions={{ headerShown: false }}>
       <Stack.Screen name="index" />
       <Stack.Screen name="popular-places/index" />
-      <Stack.Screen
+      {/* <Stack.Screen
         name="place-sheet"
         options={{
           presentation: "formSheet",
@@ -14,7 +14,7 @@ export default function HomeLayout() {
           sheetInitialDetentIndex: 0,
           sheetGrabberVisible: true,
         }}
-      />
+      /> */}
     </Stack>
   );
 }
