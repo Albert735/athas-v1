@@ -98,7 +98,7 @@ export default function ScheduledClassDetails() {
             <Text style={[styles.label, { color: textMuted }]}>Location</Text>
 
             <Text style={[styles.value, { color: textColor }]}>
-              {selectedClass.room} • {selectedClass.building}
+              {selectedClass.hall} • {selectedClass.building}
             </Text>
           </View>
         </View>
