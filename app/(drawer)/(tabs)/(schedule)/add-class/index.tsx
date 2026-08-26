@@ -30,6 +30,7 @@ export default function AddClassScreen() {
   const { addClass } = useTimetable();
 
   const [selectedBuilding, setSelectedBuilding] = useState<{
+    id: string;
     name: string;
     latitude: number;
     longitude: number;
@@ -101,6 +102,8 @@ export default function AddClassScreen() {
 
         building: selectedBuilding.name,
 
+        buildingId: selectedBuilding.id,
+
         buildingLatitude: selectedBuilding.latitude,
 
         buildingLongitude: selectedBuilding.longitude,
@@ -111,7 +114,6 @@ export default function AddClassScreen() {
 
         repeatType: data.repeatType,
       }));
-
       await addClass(newClasses);
 
       showToast();
@@ -150,7 +152,21 @@ export default function AddClassScreen() {
             </View>
 
             <AddClassForm
-              onBuildingSelect={setSelectedBuilding}
+              onBuildingSelect={(place) => {
+                if (!place) {
+                  setSelectedBuilding(null);
+                  return;
+                }
+
+                const existing = selectedBuilding?.name.trim().toLowerCase();
+                const selected = place.name.trim().toLowerCase();
+
+                if (existing === selected) {
+                  return;
+                }
+
+                setSelectedBuilding(place);
+              }}
               control={control}
             />
             <DaySelector control={control} />

@@ -21,11 +21,14 @@ import { useState } from "react";
 
 interface Props {
   control: Control<AddClassData>;
-  onBuildingSelect: (place: {
-    name: string;
-    latitude: number;
-    longitude: number;
-  }) => void;
+  onBuildingSelect: (
+    place: {
+      id: string;
+      name: string;
+      latitude: number;
+      longitude: number;
+    } | null,
+  ) => void;
 }
 
 export function AddClassForm({ control, onBuildingSelect }: Props) {
@@ -49,6 +52,7 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
     setBuildingQuery(place.name);
 
     onBuildingSelect({
+      id: place.id,
       name: place.name,
       latitude: place.latitude,
       longitude: place.longitude,
@@ -129,6 +133,8 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
                 onSearch={(query) => {
                   setBuildingQuery(query);
                   onChange(query);
+
+                  onBuildingSelect(null);
                 }}
                 loading={false}
                 rightIcon={<Mic size={18} color={icon} />}

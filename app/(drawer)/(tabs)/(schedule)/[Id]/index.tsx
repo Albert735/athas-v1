@@ -220,9 +220,15 @@ export default function ScheduledClassDetails() {
 
         {/* Navigation Action */}
         <Button
-          onPress={() => {
-            // Navigation flow will be connected to the map here.
-          }}
+          onPress={() =>
+            router.push({
+              pathname: "/map",
+              params: {
+                buildingId: selectedClass.buildingId,
+                source: "home",
+              },
+            })
+          }
         >
           <Navigation size={20} color={primaryForeground} />
 

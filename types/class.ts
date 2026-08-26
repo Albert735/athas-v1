@@ -6,6 +6,7 @@ export interface ScheduledClass {
   endTime: string;
   hall: string;
   building: string;
+  buildingId: string;
   buildingLatitude: number;
   buildingLongitude: number;
   day: string;

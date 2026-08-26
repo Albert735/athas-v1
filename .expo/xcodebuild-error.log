@@ -1,0 +1,6 @@
+2026-08-26 00:41:11.509 xcodebuild[49041:759675] Writing error result bundle to /var/folders/zz/p880ksq54wv9dykx30y70dp40000gn/T/ResultBundle_2026-26-08_12-41-0011 AM.xcresult
+xcodebuild: error: Timed out waiting for all destinations matching the provided destination specifier to become available
+
+
+	Ineligible destinations for the "Athas" scheme:
+		{ platform:iOS, arch:arm64, id:00008110-000864E61198401E, name:Jaytee's iPhone, error:Device is busy (Connecting to Jaytee's iPhone) }
