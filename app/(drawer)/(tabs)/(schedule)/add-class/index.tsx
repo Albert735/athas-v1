@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   StyleSheet,
@@ -28,6 +28,12 @@ export default function AddClassScreen() {
   const mutedColor = useColor("textMuted");
   const { toast } = useToast();
   const { addClass } = useTimetable();
+
+  const [selectedBuilding, setSelectedBuilding] = useState<{
+    name: string;
+    latitude: number;
+    longitude: number;
+  } | null>(null);
 
   const {
     control,
@@ -78,6 +84,8 @@ export default function AddClassScreen() {
         endTime: data.endTime,
         hall: data.hall,
         building: data.building,
+        buildingLatitude: selectedBuilding?.latitude ?? 0,
+        buildingLongitude: selectedBuilding?.longitude ?? 0,
         day,
         repeatEnabled: data.repeatEnabled,
         repeatType: data.repeatType,
@@ -98,6 +106,7 @@ export default function AddClassScreen() {
       });
     }
   };
+
   return (
     <SafeAreaView style={styles.screen} edges={["top", "bottom"]}>
       <Header title="Add Class" showBack />
