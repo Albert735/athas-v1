@@ -76,18 +76,39 @@ export default function AddClassScreen() {
         return;
       }
 
+      if (!selectedBuilding) {
+        toast({
+          title: "Select a building",
+          description:
+            "Please search for and select the building where the class will be held.",
+          variant: "error",
+        });
+        return;
+      }
+
       const newClasses: ScheduledClass[] = days.map((day) => ({
         id: `${Date.now()}-${day}-${Math.random().toString(36).slice(2, 8)}`,
+
         course: data.courseName.trim(),
+
         code: data.courseCode.trim().toUpperCase(),
+
         startTime: data.startTime,
+
         endTime: data.endTime,
+
         hall: data.hall,
-        building: data.building,
-        buildingLatitude: selectedBuilding?.latitude ?? 0,
-        buildingLongitude: selectedBuilding?.longitude ?? 0,
+
+        building: selectedBuilding.name,
+
+        buildingLatitude: selectedBuilding.latitude,
+
+        buildingLongitude: selectedBuilding.longitude,
+
         day,
+
         repeatEnabled: data.repeatEnabled,
+
         repeatType: data.repeatType,
       }));
 
@@ -128,7 +149,10 @@ export default function AddClassScreen() {
               <Text variant="subtitle">Build your Academic{"\n"}Schedule</Text>
             </View>
 
-            <AddClassForm control={control} />
+            <AddClassForm
+              onBuildingSelect={setSelectedBuilding}
+              control={control}
+            />
             <DaySelector control={control} />
 
             <Button
