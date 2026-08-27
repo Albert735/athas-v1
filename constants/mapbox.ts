@@ -12,4 +12,5 @@ if (!process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN) {
 export const MAPBOX_PUBLIC_TOKEN =
   process.env.EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN ?? "";
 
-export const MAP_STYLE_URL = "mapbox://styles/mapbox/streets-v12";
+export const MAP_STYLE_LIGHT = "mapbox://styles/mapbox/streets-v12";
+export const MAP_STYLE_DARK = "mapbox://styles/mapbox/dark-v11";

@@ -3,7 +3,8 @@ import { StyleSheet, View } from "react-native";
 import MapboxGL from "@rnmapbox/maps";
 
 import { places } from "@/data/places";
-import { MAP_STYLE_URL } from "@/constants/mapbox";
+import { MAP_STYLE_LIGHT, MAP_STYLE_DARK } from "@/constants/mapbox";
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 type Place = (typeof places)[number];
 
@@ -16,10 +17,13 @@ export type CameraRef = MapboxGL.Camera;
 
 const HomeMap = forwardRef<CameraRef, Props>(
   ({ selectedPlace, onAnnotationPress }, ref) => {
+    const theme = useColorScheme() ?? "light";
+
+    const mapStyle = theme === "dark" ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
     return (
       <MapboxGL.MapView
         style={styles.map}
-        styleURL={MAP_STYLE_URL}
+        styleURL={mapStyle}
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled={false}

@@ -14,7 +14,7 @@ import { Mic } from "lucide-react-native";
 
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
-import { MAP_STYLE_URL } from "@/constants/mapbox";
+import { MAP_STYLE_LIGHT, MAP_STYLE_DARK } from "@/constants/mapbox";
 
 import { useUserLocation } from "@/hooks/useUserLocation";
 
@@ -25,6 +25,8 @@ import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
 
 import type { SheetState, TransportProfile } from "@/types/map";
+
+import { useColorScheme } from "@/hooks/useColorScheme";
 
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
@@ -38,6 +40,9 @@ type CameraMode = "normal" | "route" | "navigation";
 export default function Map() {
   const icon = useColor("icon");
   const primaryColor = useColor("primary");
+  const theme = useColorScheme() ?? "light";
+
+  const mapStyle = theme === "dark" ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
 
   const {
     building,
@@ -423,7 +428,7 @@ export default function Map() {
     <View style={styles.root}>
       <MapboxGL.MapView
         style={styles.map}
-        styleURL={MAP_STYLE_URL}
+        styleURL={mapStyle}
         logoEnabled={false}
         attributionEnabled={false}
         compassEnabled={false}
