@@ -39,8 +39,15 @@ export default function Map() {
   const icon = useColor("icon");
   const primaryColor = useColor("primary");
 
-  const { buildingId, source = "external" } = useLocalSearchParams<{
-    buildingId?: string;
+  const {
+    building,
+    latitude,
+    longitude,
+    source = "external",
+  } = useLocalSearchParams<{
+    building?: string;
+    latitude?: string;
+    longitude?: string;
     source?: string;
   }>();
 
@@ -301,17 +308,41 @@ export default function Map() {
    *   Home → Map → Directions
    */
   useEffect(() => {
-    if (!buildingId) {
+    if (!building || !latitude || !longitude) {
       return;
     }
 
-    const found = places.find((place) => place.id === buildingId);
+    const lat = Number(latitude);
+    const lng = Number(longitude);
+
+    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
+      console.warn("Invalid building coordinates:", {
+        building,
+        latitude,
+        longitude,
+      });
+
+      return;
+    }
+
+    const found = places.find(
+      (place) =>
+        place.name.trim().toLowerCase() === building.trim().toLowerCase(),
+    );
 
     if (!found) {
+      console.warn("Building not found in places:", building);
       return;
     }
 
-    setSelectedPlace(found);
+    const destination: Place = {
+      ...found,
+      name: building,
+      latitude: lat,
+      longitude: lng,
+    };
+
+    setSelectedPlace(destination);
 
     setRoute(null);
     setRouteLoading(false);
@@ -321,19 +352,14 @@ export default function Map() {
 
     if (source === "home") {
       setSheetState("directions");
-
-      requestAnimationFrame(() => {
-        focusPlace(found);
-      });
     } else {
       setSheetState("details");
-
-      requestAnimationFrame(() => {
-        focusPlace(found);
-      });
     }
-  }, [buildingId, source, focusPlace]);
 
+    requestAnimationFrame(() => {
+      focusPlace(destination);
+    });
+  }, [building, latitude, longitude, source, focusPlace]);
   /*
    * Home → Directions.
    *

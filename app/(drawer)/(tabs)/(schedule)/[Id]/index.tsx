@@ -196,7 +196,7 @@ export default function ScheduledClassDetails() {
         </View>
 
         {/* Edit Action */}
-        <Pressable
+        {/* <Pressable
           onPress={() =>
             router.push({
               pathname: "/(drawer)/(tabs)/(schedule)/[id]/edit",
@@ -216,7 +216,7 @@ export default function ScheduledClassDetails() {
           <Text style={[styles.editText, { color: textColor }]}>
             Edit Class
           </Text>
-        </Pressable>
+        </Pressable> */}
 
         {/* Navigation Action */}
         <Button
@@ -225,7 +225,9 @@ export default function ScheduledClassDetails() {
             router.push({
               pathname: "/map",
               params: {
-                buildingId: selectedClass.buildingId,
+                building: selectedClass.building,
+                latitude: String(selectedClass.buildingLatitude),
+                longitude: String(selectedClass.buildingLongitude),
                 source: "home",
               },
             })
