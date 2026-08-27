@@ -225,9 +225,7 @@ export default function ScheduledClassDetails() {
             router.push({
               pathname: "/map",
               params: {
-                building: selectedClass.building,
-                latitude: String(selectedClass.buildingLatitude),
-                longitude: String(selectedClass.buildingLongitude),
+                buildingId: selectedClass.buildingId,
                 source: "home",
               },
             })

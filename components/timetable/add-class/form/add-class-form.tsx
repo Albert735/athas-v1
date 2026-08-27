@@ -21,7 +21,7 @@ import { useState } from "react";
 
 interface Props {
   control: Control<AddClassData>;
-  onBuildingSelect?: (
+  onBuildingSelect: (
     place: {
       id: string;
       name: string;

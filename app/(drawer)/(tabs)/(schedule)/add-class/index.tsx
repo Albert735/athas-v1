@@ -100,12 +100,10 @@ export default function AddClassScreen() {
 
         hall: data.hall,
 
+        buildingId: selectedBuilding.id,
         building: selectedBuilding.name,
 
-        buildingId: selectedBuilding.id,
-
         buildingLatitude: selectedBuilding.latitude,
-
         buildingLongitude: selectedBuilding.longitude,
 
         day,

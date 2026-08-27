@@ -44,15 +44,8 @@ export default function Map() {
 
   const mapStyle = theme === "dark" ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
 
-  const {
-    building,
-    latitude,
-    longitude,
-    source = "external",
-  } = useLocalSearchParams<{
-    building?: string;
-    latitude?: string;
-    longitude?: string;
+  const { buildingId, source = "external" } = useLocalSearchParams<{
+    buildingId?: string;
     source?: string;
   }>();
 
@@ -313,41 +306,18 @@ export default function Map() {
    *   Home → Map → Directions
    */
   useEffect(() => {
-    if (!building || !latitude || !longitude) {
+    if (!buildingId) {
       return;
     }
 
-    const lat = Number(latitude);
-    const lng = Number(longitude);
-
-    if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-      console.warn("Invalid building coordinates:", {
-        building,
-        latitude,
-        longitude,
-      });
-
-      return;
-    }
-
-    const found = places.find(
-      (place) =>
-        place.name.trim().toLowerCase() === building.trim().toLowerCase(),
-    );
+    const found = places.find((place) => place.id === buildingId);
 
     if (!found) {
-      console.warn("Building not found in places:", building);
+      console.warn("Building not found in places:", buildingId);
       return;
     }
 
-    const destination: Place = {
-      ...found,
-      name: building,
-      latitude: lat,
-      longitude: lng,
-    };
-
-    setSelectedPlace(destination);
+    setSelectedPlace(found);
 
     setRoute(null);
     setRouteLoading(false);
@@ -362,9 +332,9 @@ export default function Map() {
     }
 
     requestAnimationFrame(() => {
-      focusPlace(destination);
+      focusPlace(found);
     });
-  }, [building, latitude, longitude, source, focusPlace]);
+  }, [buildingId, source, focusPlace]);
   /*
    * Home → Directions.
    *
