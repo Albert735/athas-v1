@@ -220,6 +220,7 @@ export default function ScheduledClassDetails() {
 
         {/* Navigation Action */}
         <Button
+          icon={Navigation}
           onPress={() =>
             router.push({
               pathname: "/map",
@@ -230,23 +231,11 @@ export default function ScheduledClassDetails() {
             })
           }
         >
-          <Navigation size={20} color={primaryForeground} />
-
-          <Text style={[styles.navigateText, { color: primaryForeground }]}>
-            Navigate to Class
-          </Text>
+          Navigate to Class
         </Button>
 
         <Button onPress={handleDelete} style={{ backgroundColor: redColor }}>
-          <Text
-            style={{
-              color: primaryForeground,
-              fontSize: 15,
-              fontWeight: "600",
-            }}
-          >
-            Delete Class
-          </Text>
+          Delete Class
         </Button>
       </View>
     </SafeAreaView>
