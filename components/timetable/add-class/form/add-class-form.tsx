@@ -1,7 +1,14 @@
-import { View, Text, StyleSheet, TextInput } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Image,
+  Pressable,
+} from "react-native";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
-import { Mic, MapPinned } from "lucide-react-native";
+import { Mic, MapPin, X } from "lucide-react-native";
 import {
   Combobox,
   ComboboxTrigger,
@@ -19,9 +26,19 @@ import { usePlaceSearch } from "@/hooks/usePlaceSearch";
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import { useState } from "react";
 
+interface Place {
+  id: string;
+  name: string;
+  latitude: number;
+  longitude: number;
+  category: string;
+  distance: string;
+  image?: string;
+}
+
 interface Props {
   control: Control<AddClassData>;
-  onBuildingSelect: (
+  onBuildingSelect?: (
     place: {
       id: string;
       name: string;
@@ -37,10 +54,12 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const borderColor = useColor("border");
+  const cardColor = useColor("card");
 
   const { errors } = useFormState({ control });
 
   const [buildingQuery, setBuildingQuery] = useState("");
+  const [selectedBuilding, setSelectedBuilding] = useState<Place | null>(null);
 
   const searchResults = usePlaceSearch(buildingQuery);
 
@@ -48,8 +67,9 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
     ["lecture-hall", "lab", "library", "office"].includes(place.category),
   );
 
-  const handleBuildingSelect = (place: (typeof searchResults)[number]) => {
-    setBuildingQuery(place.name);
+  const handleBuildingSelect = (place: Place) => {
+    setSelectedBuilding(place);
+    setBuildingQuery("");
 
     onBuildingSelect?.({
       id: place.id,
@@ -57,6 +77,13 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
       latitude: place.latitude,
       longitude: place.longitude,
     });
+  };
+
+  const handleClearBuilding = (onChange: (value: string) => void) => {
+    setSelectedBuilding(null);
+    setBuildingQuery("");
+    onChange("");
+    onBuildingSelect?.(null);
   };
 
   return (
@@ -72,7 +99,11 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
             <TextInput
               style={[
                 styles.input,
-                { backgroundColor, color: textColor, borderColor },
+                {
+                  backgroundColor,
+                  color: textColor,
+                  borderColor,
+                },
                 errors.courseName && styles.inputError,
               ]}
               placeholder="e.g. Mathematics"
@@ -101,7 +132,11 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
             <TextInput
               style={[
                 styles.input,
-                { backgroundColor, color: textColor, borderColor },
+                {
+                  backgroundColor,
+                  color: textColor,
+                  borderColor,
+                },
                 errors.courseCode && styles.inputError,
               ]}
               placeholder="e.g. MATH 101"
@@ -128,39 +163,124 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
           name="building"
           render={({ field: { onChange, value } }) => (
             <>
-              <SearchBar
-                placeholder="Search for a building..."
-                onSearch={(query) => {
-                  setBuildingQuery(query);
-                  onChange(query);
+              {!selectedBuilding ? (
+                <>
+                  <SearchBar
+                    placeholder="Search for a building..."
+                    value={buildingQuery}
+                    onChangeText={(text) => {
+                      setBuildingQuery(text);
+                    }}
+                    onFocus={() => {
+                      if (value) {
+                        onChange("");
+                        onBuildingSelect?.(null);
+                      }
+                    }}
+                    onSearch={(query) => {
+                      setBuildingQuery(query);
+                    }}
+                    loading={false}
+                    rightIcon={<Mic size={18} color={icon} />}
+                  />
 
-                  onBuildingSelect?.(null);
-                }}
-                loading={false}
-                rightIcon={<Mic size={18} color={icon} />}
-              />
+                  {buildingQuery.trim().length > 0 && (
+                    <PlaceSearchDropdown
+                      visible={true}
+                      results={buildingResults}
+                      onSelect={(place) => {
+                        onChange(place.name);
+                        handleBuildingSelect(place);
+                      }}
+                    />
+                  )}
+                </>
+              ) : (
+                <View
+                  style={[
+                    styles.selectedBuildingCard,
+                    {
+                      backgroundColor: cardColor,
+                      borderColor,
+                    },
+                  ]}
+                >
+                  {selectedBuilding.image ? (
+                    <Image
+                      source={{ uri: selectedBuilding.image }}
+                      style={styles.buildingImage}
+                      resizeMode="cover"
+                    />
+                  ) : (
+                    <View
+                      style={[
+                        styles.buildingImageFallback,
+                        { backgroundColor },
+                      ]}
+                    >
+                      <MapPin size={24} color={icon} />
+                    </View>
+                  )}
 
-              {buildingQuery.trim().length > 0 && (
-                <PlaceSearchDropdown
-                  visible={true}
-                  results={buildingResults}
-                  onSelect={(place) => {
-                    onChange(place.name);
-                    handleBuildingSelect(place);
-                  }}
-                />
+                  <View style={styles.selectedBuildingContent}>
+                    <Text
+                      style={[styles.buildingName, { color: textColor }]}
+                      numberOfLines={1}
+                    >
+                      {selectedBuilding.name}
+                    </Text>
+
+                    <Text
+                      style={[styles.buildingSubtitle, { color: mutedColor }]}
+                    >
+                      {selectedBuilding.category
+                        .replace("-", " ")
+                        .replace(/\b\w/g, (letter) => letter.toUpperCase())}
+                    </Text>
+
+                    <View style={styles.locationRow}>
+                      <MapPin size={13} color={mutedColor} />
+
+                      <Text
+                        style={[styles.locationText, { color: mutedColor }]}
+                      >
+                        Building selected
+                      </Text>
+                    </View>
+                  </View>
+
+                  <Pressable
+                    style={[styles.clearBuildingButton, { backgroundColor }]}
+                    onPress={() => handleClearBuilding(onChange)}
+                  >
+                    <X size={16} color={mutedColor} />
+                  </Pressable>
+                </View>
               )}
 
               {errors.building && (
                 <Text style={styles.errorText}>{errors.building.message}</Text>
               )}
 
-              {value ? (
-                <View style={styles.selectedBuilding}>
-                  <MapPinned size={18} color={icon} />
+              {value && !selectedBuilding ? (
+                <View
+                  style={[
+                    styles.selectedBuildingFallback,
+                    {
+                      backgroundColor: cardColor,
+                      borderColor,
+                    },
+                  ]}
+                >
+                  <View style={[styles.fallbackIcon, { backgroundColor }]}>
+                    <MapPin size={18} color={icon} />
+                  </View>
 
                   <View style={styles.selectedBuildingText}>
-                    <Text style={[styles.buildingName, { color: textColor }]}>
+                    <Text
+                      style={[styles.buildingName, { color: textColor }]}
+                      numberOfLines={1}
+                    >
                       {value}
                     </Text>
 
@@ -170,6 +290,13 @@ export function AddClassForm({ control, onBuildingSelect }: Props) {
                       Selected building
                     </Text>
                   </View>
+
+                  <Pressable
+                    style={[styles.clearBuildingButton, { backgroundColor }]}
+                    onPress={() => handleClearBuilding(onChange)}
+                  >
+                    <X size={16} color={mutedColor} />
+                  </Pressable>
                 </View>
               ) : null}
             </>
@@ -250,17 +377,33 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
 
-  selectedBuilding: {
+  selectedBuildingCard: {
+    minHeight: 82,
     flexDirection: "row",
     alignItems: "center",
-    gap: 10,
-    paddingHorizontal: 14,
-    paddingVertical: 12,
+    gap: 12,
+    padding: 10,
     borderRadius: 16,
+    borderWidth: 1,
   },
 
-  selectedBuildingText: {
+  buildingImage: {
+    width: 62,
+    height: 62,
+    borderRadius: 12,
+  },
+
+  buildingImageFallback: {
+    width: 62,
+    height: 62,
+    borderRadius: 12,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  selectedBuildingContent: {
     flex: 1,
+    minWidth: 0,
   },
 
   buildingName: {
@@ -270,6 +413,48 @@ const styles = StyleSheet.create({
 
   buildingSubtitle: {
     fontSize: 12,
-    marginTop: 2,
+    marginTop: 3,
+  },
+
+  locationRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    marginTop: 5,
+  },
+
+  locationText: {
+    fontSize: 11,
+  },
+
+  clearBuildingButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  selectedBuildingFallback: {
+    minHeight: 62,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 10,
+    borderRadius: 16,
+    borderWidth: 1,
+  },
+
+  fallbackIcon: {
+    width: 42,
+    height: 42,
+    borderRadius: 11,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+
+  selectedBuildingText: {
+    flex: 1,
+    minWidth: 0,
   },
 });

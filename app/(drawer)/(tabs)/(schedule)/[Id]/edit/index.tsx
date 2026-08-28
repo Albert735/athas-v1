@@ -159,7 +159,7 @@ export default function EditClassScreen() {
               <Text variant="subtitle">Edit your Academic{"\n"}Schedule</Text>
             </View>
 
-            <AddClassForm control={control} />
+            <AddClassForm control={control} onBuildingSelect={() => {}} />
 
             <DaySelector control={control} />
 
