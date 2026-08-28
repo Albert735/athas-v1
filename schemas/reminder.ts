@@ -1,15 +1,13 @@
 import { z } from "zod";
 
 export const reminderSchema = z.object({
-  note: z.string().min(1, "Please enter a reminder note"),
-
-  placeId: z.string().min(1, "Please select a location"),
+  note: z.string().trim().min(1, "Please enter a reminder note"),
 
   building: z.string().min(1, "Please select a location"),
 
-  buildingLatitude: z.number(),
+  latitude: z.number(),
 
-  buildingLongitude: z.number(),
+  longitude: z.number(),
 
   dateTime: z.date({
     message: "Please select a date and time",

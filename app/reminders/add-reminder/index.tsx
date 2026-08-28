@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";
-import { Bell, MapPin, Mic, Check } from "lucide-react-native";
+import { Bell, MapPin, Mic, Check, X } from "lucide-react-native";
 import { useState } from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -27,7 +27,6 @@ import { places } from "@/data/places";
 type Place = (typeof places)[number];
 
 export default function AddReminderScreen() {
-  const icon = useColor("icon");
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const textMuted = useColor("textMuted");
@@ -35,12 +34,12 @@ export default function AddReminderScreen() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
+  const iconColor = useColor("icon");
 
   const { toast } = useToast();
   const { addReminder } = useReminders();
 
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchFocused, setSearchFocused] = useState(false);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   const {
@@ -52,10 +51,9 @@ export default function AddReminderScreen() {
     resolver: zodResolver(reminderSchema),
     defaultValues: {
       note: "",
-      placeId: "",
       building: "",
-      buildingLatitude: 0,
-      buildingLongitude: 0,
+      latitude: 0,
+      longitude: 0,
       dateTime: undefined,
       alertNearby: true,
     },
@@ -68,31 +66,36 @@ export default function AddReminderScreen() {
         )
       : [];
 
-  const handleSelectPlace = (place: Place) => {
+  const selectPlace = (place: Place) => {
     setSelectedPlace(place);
-
-    setValue("placeId", place.id, {
-      shouldValidate: true,
-    });
+    setSearchQuery("");
 
     setValue("building", place.name, {
       shouldValidate: true,
     });
 
-    setValue("buildingLatitude", place.latitude);
+    setValue("latitude", place.latitude);
+    setValue("longitude", place.longitude);
+  };
 
-    setValue("buildingLongitude", place.longitude);
-
+  const clearPlace = () => {
+    setSelectedPlace(null);
     setSearchQuery("");
-    setSearchFocused(false);
+
+    setValue("building", "", {
+      shouldValidate: true,
+    });
+
+    setValue("latitude", 0);
+    setValue("longitude", 0);
   };
 
   const onSubmit = async (data: ReminderFormData) => {
-    await addReminder(data);
+    addReminder(data);
 
     toast({
-      title: "Success!",
-      description: "Reminder has been created successfully!",
+      title: "Reminder created",
+      description: "Your reminder has been added successfully.",
       variant: "success",
     });
 
@@ -105,21 +108,21 @@ export default function AddReminderScreen() {
 
       <ScrollView
         style={styles.scroll}
+        contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={styles.scrollContent}
       >
         <View style={styles.titleBlock}>
           <Text style={[styles.title, { color: textColor }]}>
-            Campus Reminder
+            Create Reminder
           </Text>
 
           <Text style={[styles.subtitle, { color: textMuted }]}>
-            Create a task for a specific place and time
+            Remember a task, place and time.
           </Text>
         </View>
 
-        {/* Note */}
+        {/* Task */}
         <View style={styles.field}>
           <Text style={[styles.label, { color: textColor }]}>
             What do you need to do?
@@ -128,7 +131,7 @@ export default function AddReminderScreen() {
           <Controller
             control={control}
             name="note"
-            render={({ field: { onChange, onBlur, value } }) => (
+            render={({ field: { value, onChange, onBlur } }) => (
               <TextInput
                 value={value}
                 onChangeText={onChange}
@@ -144,7 +147,7 @@ export default function AddReminderScreen() {
                     borderColor,
                     color: textColor,
                   },
-                  errors.note && styles.inputError,
+                  errors.note && styles.errorBorder,
                 ]}
               />
             )}
@@ -161,64 +164,18 @@ export default function AddReminderScreen() {
             Where do you need to go?
           </Text>
 
-          {selectedPlace ? (
-            <View
-              style={[
-                styles.selectedPlace,
-                {
-                  backgroundColor: cardColor,
-                  borderColor,
-                },
-              ]}
-            >
-              <View style={[styles.placeIcon, { backgroundColor }]}>
-                <MapPin size={18} color={primaryColor} />
-              </View>
-
-              <View style={styles.placeInfo}>
-                <Text
-                  style={[styles.placeName, { color: textColor }]}
-                  numberOfLines={1}
-                >
-                  {selectedPlace.name}
-                </Text>
-
-                <Text style={[styles.placeMeta, { color: textMuted }]}>
-                  {selectedPlace.category} · {selectedPlace.distance}
-                </Text>
-              </View>
-
-              <Pressable
-                onPress={() => {
-                  setSelectedPlace(null);
-                  setValue("placeId", "");
-                  setValue("building", "");
-                  setValue("buildingLatitude", 0);
-                  setValue("buildingLongitude", 0);
-                  setSearchFocused(true);
-                }}
-              >
-                <Text style={[styles.changeText, { color: primaryColor }]}>
-                  Change
-                </Text>
-              </Pressable>
-            </View>
-          ) : (
+          {!selectedPlace ? (
             <>
               <SearchBar
                 placeholder="Search campus places..."
                 value={searchQuery}
-                onChangeText={(text) => {
-                  setSearchQuery(text);
-                  setSearchFocused(true);
-                }}
-                onFocus={() => setSearchFocused(true)}
+                onChangeText={setSearchQuery}
                 onSearch={() => {}}
                 loading={false}
-                rightIcon={<Mic size={18} color={icon} />}
+                rightIcon={<Mic size={18} color={iconColor} />}
               />
 
-              {searchFocused && searchResults.length > 0 && (
+              {searchResults.length > 0 && (
                 <View
                   style={[
                     styles.results,
@@ -231,14 +188,14 @@ export default function AddReminderScreen() {
                   {searchResults.map((place) => (
                     <Pressable
                       key={place.id}
+                      onPress={() => selectPlace(place)}
                       style={({ pressed }) => [
-                        styles.resultItem,
-                        pressed && { opacity: 0.7 },
+                        styles.result,
+                        pressed && styles.pressed,
                       ]}
-                      onPress={() => handleSelectPlace(place)}
                     >
                       <View style={[styles.resultIcon, { backgroundColor }]}>
-                        <MapPin size={16} color={primaryColor} />
+                        <MapPin size={17} color={primaryColor} />
                       </View>
 
                       <View style={styles.resultInfo}>
@@ -254,22 +211,55 @@ export default function AddReminderScreen() {
                   ))}
                 </View>
               )}
-
-              {errors.placeId && (
-                <Text style={styles.errorText}>{errors.placeId.message}</Text>
-              )}
             </>
+          ) : (
+            <View
+              style={[
+                styles.selectedPlace,
+                {
+                  backgroundColor: cardColor,
+                  borderColor,
+                },
+              ]}
+            >
+              <View style={[styles.selectedIcon, { backgroundColor }]}>
+                <MapPin size={19} color={primaryColor} />
+              </View>
+
+              <View style={styles.selectedInfo}>
+                <Text
+                  style={[styles.selectedName, { color: textColor }]}
+                  numberOfLines={1}
+                >
+                  {selectedPlace.name}
+                </Text>
+
+                <Text style={[styles.selectedMeta, { color: textMuted }]}>
+                  {selectedPlace.category} · {selectedPlace.distance}
+                </Text>
+              </View>
+
+              <Pressable onPress={clearPlace} style={styles.clearButton}>
+                <X size={17} color={textMuted} />
+              </Pressable>
+            </View>
+          )}
+
+          {errors.building && (
+            <Text style={styles.errorText}>{errors.building.message}</Text>
           )}
         </View>
 
-        {/* Date and Time */}
+        {/* Date & Time */}
         <View style={styles.field}>
-          <Text style={[styles.label, { color: textColor }]}>When?</Text>
+          <Text style={[styles.label, { color: textColor }]}>
+            When do you need to be there?
+          </Text>
 
           <Controller
             control={control}
             name="dateTime"
-            render={({ field: { onChange, value } }) => (
+            render={({ field: { value, onChange } }) => (
               <DatePicker
                 label=""
                 mode="datetime"
@@ -290,7 +280,7 @@ export default function AddReminderScreen() {
         <Controller
           control={control}
           name="alertNearby"
-          render={({ field: { onChange, value } }) => (
+          render={({ field: { value, onChange } }) => (
             <View
               style={[
                 styles.alertRow,
@@ -311,7 +301,7 @@ export default function AddReminderScreen() {
                   </Text>
 
                   <Text style={[styles.alertSubtitle, { color: textMuted }]}>
-                    Notify me when you reach this location
+                    Notify me when you reach the location.
                   </Text>
                 </View>
               </View>
@@ -336,7 +326,7 @@ export default function AddReminderScreen() {
           onPress={handleSubmit(onSubmit)}
           disabled={isSubmitting}
         >
-          <Text style={[styles.createButtonText, { color: primaryForeground }]}>
+          <Text style={[styles.buttonText, { color: primaryForeground }]}>
             {isSubmitting ? "Creating..." : "Create Reminder"}
           </Text>
         </Button>
@@ -354,10 +344,10 @@ const styles = StyleSheet.create({
     flex: 1,
   },
 
-  scrollContent: {
+  content: {
     padding: 20,
     gap: 24,
-    paddingBottom: 30,
+    paddingBottom: 32,
   },
 
   titleBlock: {
@@ -367,7 +357,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: "700",
-    letterSpacing: -0.5,
   },
 
   subtitle: {
@@ -392,7 +381,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
 
-  inputError: {
+  errorBorder: {
     borderColor: "#EF4444",
   },
 
@@ -407,7 +396,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
 
-  resultItem: {
+  result: {
     flexDirection: "row",
     alignItems: "center",
     gap: 12,
@@ -415,10 +404,14 @@ const styles = StyleSheet.create({
     paddingVertical: 13,
   },
 
+  pressed: {
+    opacity: 0.7,
+  },
+
   resultIcon: {
-    width: 36,
-    height: 36,
-    borderRadius: 10,
+    width: 38,
+    height: 38,
+    borderRadius: 11,
     alignItems: "center",
     justifyContent: "center",
   },
@@ -447,7 +440,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
   },
 
-  placeIcon: {
+  selectedIcon: {
     width: 40,
     height: 40,
     borderRadius: 12,
@@ -455,24 +448,27 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
 
-  placeInfo: {
+  selectedInfo: {
     flex: 1,
     gap: 3,
   },
 
-  placeName: {
+  selectedName: {
     fontSize: 14,
     fontWeight: "600",
   },
 
-  placeMeta: {
+  selectedMeta: {
     fontSize: 11,
     textTransform: "capitalize",
   },
 
-  changeText: {
-    fontSize: 12,
-    fontWeight: "600",
+  clearButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   alertRow: {
@@ -520,7 +516,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
   },
 
-  createButtonText: {
+  buttonText: {
     fontSize: 15,
     fontWeight: "600",
   },
