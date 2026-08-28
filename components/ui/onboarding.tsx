@@ -8,7 +8,7 @@ import {
   StyleSheet,
   View,
   ViewStyle,
-} from "react-native";
+ TouchableOpacity } from "react-native";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import Animated, {
   runOnJS,
@@ -17,7 +17,6 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import Octicons from "@expo/vector-icons/Octicons";
-import { TouchableOpacity } from "react-native";
 
 const { width: screenWidth } = Dimensions.get("window");
 

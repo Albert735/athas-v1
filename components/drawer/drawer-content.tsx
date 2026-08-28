@@ -4,12 +4,11 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
-} from "react-native";
+ useColorScheme } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { router, usePathname } from "expo-router";
 import { isLiquidGlassAvailable, GlassView } from "expo-glass-effect";
-import { useColorScheme } from "react-native";
 import {
   Bell,
   CalendarClock,

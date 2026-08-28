@@ -1,11 +1,10 @@
-import { View } from "react-native";
+import { View , Pressable } from "react-native";
 import { EmptySchedule } from "@/components/timetable/empty-schedule/empty-schedule";
 import { useTimetable } from "@/hooks/useTimetable";
 import { router, Redirect } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
 import { Plus } from "lucide-react-native";
-import { Pressable } from "react-native";
 import { useColor } from "@/hooks/useColor";
 
 /**

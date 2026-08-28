@@ -18,7 +18,7 @@ import { useState, useMemo } from "react";
 import { router } from "expo-router";
 import { CATEGORIES } from "@/data/categories";
 import { COLLECTIONS } from "@/data/collections";
-import { Header } from "@/components/shared";
+
 
 /**
  * ExploreScreen

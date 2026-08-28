@@ -1,11 +1,10 @@
-import { StyleSheet, Text, View, FlatList } from "react-native";
+import { StyleSheet, Text, View, FlatList , Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { Headset, Mic, Mail, Info } from "lucide-react-native";
-import { Pressable } from "react-native";
 import { FAQData } from "@/data/faq";
 import { Collapsible } from "@/components/ui/collapsible";
 import { HS_CARD_DATA } from "@/data/hs-card-data";

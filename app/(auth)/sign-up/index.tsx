@@ -5,13 +5,12 @@ import {
   ScrollView,
   StyleSheet,
   View,
-} from "react-native";
+ TouchableOpacity } from "react-native";
 import { SignUpForm } from "@/components/authentication/sign-up/form";
 import { router } from "expo-router";
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { TouchableOpacity } from "react-native";
 import Octicons from "@expo/vector-icons/Octicons";
 import { useState } from "react";
 import { useColor } from "@/hooks/useColor";
