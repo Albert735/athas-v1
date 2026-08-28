@@ -1086,32 +1086,6 @@ GatherProvisioningInputs
 
 CreateBuildDescription
 
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x objective-c -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x objective-c++ -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c++ -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x assembler-with-cpp -c /dev/null
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/albertquaye/Downloads/athas-v1/ios/Athas/Images.xcassets
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
-
-Build description signature: f2917136ad7696038e222b00c746f924
-Build description path: /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/XCBuildData/f2917136ad7696038e222b00c746f924.xcbuilddata
 ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk /Users/albertquaye/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E252-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
     cd /Users/albertquaye/Downloads/athas-v1/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E252-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
@@ -3297,29 +3271,29 @@ PhaseScriptExecution [CP-User]\ [RN]Check\ FBReactNativeSpec /Users/albertquaye/
     /bin/sh -c /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/React-RCTFBReactNativeSpec.build/Script-46EB2E00028FD0.sh
 Checking whether Codegen has run...
 
-ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist (in target 'ExpoFileSystem-ExpoFileSystem_privacy' from project 'Pods')
-    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
-    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist
-
 ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoSystemUI/ExpoSystemUI_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoSystemUI/ResourceBundle-ExpoSystemUI_privacy-ExpoSystemUI-Info.plist (in target 'ExpoSystemUI-ExpoSystemUI_privacy' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
     builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoSystemUI/ResourceBundle-ExpoSystemUI_privacy-ExpoSystemUI-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoSystemUI/ExpoSystemUI_privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist (in target 'ExpoFileSystem-ExpoFileSystem_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist
 
 ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNSVG/RNSVGFilters.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist (in target 'RNSVG-RNSVGFilters' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
     builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNSVG/RNSVGFilters.bundle/Info.plist
 
-ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist (in target 'ExpoDevice-ExpoDevice_privacy' from project 'Pods')
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist (in target 'RNCAsyncStorage-RNCAsyncStorage_resources' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
-    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist
 
 ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/EXConstants/EXConstants.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-EXConstants-EXConstants-Info.plist (in target 'EXConstants-EXConstants' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
     builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-EXConstants-EXConstants-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/EXConstants/EXConstants.bundle/Info.plist
 
-ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist (in target 'RNCAsyncStorage-RNCAsyncStorage_resources' from project 'Pods')
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist (in target 'ExpoDevice-ExpoDevice_privacy' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
-    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist
 
 ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/EXConstants/ExpoConstants_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-ExpoConstants_privacy-EXConstants-Info.plist (in target 'EXConstants-ExpoConstants_privacy' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
@@ -3884,8 +3858,8 @@ PhaseScriptExecution [CP-User]\ Generate\ app.config\ for\ prebuilt\ Constants.m
     /bin/sh -c /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/EXConstants.build/Script-46EB2E00028F80.sh
 Node found at: /Users/albertquaye/.nvm/versions/node/v24.5.0/bin/node
 
-note: Run script build phase '[Expo] Configure project' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Athas' from project 'Athas')
 note: Run script build phase 'Bundle React Native code and images' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Athas' from project 'Athas')
+note: Run script build phase '[Expo] Configure project' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Athas' from project 'Athas')
 PhaseScriptExecution [Expo]\ Configure\ project /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Script-EBBD08F42B5569CAC7FB8FF9.sh (in target 'Athas' from project 'Athas')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     export ACTION\=build
@@ -5207,14 +5181,14 @@ PhaseScriptExecution [CP]\ Copy\ Pods\ Resources /Users/albertquaye/Library/Deve
 Transfer starting: 31 files
 EXConstants.bundle/app.config
 
-sent 3202 bytes  received 42 bytes  456901 bytes/sec
+sent 3202 bytes  received 42 bytes  531803 bytes/sec
 total size is 21653  speedup is 6.67
 
 ExtractAppIntentsMetadata (in target 'Athas' from project 'Athas')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Athas --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk --xcode-version 17E202 --platform-family iOS --deployment-target 15.1 --bundle-identifier com.anonymous.athasv1 --output /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/Athas.app --target-triple arm64-apple-ios15.1 --binary-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/Athas.app/Athas --dependency-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Objects-normal/arm64/Athas_dependency_info.dat --stringsdata-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Objects-normal/arm64/Athas.SwiftFileList --metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Athas.DependencyMetadataFileList --static-metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Athas.DependencyStaticMetadataFileList --swift-const-vals-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Intermediates.noindex/Athas.build/Debug-iphoneos/Athas.build/Objects-normal/arm64/Athas.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
-2026-08-28 21:52:44.382 appintentsmetadataprocessor[53586:801827] Starting appintentsmetadataprocessor export
-2026-08-28 21:52:44.396 appintentsmetadataprocessor[53586:801827] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-08-28 21:54:45.308 appintentsmetadataprocessor[54381:806881] Starting appintentsmetadataprocessor export
+2026-08-28 21:54:45.321 appintentsmetadataprocessor[54381:806881] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
 
 CodeSign /Users/albertquaye/Library/Developer/Xcode/DerivedData/Athas-fitoqakkannwrvgrfdfryyjdktnd/Build/Products/Debug-iphoneos/Athas.app/Athas.debug.dylib (in target 'Athas' from project 'Athas')
     cd /Users/albertquaye/Downloads/athas-v1/ios

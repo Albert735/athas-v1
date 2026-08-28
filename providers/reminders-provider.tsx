@@ -1,6 +1,8 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -8,6 +10,13 @@ import {
 
 import type { Reminder } from "@/types/reminder";
 import type { ReminderFormData } from "@/schemas/reminder";
+
+const STORAGE_KEY = "@athas_reminders";
+
+type StoredReminder = Omit<Reminder, "dateTime" | "createdAt"> & {
+  dateTime: string;
+  createdAt: string;
+};
 
 type RemindersContextValue = {
   reminders: Reminder[];
@@ -24,6 +33,56 @@ const RemindersContext = createContext<RemindersContextValue | undefined>(
 
 export function RemindersProvider({ children }: { children: ReactNode }) {
   const [reminders, setReminders] = useState<Reminder[]>([]);
+  const [hydrated, setHydrated] = useState(false);
+
+  useEffect(() => {
+    const loadReminders = async () => {
+      try {
+        const stored = await AsyncStorage.getItem(STORAGE_KEY);
+
+        if (!stored) {
+          setHydrated(true);
+          return;
+        }
+
+        const parsed: StoredReminder[] = JSON.parse(stored);
+
+        const restored: Reminder[] = parsed.map((reminder) => ({
+          ...reminder,
+          dateTime: new Date(reminder.dateTime),
+          createdAt: new Date(reminder.createdAt),
+        }));
+
+        setReminders(restored);
+      } catch (error) {
+        console.error("Failed to load reminders:", error);
+      } finally {
+        setHydrated(true);
+      }
+    };
+
+    loadReminders();
+  }, []);
+
+  useEffect(() => {
+    if (!hydrated) return;
+
+    const saveReminders = async () => {
+      try {
+        const serialized: StoredReminder[] = reminders.map((reminder) => ({
+          ...reminder,
+          dateTime: reminder.dateTime ? reminder.dateTime.toISOString() : new Date().toISOString(),
+          createdAt: reminder.createdAt.toISOString(),
+        }));
+
+        await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(serialized));
+      } catch (error) {
+        console.error("Failed to save reminders:", error);
+      }
+    };
+
+    saveReminders();
+  }, [reminders, hydrated]);
 
   const getReminder = (id: string) => {
     return reminders.find((reminder) => reminder.id === id);
