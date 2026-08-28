@@ -1,8 +1,13 @@
 export type Reminder = {
   id: string;
   note: string;
+
+  placeId: string;
   building: string;
-  dateTime?: Date;
+  buildingLatitude: number;
+  buildingLongitude: number;
+
+  dateTime: Date;
   alertNearby: boolean;
   completed: boolean;
   createdAt: Date;
