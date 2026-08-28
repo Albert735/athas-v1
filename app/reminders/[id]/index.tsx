@@ -6,10 +6,8 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useLocalSearchParams } from "expo-router";
-
 import {
   MapPin,
   Clock,
@@ -18,7 +16,6 @@ import {
   Pencil,
   Bell,
 } from "lucide-react-native";
-
 import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
@@ -26,11 +23,9 @@ import { Header } from "@/components/shared/screen/header";
 import { useReminders } from "@/providers/reminders-provider";
 import { EditReminderSheet } from "@/components/reminders/edit-reminder-sheet";
 import type { ReminderFormData } from "@/schemas/reminder";
-// import type { ReminderFormData } from "@/schemas/reminder";
 
 export default function ReminderDetailScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-
   const [editVisible, setEditVisible] = useState(false);
 
   const { reminders, deleteReminder, updateReminder } = useReminders();
@@ -88,6 +83,10 @@ export default function ReminderDetailScreen() {
       })
     : "No time";
 
+  const dateTimeText = reminder.dateTime
+    ? `${formattedDate} · ${formattedTime}`
+    : "No date or time";
+
   return (
     <SafeAreaView style={styles.container}>
       <Header title="Reminder" variant="solid" />
@@ -97,7 +96,6 @@ export default function ReminderDetailScreen() {
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {/* Status + Edit */}
         <View style={styles.statusRow}>
           <View
             style={[
@@ -128,12 +126,10 @@ export default function ReminderDetailScreen() {
             activeOpacity={0.7}
           >
             <Pencil size={16} color="#374151" />
-
             <Text style={styles.editButtonText}>Edit</Text>
           </TouchableOpacity>
         </View>
 
-        {/* Reminder Overview */}
         <View style={styles.infoCard}>
           <View style={styles.iconWrapper}>
             <Bell size={23} color="#0099FF" />
@@ -162,7 +158,6 @@ export default function ReminderDetailScreen() {
           </View>
         </View>
 
-        {/* Reminder Details */}
         <View style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <View>
@@ -175,7 +170,6 @@ export default function ReminderDetailScreen() {
           </View>
 
           <View style={styles.detailsCard}>
-            {/* Location */}
             <View style={styles.detailRow}>
               <View style={styles.detailIcon}>
                 <MapPin size={17} color="#374151" />
@@ -183,14 +177,12 @@ export default function ReminderDetailScreen() {
 
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Location</Text>
-
                 <Text style={styles.detailValue}>{reminder.building}</Text>
               </View>
             </View>
 
             <View style={styles.divider} />
 
-            {/* Date & Time */}
             <View style={styles.detailRow}>
               <View style={styles.detailIcon}>
                 <Clock size={17} color="#374151" />
@@ -199,15 +191,12 @@ export default function ReminderDetailScreen() {
               <View style={styles.detailContent}>
                 <Text style={styles.detailLabel}>Date & time</Text>
 
-                <Text style={styles.detailValue}>
-                  {formattedDate} · {formattedTime}
-                </Text>
+                <Text style={styles.detailValue}>{dateTimeText}</Text>
               </View>
             </View>
 
             <View style={styles.divider} />
 
-            {/* Nearby Alert */}
             <View style={styles.detailRow}>
               <View style={styles.detailIcon}>
                 <Bell size={17} color="#374151" />
@@ -224,7 +213,6 @@ export default function ReminderDetailScreen() {
           </View>
         </View>
 
-        {/* Map Preview */}
         <View style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <View>
@@ -239,7 +227,6 @@ export default function ReminderDetailScreen() {
           <View style={styles.mapCard}>
             <View style={styles.mapPlaceholder}>
               <View style={styles.mapLineOne} />
-
               <View style={styles.mapLineTwo} />
 
               <View style={styles.mapPin}>
@@ -257,7 +244,6 @@ export default function ReminderDetailScreen() {
           </View>
         </View>
 
-        {/* Delete */}
         <View style={styles.dangerSection}>
           <View style={styles.dangerIcon}>
             <Trash2 size={19} color="#DC2626" />
@@ -281,14 +267,25 @@ export default function ReminderDetailScreen() {
         </View>
       </ScrollView>
 
-      {/* Navigation Footer */}
       <View style={styles.footer}>
-        <Button icon={Navigation} onPress={() => router.navigate("/map")}>
+        <Button
+          icon={Navigation}
+          onPress={() =>
+            router.push({
+              pathname: "/map",
+              params: {
+                latitude: String(reminder.latitude),
+                longitude: String(reminder.longitude),
+                placeName: reminder.building,
+                source: "reminder",
+              },
+            })
+          }
+        >
           <Text style={styles.navButtonText}>Start Navigation</Text>
         </Button>
       </View>
 
-      {/* Edit Bottom Sheet */}
       <EditReminderSheet
         visible={editVisible}
         reminder={reminder}
@@ -325,8 +322,6 @@ const styles = StyleSheet.create({
     paddingBottom: 32,
     gap: 20,
   },
-
-  /* Status */
 
   statusRow: {
     flexDirection: "row",
@@ -387,8 +382,6 @@ const styles = StyleSheet.create({
     color: "#374151",
   },
 
-  /* Overview */
-
   infoCard: {
     flexDirection: "row",
     alignItems: "center",
@@ -440,8 +433,6 @@ const styles = StyleSheet.create({
     flexShrink: 1,
   },
 
-  /* Sections */
-
   section: {
     gap: 10,
   },
@@ -462,8 +453,6 @@ const styles = StyleSheet.create({
     lineHeight: 18,
     color: "#9CA3AF",
   },
-
-  /* Details */
 
   detailsCard: {
     backgroundColor: "#FFFFFF",
@@ -510,8 +499,6 @@ const styles = StyleSheet.create({
     backgroundColor: "#F3F4F6",
   },
 
-  /* Map */
-
   mapCard: {
     overflow: "hidden",
     borderRadius: 18,
@@ -534,11 +521,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#D1D5DB",
     top: 75,
     left: -40,
-    transform: [
-      {
-        rotate: "-15deg",
-      },
-    ],
+    transform: [{ rotate: "-15deg" }],
   },
 
   mapLineTwo: {
@@ -548,11 +531,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#D1D5DB",
     left: "48%",
     top: -40,
-    transform: [
-      {
-        rotate: "18deg",
-      },
-    ],
+    transform: [{ rotate: "18deg" }],
   },
 
   mapPin: {
@@ -591,8 +570,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#374151",
   },
-
-  /* Delete */
 
   dangerSection: {
     flexDirection: "row",
@@ -645,8 +622,6 @@ const styles = StyleSheet.create({
     fontWeight: "700",
     color: "#DC2626",
   },
-
-  /* Footer */
 
   footer: {
     paddingHorizontal: 20,

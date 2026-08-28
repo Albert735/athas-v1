@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   View,
   Text,
@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   ScrollView,
 } from "react-native";
-import { X, MapPin, Bell, Check } from "lucide-react-native";
+import { X, MapPin, Bell, Check, Search } from "lucide-react-native";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -16,6 +16,7 @@ import { BottomSheetModal } from "@/components/ui/bottom-sheet";
 import { DatePicker } from "@/components/ui/date-picker";
 import { reminderSchema, type ReminderFormData } from "@/schemas/reminder";
 import type { Reminder } from "@/types/reminder";
+import { places } from "@/data/places";
 
 type EditReminderSheetProps = {
   visible: boolean;
@@ -30,35 +31,140 @@ export function EditReminderSheet({
   onClose,
   onSave,
 }: EditReminderSheetProps) {
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const initialPlace = useMemo(
+    () =>
+      places.find(
+        (place) =>
+          place.name === reminder.building &&
+          place.latitude === reminder.latitude &&
+          place.longitude === reminder.longitude,
+      ) ??
+      places.find((place) => place.name === reminder.building) ??
+      null,
+    [reminder],
+  );
+
+  const [selectedPlace, setSelectedPlace] = useState(initialPlace);
+
   const {
     control,
     handleSubmit,
     reset,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ReminderFormData>({
     resolver: zodResolver(reminderSchema),
     defaultValues: {
       note: reminder.note,
       building: reminder.building,
-      dateTime: reminder.dateTime,
+      latitude: reminder.latitude,
+      longitude: reminder.longitude,
+      dateTime: reminder.dateTime ?? new Date(),
       alertNearby: reminder.alertNearby,
     },
   });
 
   useEffect(() => {
+    const place =
+      places.find(
+        (item) =>
+          item.name === reminder.building &&
+          item.latitude === reminder.latitude &&
+          item.longitude === reminder.longitude,
+      ) ??
+      places.find((item) => item.name === reminder.building) ??
+      null;
+
+    setSelectedPlace(place);
+    setSearchQuery("");
+
     reset({
       note: reminder.note,
       building: reminder.building,
-      dateTime: reminder.dateTime,
+      latitude: reminder.latitude,
+      longitude: reminder.longitude,
+      dateTime: reminder.dateTime ?? new Date(),
       alertNearby: reminder.alertNearby,
     });
   }, [reminder, reset]);
 
+  const searchResults = useMemo(() => {
+    const query = searchQuery.trim().toLowerCase();
+
+    if (!query) {
+      return [];
+    }
+
+    return places.filter((place) => {
+      return (
+        place.name.toLowerCase().includes(query) ||
+        place.category.toLowerCase().includes(query)
+      );
+    });
+  }, [searchQuery]);
+
+  const selectPlace = (place: (typeof places)[number]) => {
+    setSelectedPlace(place);
+    setSearchQuery("");
+
+    setValue("building", place.name, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setValue("latitude", place.latitude, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setValue("longitude", place.longitude, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
+  const clearPlace = () => {
+    setSelectedPlace(null);
+    setSearchQuery("");
+
+    setValue("building", "", {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setValue("latitude", 0, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+
+    setValue("longitude", 0, {
+      shouldValidate: true,
+      shouldDirty: true,
+    });
+  };
+
   const handleCancel = () => {
+    const place =
+      places.find(
+        (item) =>
+          item.name === reminder.building &&
+          item.latitude === reminder.latitude &&
+          item.longitude === reminder.longitude,
+      ) ??
+      places.find((item) => item.name === reminder.building) ??
+      null;
+
+    setSelectedPlace(place);
+    setSearchQuery("");
+
     reset({
       note: reminder.note,
       building: reminder.building,
-      dateTime: reminder.dateTime,
+      latitude: reminder.latitude,
+      longitude: reminder.longitude,
+      dateTime: reminder.dateTime ?? new Date(),
       alertNearby: reminder.alertNearby,
     });
 
@@ -72,7 +178,6 @@ export function EditReminderSheet({
   return (
     <BottomSheetModal isVisible={visible} onClose={handleCancel} showHandle>
       <View style={styles.container}>
-        {/* Header */}
         <View style={styles.header}>
           <View style={styles.headerText}>
             <Text style={styles.title}>Edit Reminder</Text>
@@ -96,7 +201,6 @@ export function EditReminderSheet({
           keyboardShouldPersistTaps="handled"
           contentContainerStyle={styles.content}
         >
-          {/* Reminder Note */}
           <View style={styles.field}>
             <Text style={styles.label}>Reminder note</Text>
 
@@ -122,40 +226,96 @@ export function EditReminderSheet({
             )}
           </View>
 
-          {/* Location */}
           <View style={styles.field}>
-            <Text style={styles.label}>Location</Text>
+            <Text style={styles.label}>Where do you need to go?</Text>
 
-            <Controller
-              control={control}
-              name="building"
-              render={({ field: { onChange, onBlur, value } }) => (
+            {!selectedPlace ? (
+              <>
                 <View
                   style={[
-                    styles.inputWrapper,
+                    styles.searchWrapper,
                     errors.building && styles.inputError,
                   ]}
                 >
-                  <MapPin size={17} color="#9CA3AF" />
+                  <Search size={17} color="#9CA3AF" />
 
                   <TextInput
-                    value={value}
-                    onChangeText={onChange}
-                    onBlur={onBlur}
-                    placeholder="Where is this reminder?"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    placeholder="Search campus places..."
                     placeholderTextColor="#9CA3AF"
-                    style={styles.input}
+                    style={styles.searchInput}
+                    autoCorrect={false}
                   />
                 </View>
-              )}
-            />
+
+                {searchQuery.trim().length > 0 && searchResults.length > 0 && (
+                  <View style={styles.results}>
+                    {searchResults.map((place) => (
+                      <TouchableOpacity
+                        key={place.id}
+                        onPress={() => selectPlace(place)}
+                        style={styles.result}
+                        activeOpacity={0.7}
+                      >
+                        <View style={styles.resultIcon}>
+                          <MapPin size={17} color="#0099FF" />
+                        </View>
+
+                        <View style={styles.resultInfo}>
+                          <Text style={styles.resultName} numberOfLines={1}>
+                            {place.name}
+                          </Text>
+
+                          <Text style={styles.resultMeta}>
+                            {place.category} · {place.distance}
+                          </Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+
+                {searchQuery.trim().length > 0 &&
+                  searchResults.length === 0 && (
+                    <View style={styles.emptyResults}>
+                      <Text style={styles.emptyResultsText}>
+                        No campus places found
+                      </Text>
+                    </View>
+                  )}
+              </>
+            ) : (
+              <View style={styles.selectedPlace}>
+                <View style={styles.selectedIcon}>
+                  <MapPin size={19} color="#0099FF" />
+                </View>
+
+                <View style={styles.selectedInfo}>
+                  <Text style={styles.selectedName} numberOfLines={1}>
+                    {selectedPlace.name}
+                  </Text>
+
+                  <Text style={styles.selectedMeta}>
+                    {selectedPlace.category} · {selectedPlace.distance}
+                  </Text>
+                </View>
+
+                <TouchableOpacity
+                  onPress={clearPlace}
+                  style={styles.clearButton}
+                  activeOpacity={0.7}
+                >
+                  <X size={17} color="#9CA3AF" />
+                </TouchableOpacity>
+              </View>
+            )}
 
             {errors.building && (
               <Text style={styles.errorText}>{errors.building.message}</Text>
             )}
           </View>
 
-          {/* Date & Time */}
           <View style={styles.field}>
             <Text style={styles.label}>Date & time</Text>
 
@@ -179,7 +339,6 @@ export function EditReminderSheet({
             )}
           </View>
 
-          {/* Nearby Alert */}
           <Controller
             control={control}
             name="alertNearby"
@@ -205,7 +364,6 @@ export function EditReminderSheet({
           />
         </ScrollView>
 
-        {/* Actions */}
         <View style={styles.actions}>
           <TouchableOpacity
             style={styles.cancelButton}
@@ -302,7 +460,16 @@ const styles = StyleSheet.create({
     color: "#111827",
   },
 
-  inputWrapper: {
+  inputError: {
+    borderColor: "#EF4444",
+  },
+
+  errorText: {
+    fontSize: 12,
+    color: "#EF4444",
+  },
+
+  searchWrapper: {
     height: 48,
     flexDirection: "row",
     alignItems: "center",
@@ -314,19 +481,115 @@ const styles = StyleSheet.create({
     borderColor: "#E5E7EB",
   },
 
-  input: {
+  searchInput: {
     flex: 1,
     fontSize: 14,
     color: "#111827",
   },
 
-  inputError: {
-    borderColor: "#EF4444",
+  results: {
+    marginTop: 8,
+    borderRadius: 13,
+    overflow: "hidden",
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
   },
 
-  errorText: {
+  result: {
+    minHeight: 54,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#F3F4F6",
+  },
+
+  resultIcon: {
+    width: 34,
+    height: 34,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#EFF6FF",
+  },
+
+  resultInfo: {
+    flex: 1,
+  },
+
+  resultName: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#111827",
+  },
+
+  resultMeta: {
+    marginTop: 2,
+    fontSize: 10,
+    color: "#9CA3AF",
+    textTransform: "capitalize",
+  },
+
+  emptyResults: {
+    marginTop: 8,
+    padding: 14,
+    alignItems: "center",
+    borderRadius: 13,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+
+  emptyResultsText: {
     fontSize: 12,
-    color: "#EF4444",
+    color: "#9CA3AF",
+  },
+
+  selectedPlace: {
+    minHeight: 56,
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    paddingHorizontal: 12,
+    borderRadius: 13,
+    backgroundColor: "#FFFFFF",
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+  },
+
+  selectedIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#EFF6FF",
+  },
+
+  selectedInfo: {
+    flex: 1,
+  },
+
+  selectedName: {
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#111827",
+  },
+
+  selectedMeta: {
+    marginTop: 2,
+    fontSize: 10,
+    color: "#9CA3AF",
+    textTransform: "capitalize",
+  },
+
+  clearButton: {
+    width: 32,
+    height: 32,
+    alignItems: "center",
+    justifyContent: "center",
   },
 
   alertRow: {

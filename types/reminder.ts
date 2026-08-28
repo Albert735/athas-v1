@@ -4,7 +4,7 @@ export type Reminder = {
   building: string;
   latitude: number;
   longitude: number;
-  dateTime: Date | null;
+  dateTime: Date;
   alertNearby: boolean;
   completed: boolean;
   createdAt: Date;

@@ -1,33 +1,21 @@
 import { Alert, View, StyleSheet, Pressable } from "react-native";
-
 import { SafeAreaView } from "react-native-safe-area-context";
-
-import { router, useLocalSearchParams } from "expo-router";
-
+import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
-
 import MapboxGL from "@rnmapbox/maps";
+import { Mic } from "lucide-react-native";
 
 import { Header } from "@/components/shared/screen/header";
 import { SearchBar } from "@/components/ui/searchbar";
-import { Mic } from "lucide-react-native";
-
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { MAP_STYLE_LIGHT, MAP_STYLE_DARK } from "@/constants/mapbox";
-
 import { useUserLocation } from "@/hooks/useUserLocation";
-
 import { getRoute, type RouteResult } from "@/utils/directions";
-
 import { usePlaceSearch } from "@/hooks/usePlaceSearch";
-
 import { computeDistanceString, computeIsOpen } from "@/utils/place-utils";
-
 import type { SheetState, TransportProfile } from "@/types/map";
-
 import { useColorScheme } from "@/hooks/useColorScheme";
-
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 
@@ -44,31 +32,32 @@ export default function Map() {
 
   const mapStyle = theme === "dark" ? MAP_STYLE_DARK : MAP_STYLE_LIGHT;
 
-  const { buildingId, source = "external" } = useLocalSearchParams<{
+  const {
+    buildingId,
+    source = "external",
+    latitude,
+    longitude,
+    placeName,
+  } = useLocalSearchParams<{
     buildingId?: string;
     source?: string;
+    latitude?: string;
+    longitude?: string;
+    placeName?: string;
   }>();
 
   const { location: userLocation, error: locationError } = useUserLocation();
 
   const userLocationRef = useRef<[number, number] | null>(null);
-
   const cameraRef = useRef<MapboxGL.Camera>(null);
-
   const requestIdRef = useRef(0);
 
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-
   const [sheetState, setSheetState] = useState<SheetState>("details");
-
   const [route, setRoute] = useState<RouteResult | null>(null);
-
   const [routeLoading, setRouteLoading] = useState(false);
-
   const [searchQuery, setSearchQuery] = useState("");
-
   const [searchFocused, setSearchFocused] = useState(false);
-
   const [cameraMode, setCameraMode] = useState<CameraMode>("normal");
 
   const searchResults = usePlaceSearch(searchQuery);
@@ -117,16 +106,10 @@ export default function Map() {
     });
   }, []);
 
-  /*
-   * Search inside the Map screen.
-   *
-   * Search results should select the place
-   * and show the normal Details Card.
-   *
-   * We DO NOT push /place-sheet here.
-   */
   const handleSearchSelect = useCallback(
     (place: Place) => {
+      requestIdRef.current += 1;
+
       setSelectedPlace(place);
       setSheetState("details");
       setRoute(null);
@@ -140,14 +123,6 @@ export default function Map() {
     [focusPlace],
   );
 
-  /*
-   * Annotation taps happen while we are already
-   * on the Map screen.
-   *
-   * Therefore they must NEVER push another sheet.
-   *
-   * They simply open the Details Card.
-   */
   const handleAnnotationSelect = useCallback(
     (place: Place) => {
       requestIdRef.current += 1;
@@ -175,7 +150,6 @@ export default function Map() {
       const interval = setInterval(() => {
         if (userLocationRef.current) {
           clearInterval(interval);
-
           resolve(userLocationRef.current);
         }
       }, 200);
@@ -199,11 +173,8 @@ export default function Map() {
     const latitudes = coordinates.map((coordinate) => coordinate[1]);
 
     const east = Math.max(...longitudes);
-
     const west = Math.min(...longitudes);
-
     const north = Math.max(...latitudes);
-
     const south = Math.min(...latitudes);
 
     setCameraMode("route");
@@ -252,11 +223,24 @@ export default function Map() {
       setRoute(result);
       setRouteLoading(false);
 
-      if (result) {
-        fitRouteOnMap(result);
+      if (!result) {
+        Alert.alert(
+          "Route Unavailable",
+          "We couldn't find a route to this location. Please try again.",
+          [{ text: "OK" }],
+        );
+
+        return;
+      }
+
+      fitRouteOnMap(result);
+
+      if (source === "reminder") {
+        setCameraMode("navigation");
+        setSheetState("navigating");
       }
     },
-    [selectedPlace, waitForLocation, fitRouteOnMap],
+    [selectedPlace, waitForLocation, fitRouteOnMap, source],
   );
 
   const startNavigation = useCallback(() => {
@@ -268,12 +252,6 @@ export default function Map() {
     setSheetState("navigating");
   }, [route]);
 
-  /*
-   * Navigation → Details
-   *
-   * The selected place stays alive.
-   * The route disappears.
-   */
   const handleNavigationExit = useCallback(() => {
     requestIdRef.current += 1;
 
@@ -288,7 +266,6 @@ export default function Map() {
         centerCoordinate: selectedPlace
           ? [selectedPlace.longitude, selectedPlace.latitude]
           : CAMPUS_CENTER,
-
         zoomLevel: 17,
         pitch: 45,
         animationDuration: 800,
@@ -297,15 +274,49 @@ export default function Map() {
   }, [selectedPlace]);
 
   /*
-   * Deep-link / navigation into Map.
+   * Handles navigation into the Map screen.
    *
-   * external:
-   *   Explore → Map → Details
+   * Existing buildingId flow:
+   *   buildingId → find place → show details/directions
    *
-   * home:
-   *   Home → Map → Directions
+   * Reminder flow:
+   *   latitude + longitude + placeName → create destination
+   *   → show directions → automatically request route
    */
   useEffect(() => {
+    if (latitude && longitude && placeName) {
+      const destination: Place = {
+        id: `reminder-${latitude}-${longitude}`,
+        name: placeName,
+        category: "office",
+        description: "",
+        distance: "",
+        latitude: Number(latitude),
+        longitude: Number(longitude),
+        hours: "24 hours",
+        days: "Every day",
+        isOpen: true,
+      };
+
+      setSelectedPlace(destination);
+      setRoute(null);
+      setRouteLoading(false);
+      setSearchQuery("");
+      setSearchFocused(false);
+
+      if (source === "reminder") {
+        setSheetState("directions");
+      } else {
+        setSheetState("details");
+      }
+
+      requestAnimationFrame(() => {
+        focusPlace(destination);
+      });
+
+      return;
+    }
+
     if (!buildingId) {
       return;
     }
@@ -318,31 +329,28 @@ export default function Map() {
     }
 
     setSelectedPlace(found);
-
     setRoute(null);
     setRouteLoading(false);
-
     setSearchQuery("");
     setSearchFocused(false);
 
-    if (source === "home") {
-      setSheetState("directions");
-    } else {
-      setSheetState("details");
-    }
+    setSheetState(source === "home" ? "directions" : "details");
 
     requestAnimationFrame(() => {
       focusPlace(found);
     });
-  }, [buildingId, source, focusPlace]);
+  }, [buildingId, latitude, longitude, placeName, source, focusPlace]);
+
   /*
-   * Home → Directions.
-   *
-   * Automatically fetch the initial
-   * walking route.
+   * Automatically requests a walking route when entering
+   * the Map from Home or a Reminder.
    */
   useEffect(() => {
-    if (source !== "home" || sheetState !== "directions" || !selectedPlace) {
+    if (
+      !["home", "reminder"].includes(source) ||
+      sheetState !== "directions" ||
+      !selectedPlace
+    ) {
       return;
     }
 
@@ -362,16 +370,6 @@ export default function Map() {
 
   const navigationActive = sheetState === "navigating";
 
-  /*
-   * Close Details Card.
-   *
-   * This is NOT navigation back to Home.
-   *
-   * It simply clears the selected place
-   * while staying on the Map.
-   *
-   * The annotations remain visible.
-   */
   const clearSelectedPlace = useCallback(() => {
     requestIdRef.current += 1;
 
