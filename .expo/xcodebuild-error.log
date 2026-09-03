@@ -1,0 +1,6 @@
+2026-09-03 21:34:05.419 xcodebuild[39429:910395] Writing error result bundle to /var/folders/zz/p880ksq54wv9dykx30y70dp40000gn/T/ResultBundle_2026-03-09_9-34-0005 PM.xcresult
+xcodebuild: error: Timed out waiting for all destinations matching the provided destination specifier to become available
+
+
+	Available destinations for the "Athas" scheme:
+		{ platform:iOS, arch:arm64, id:00008110-000864E61198401E, name:Jaytee's iPhone, error:Jaytee's iPhone may need to be unlocked to recover from previously reported preparation errors }
