@@ -65,7 +65,7 @@ export const darkColors = {
 
   border: "#1C2A3B",
   input: "rgba(237, 239, 242, 0.06)",
-  ring: "#4DA8FF",
+  ring: "#8A96A3",
 
   text: "#EDEFF2",
   textMuted: "#8A96A3",
