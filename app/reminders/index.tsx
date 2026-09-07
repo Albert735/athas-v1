@@ -22,8 +22,8 @@ export default function RemindersScreen() {
   const textMuted = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
-  const primaryColor = useColor("primary");
-  const primaryForeground = useColor("primaryForeground");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
   const filteredReminders = reminders.filter((reminder) => {
     if (activeFilter === "Upcoming") {
@@ -185,11 +185,12 @@ export default function RemindersScreen() {
         style={[
           styles.footer,
           {
-            borderTopColor: borderColor,
+            borderTopColor: backgroundColor,
           },
         ]}
       >
         <Button
+          variant="default"
           icon={Plus}
           onPress={() => router.push("/reminders/add-reminder")}
         >
