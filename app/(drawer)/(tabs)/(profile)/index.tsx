@@ -58,6 +58,7 @@ export default function Profile() {
   const [preferences, setPreferences] = useState(initialPreferences);
 
   const backgroundColor = useColor("background");
+
   const textColor = useColor("text");
   const textMuted = useColor("textMuted");
   const cardColor = useColor("card");

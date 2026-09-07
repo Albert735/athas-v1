@@ -23,8 +23,8 @@ export function Checkbox({
   labelStyle,
   onCheckedChange,
 }: CheckboxProps) {
-  const primary = useColor("primary");
-  const primaryForegroundColor = useColor("primaryForeground");
+  const primary = useColor("foreground");
+  const primaryForegroundColor = useColor("background");
   const danger = useColor("red");
   const borderColor = useColor("border");
 
