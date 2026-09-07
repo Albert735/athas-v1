@@ -1,16 +1,11 @@
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { categoryImages } from "@/data/category-images";
 import { Star, MapPin, Navigation, Clock3 } from "lucide-react-native";
+import { Button } from "@/components/ui/button";
 
 export default function PlaceSheet() {
   const { id, source } = useLocalSearchParams<{
@@ -22,7 +17,8 @@ export default function PlaceSheet() {
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
-  const primaryColor = useColor("primary");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
   const place = places.find((p) => p.id === id);
 
@@ -215,15 +211,9 @@ export default function PlaceSheet() {
         </View>
       </View>
 
-      <TouchableOpacity
-        activeOpacity={0.85}
-        style={[styles.directionsButton, { backgroundColor: primaryColor }]}
-        onPress={handleDirections}
-      >
-        <Navigation size={18} color="#FFFFFF" />
-
-        <Text style={styles.directionsText}>Get Directions</Text>
-      </TouchableOpacity>
+      <Button size="sm" icon={Navigation} onPress={handleDirections}>
+        Get Directions
+      </Button>
 
       <View style={styles.bottomSpace} />
     </ScrollView>
