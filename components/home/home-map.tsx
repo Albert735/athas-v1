@@ -39,7 +39,7 @@ const HomeMap = forwardRef<CameraRef, Props>(
           animationDuration={700}
         />
 
-        <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+        <MapboxGL.UserLocation visible />
 
         <MapboxGL.FillExtrusionLayer
           id="home-3d-buildings"
