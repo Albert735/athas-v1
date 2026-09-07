@@ -7,7 +7,7 @@ export const OnboardingPresets = {
   welcome: [
     {
       id: "welcome",
-      title: "Welcome to\nAthas",
+      title: "Welcome to\nRaute",
       subtitle: "Step 1 / Navigation",
       description:
         "Your smart campus companion for navigating buildings,finding rooms and never being late to class",
@@ -46,7 +46,9 @@ export default function OnboardingScreen() {
         }}
       >
         <Text variant="title">Welcome Back!</Text>
-        <Text variant="body">You&apos;ve already completed the onboarding.</Text>
+        <Text variant="body">
+          You&apos;ve already completed the onboarding.
+        </Text>
       </View>
     );
   }

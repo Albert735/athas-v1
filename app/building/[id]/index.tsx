@@ -125,7 +125,7 @@ export default function BuildingDetailsScreen() {
 
   const handleShare = () => {
     Share.share({
-      message: `Check out ${place.name} on Athas: https://athas.app/building/${id}`,
+      message: `Check out ${place.name} on Raute: https://raute.app/building/${id}`,
       title: "Check out this location",
     });
   };

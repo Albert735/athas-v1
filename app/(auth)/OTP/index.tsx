@@ -25,7 +25,7 @@ export default function OTPScreen() {
           {/* App logo */}
           <View style={styles.logoContainer}>
             <Image
-              source={require("../../../assets/images/athas-splash-icon-1024.png")}
+              source={require("../../../assets/images/raute-splash-icon-1024.png")}
               style={styles.logo}
               contentFit="contain"
             />
@@ -51,7 +51,7 @@ export default function OTPScreen() {
         <View style={styles.footerContainer}>
           <ShieldCheck strokeWidth={1} size={14} color={iconColor} />
           <Text style={styles.footer}>
-            SECURED BY ATHAS IDENTITY {`\n`} MANAGEMENT
+            SECURED BY RAUTE IDENTITY {`\n`} MANAGEMENT
           </Text>
         </View>
       </KeyboardAvoidingView>

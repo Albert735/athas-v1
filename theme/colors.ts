@@ -25,7 +25,7 @@ export const Fonts = Platform.select({
 });
 
 // -----------------------------------------------------------------------------
-// ATHAS COLOR SYSTEM
+// Raute COLOR SYSTEM
 // Uber-inspired neutral foundation + semantic colors.
 //
 // Philosophy:

@@ -60,7 +60,7 @@ export default function GuestScreen() {
             <Compass size={40} />
           </View> */}
 
-          <Text style={styles.title}>Explore the Athas Landscape</Text>
+          <Text style={styles.title}>Explore the Raute Landscape</Text>
 
           <Text style={styles.subtitle}>
             Whether you&apos;re here for a tour, a walk, or simply exploring,
@@ -96,7 +96,7 @@ export default function GuestScreen() {
                 <Text style={styles.infoTitle}>Guest Wi-Fi</Text>
 
                 <Text style={styles.infoSubtitle}>
-                  Select &quot;Athas-Guest&quot; {"\n"}on arrival.
+                  Select &quot;Raute-Guest&quot; {"\n"}on arrival.
                 </Text>
               </View>
             </View>

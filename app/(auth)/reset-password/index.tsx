@@ -23,7 +23,7 @@ export default function ResetPasswordScreen() {
           {/* App logo */}
           <View style={styles.logoContainer}>
             <Image
-              source={require("../../../assets/images/athas-splash-icon-1024.png")}
+              source={require("../../../assets/images/raute-splash-icon-1024.png")}
               style={styles.logo}
               contentFit="contain"
             />

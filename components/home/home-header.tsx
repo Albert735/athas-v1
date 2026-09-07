@@ -11,7 +11,7 @@ export function HomeHeader() {
   return (
     <View style={styles.header}>
       <Image
-        source={require("@/assets/images/icon.png")}
+        source={require("@/assets/images/raute-splash-icon-1024.png")}
         style={styles.logo}
         contentFit="contain"
       />

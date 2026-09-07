@@ -24,7 +24,7 @@ import { useColor } from "@/hooks/useColor";
 const SPACING = 30;
 
 /**
- * LogInScreen — Main sign-in screen for the Athas app.
+ * LogInScreen — Main sign-in screen for the Raute app.
  *
  * Layout (top → bottom):
  *   1. Header — "Guest" button aligned right
@@ -73,12 +73,12 @@ export default function LogInScreen() {
             {/* Hero section — branding & primary CTA */}
             <View style={styles.hero}>
               <Image
-                source={require("@/assets/images/athas-splash-icon-1024.png")}
+                source={require("@/assets/images/raute-splash-icon-1024.png")}
                 style={styles.logo}
               />
 
               <View style={styles.textContainer}>
-                <Text style={styles.title}>Athas</Text>
+                <Text style={styles.title}>Raute</Text>
 
                 <Text style={styles.subtitle}>
                   Navigating your academic journey
@@ -158,7 +158,7 @@ export default function LogInScreen() {
 
             {/* Legal — Terms of Service & Privacy Policy */}
             <Text variant="caption" style={styles.termsText}>
-              By logging in, you agree to the Athas{" "}
+              By logging in, you agree to the Raute{" "}
               <Text style={[styles.signupText, { color: actionColor }]}>
                 Terms of Service
               </Text>{" "}

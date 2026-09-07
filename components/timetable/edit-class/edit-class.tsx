@@ -206,7 +206,7 @@ export function EditClass({ classItem, onClose }: Props) {
           {building ? (
             <View style={styles.imageContainer}>
               <Image
-                source={require("@/assets/images/building-1.jpg")}
+                source={require("@/assets/images/categories/lab.jpg")}
                 style={styles.image}
               />
 
