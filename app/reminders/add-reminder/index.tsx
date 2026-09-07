@@ -32,9 +32,9 @@ export default function AddReminderScreen() {
   const textMuted = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
-  const primaryColor = useColor("primary");
-  const primaryForeground = useColor("primaryForeground");
   const iconColor = useColor("icon");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
   const { toast } = useToast();
   const { addReminder } = useReminders();
