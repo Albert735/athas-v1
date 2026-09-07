@@ -213,7 +213,7 @@ export default function ReminderDetailScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
+        {/* <View style={styles.section}>
           <View style={styles.sectionTitleRow}>
             <View>
               <Text style={styles.sectionTitle}>Location</Text>
@@ -242,7 +242,7 @@ export default function ReminderDetailScreen() {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
 
         <View style={styles.dangerSection}>
           <View style={styles.dangerIcon}>
