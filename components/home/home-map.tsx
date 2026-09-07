@@ -42,19 +42,22 @@ const HomeMap = forwardRef<CameraRef, Props>(
         <MapboxGL.UserLocation visible />
 
         {/* 3D buildings layer removed due to missing source */}
-        <MapboxGL.FillExtrusionLayer
-          id="3d-buildings"
-          sourceID="composite"
-          sourceLayerID="building"
-          minZoomLevel={15}
-          maxZoomLevel={22}
-          style={{
-            fillExtrusionColor: theme === "dark" ? "#848484ff" : "#FCF2E5",
-            fillExtrusionHeight: ["get", "height"],
-            fillExtrusionBase: ["get", "min_height"],
-            fillExtrusionOpacity: 0.8,
-          }}
-        />
+        {/* 3D buildings layer rendered only if the style includes building source */}
+        {mapStyle.includes("streets") && (
+          <MapboxGL.FillExtrusionLayer
+            id="3d-buildings"
+            sourceID="composite"
+            sourceLayerID="building"
+            minZoomLevel={15}
+            maxZoomLevel={22}
+            style={{
+              fillExtrusionColor: theme === "dark" ? "#848484ff" : "#F3E9DF",
+              fillExtrusionHeight: ["get", "height"],
+              fillExtrusionBase: ["get", "min_height"],
+              fillExtrusionOpacity: 0.8,
+            }}
+          />
+        )}
 
         {selectedPlace && (
           <MapboxGL.PointAnnotation

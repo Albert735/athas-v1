@@ -430,7 +430,7 @@ export default function Map() {
           minZoomLevel={15}
           maxZoomLevel={22}
           style={{
-            fillExtrusionColor: theme === "dark" ? "#848484ff" : "#FCF2E5",
+            fillExtrusionColor: theme === "dark" ? "#848484ff" : "#F3E9DF",
             fillExtrusionHeight: ["get", "height"],
             fillExtrusionBase: ["get", "min_height"],
             fillExtrusionOpacity: 0.8,

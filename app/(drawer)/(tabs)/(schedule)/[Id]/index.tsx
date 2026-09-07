@@ -19,10 +19,10 @@ export default function ScheduledClassDetails() {
   const textMuted = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
-  const primaryColor = useColor("primary");
-  const primaryForeground = useColor("primaryForeground");
   const iconColor = useColor("icon");
   const redColor = useColor("red");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
   const handleEdit = () => {
     if (!id) {
