@@ -16,12 +16,7 @@
     }
   },
     "android": {
-      "adaptiveIcon": {
-        "backgroundColor": "#E6F4FE",
-        "foregroundImage": "./assets/images/athas-adaptive-foreground-1024.png",
-        "backgroundImage": "./assets/images/raute-splash-icon-1024.png",
-        "monochromeImage": "./assets/images/raute-app-icon-1024.png"
-      },
+
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": true,
       "package": "com.anonymous.rautev1"
