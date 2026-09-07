@@ -1,4 +1,4 @@
-package com.anonymous.rautev1
+package com.raute.app
 
 import android.app.Application
 import android.content.res.Configuration
