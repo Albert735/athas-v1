@@ -41,19 +41,7 @@ const HomeMap = forwardRef<CameraRef, Props>(
 
         <MapboxGL.UserLocation visible />
 
-        <MapboxGL.FillExtrusionLayer
-          id="home-3d-buildings"
-          sourceID="composite"
-          sourceLayerID="building"
-          minZoomLevel={15}
-          maxZoomLevel={22}
-          style={{
-            fillExtrusionColor: "#D1D5DB",
-            fillExtrusionHeight: ["get", "height"],
-            fillExtrusionBase: ["get", "min_height"],
-            fillExtrusionOpacity: 0.8,
-          }}
-        />
+        {/* 3D buildings layer removed due to missing source */}
 
         {selectedPlace && (
           <MapboxGL.PointAnnotation
