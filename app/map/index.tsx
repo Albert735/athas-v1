@@ -402,6 +402,7 @@ export default function Map() {
         compassEnabled={false}
         scaleBarEnabled={false}
         pitchEnabled
+        //
       >
         <MapboxGL.Camera
           ref={cameraRef}
@@ -429,7 +430,7 @@ export default function Map() {
           minZoomLevel={15}
           maxZoomLevel={22}
           style={{
-            fillExtrusionColor: "#D1D5DB",
+            fillExtrusionColor: theme === "dark" ? "#848484ff" : "#FCF2E5",
             fillExtrusionHeight: ["get", "height"],
             fillExtrusionBase: ["get", "min_height"],
             fillExtrusionOpacity: 0.8,
@@ -441,7 +442,7 @@ export default function Map() {
             <MapboxGL.LineLayer
               id="navigationRouteLine"
               style={{
-                lineColor: primaryColor,
+                lineColor: "#30AFFF",
                 lineWidth: navigationActive ? 6 : 5,
                 lineCap: "round",
                 lineJoin: "round",
