@@ -2,21 +2,19 @@ import { Platform } from "react-native";
 
 export const Fonts = Platform.select({
   ios: {
-    /** iOS `UIFontDescriptorSystemDesignDefault` */
     sans: "system-ui",
-    /** iOS `UIFontDescriptorSystemDesignSerif` */
     serif: "ui-serif",
-    /** iOS `UIFontDescriptorSystemDesignRounded` */
     rounded: "ui-rounded",
-    /** iOS `UIFontDescriptorSystemDesignMonospaced` */
     mono: "ui-monospace",
   },
+
   default: {
     sans: "normal",
     serif: "serif",
     rounded: "normal",
     mono: "monospace",
   },
+
   web: {
     sans: "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif",
     serif: "Georgia, 'Times New Roman', serif",
@@ -27,115 +25,191 @@ export const Fonts = Platform.select({
 });
 
 // -----------------------------------------------------------------------------
-// Refined palette: clean, minimal, low-saturation surfaces + one confident accent.
-// Designed for map UIs where the map itself (pins, routes, terrain) should carry
-// the color — the chrome around it stays quiet.
+// ATHAS COLOR SYSTEM
+// Uber-inspired neutral foundation + semantic colors.
+//
+// Philosophy:
+// - Black / white / gray form the UI foundation.
+// - Color is reserved for actions, status, categories and maps.
+// - Avoid excessive blue UI chrome.
+// - Semantic colors should communicate meaning, not decoration.
 // -----------------------------------------------------------------------------
 
 export const darkColors = {
-  // Softer, less saturated navy — reads as "ink" rather than "brand blue"
+  // ---------------------------------------------------------------------------
+  // FOUNDATION
+  // ---------------------------------------------------------------------------
+
   background: "#000000",
   foreground: "#FFFFFF",
 
-  // Cards sit one step up in value, subtle not stark
-  card: "#111C2B",
-  cardForeground: "#EDEFF2",
+  card: "#1A1A1A",
+  cardForeground: "#FFFFFF",
 
-  popover: "#111C2B",
-  popoverForeground: "#EDEFF2",
+  popover: "#1A1A1A",
+  popoverForeground: "#FFFFFF",
 
-  // Primary accent — desaturated sky blue, confident but not neon
-  primary: "#00A7E5",
+  // ---------------------------------------------------------------------------
+  // PRIMARY
+  // ---------------------------------------------------------------------------
+
+  // Uber-inspired green for primary actions / navigation states.
+  primary: "#06C167",
   primaryForeground: "#000000",
 
-  // Secondary — muted steel, close to background so it recedes
-  secondary: "#1A2635",
-  secondaryForeground: "#EDEFF2",
+  // ---------------------------------------------------------------------------
+  // NEUTRALS
+  // ---------------------------------------------------------------------------
 
-  // Muted states — softer than pure white overlays
-  muted: "#161F2E",
-  mutedForeground: "#8A96A3",
+  secondary: "#2A2A2A",
+  secondaryForeground: "#FFFFFF",
 
-  accent: "#1A2635",
-  accentForeground: "#EDEFF2",
+  muted: "#1F1F1F",
+  mutedForeground: "#A6A6A6",
 
-  // Destructive — muted red-orange, less "alarm," still clear
-  destructive: "#E5675B",
-  destructiveForeground: "#0B1420",
+  accent: "#2A2A2A",
+  accentForeground: "#FFFFFF",
 
-  border: "#1C2A3B",
-  input: "rgba(237, 239, 242, 0.06)",
-  ring: "#8A96A3",
+  // ---------------------------------------------------------------------------
+  // STATUS
+  // ---------------------------------------------------------------------------
 
-  text: "#EDEFF2",
-  textMuted: "#8A96A3",
+  destructive: "#E5484D",
+  destructiveForeground: "#FFFFFF",
 
-  tint: "#4DA8FF",
-  icon: "#8A96A3",
-  tabIconDefault: "#8A96A3",
-  tabIconSelected: "#4DA8FF",
+  success: "#06C167",
+  warning: "#FFB749",
+  info: "#6B9EFF",
 
-  // ---- Semantic / accent set — all desaturated ~15-20% vs. defaults ----
-  // Kept distinguishable for map pin categories, but none scream.
-  blue: "#4DA8FF", // primary actions, selected tab, current location
-  green: "#4CB68C", // success, active route, open now
-  red: "#E5675B", // errors, closed, avoid
-  orange: "#E0A24D", // warnings, traffic delays
-  yellow: "#E0C24D", // caution, saved/starred
-  pink: "#D97FA8", // custom pin category
-  purple: "#9B87D9", // custom pin category
-  teal: "#4DBCB0", // transit / walking routes
-  indigo: "#7A85D9", // custom pin category
+  // ---------------------------------------------------------------------------
+  // BORDERS / INPUTS
+  // ---------------------------------------------------------------------------
+
+  border: "#2E2E2E",
+
+  input: "#1A1A1A",
+
+  ring: "#FFFFFF",
+
+  // ---------------------------------------------------------------------------
+  // TEXT
+  // ---------------------------------------------------------------------------
+
+  text: "#FFFFFF",
+  textMuted: "#A6A6A6",
+
+  // ---------------------------------------------------------------------------
+  // BRAND / UI
+  // ---------------------------------------------------------------------------
+
+  tint: "#FFFFFF",
+
+  icon: "#A6A6A6",
+
+  tabIconDefault: "#8F8F8F",
+  tabIconSelected: "#FFFFFF",
+
+  // ---------------------------------------------------------------------------
+  // SEMANTIC COLORS
+  // ---------------------------------------------------------------------------
+
+  blue: "#6B9EFF",
+  green: "#06C167",
+  red: "#E5484D",
+  orange: "#FC823A",
+  yellow: "#FFB749",
+  pink: "#E88BB6",
+  purple: "#9B8AFB",
+  teal: "#42B8A6",
+  indigo: "#6B7FD7",
 };
 
 export const lightColors = {
-  // Off-white, not pure white — easier on the eye, less glare on a map
+  // ---------------------------------------------------------------------------
+  // FOUNDATION
+  // ---------------------------------------------------------------------------
+
   background: "#FFFFFF",
-  foreground: "#141A22",
+  foreground: "#000000",
 
   card: "#FFFFFF",
-  cardForeground: "#141A22",
+  cardForeground: "#000000",
 
   popover: "#FFFFFF",
-  popoverForeground: "#141A22",
+  popoverForeground: "#000000",
 
-  // Same accent hue as dark mode, slightly deepened for contrast on light bg
-  primary: "#00A7E5",
+  // ---------------------------------------------------------------------------
+  // PRIMARY
+  // ---------------------------------------------------------------------------
+
+  primary: "#06C167",
   primaryForeground: "#000000",
 
-  secondary: "#EDF0F4",
-  secondaryForeground: "#141A22",
+  // ---------------------------------------------------------------------------
+  // NEUTRALS
+  // ---------------------------------------------------------------------------
 
-  muted: "rgba(20, 26, 34, 0.05)",
-  mutedForeground: "#6B7684",
+  secondary: "#F2F2F2",
+  secondaryForeground: "#000000",
 
-  accent: "#EDF0F4",
-  accentForeground: "#141A22",
+  muted: "#F5F5F5",
+  mutedForeground: "#6B6B6B",
 
-  destructive: "#D9483C",
+  accent: "#F2F2F2",
+  accentForeground: "#000000",
+
+  // ---------------------------------------------------------------------------
+  // STATUS
+  // ---------------------------------------------------------------------------
+
+  destructive: "#E5484D",
   destructiveForeground: "#FFFFFF",
 
-  border: "#E2E6EB",
-  input: "rgba(20, 26, 34, 0.05)",
-  ring: "#1E7FE0",
+  success: "#06C167",
+  warning: "#D99000",
+  info: "#3B78E7",
 
-  text: "#141A22",
-  textMuted: "#6B7684",
+  // ---------------------------------------------------------------------------
+  // BORDERS / INPUTS
+  // ---------------------------------------------------------------------------
 
-  tint: "#1E7FE0",
-  icon: "#6B7684",
-  tabIconDefault: "#6B7684",
-  tabIconSelected: "#1E7FE0",
+  border: "#E6E6E6",
 
-  blue: "#1E7FE0",
-  green: "#2F9E76",
-  red: "#D9483C",
-  orange: "#C98A2E",
-  yellow: "#C9A62E",
-  pink: "#C15E90",
-  purple: "#7C67C9",
-  teal: "#2FA69A",
-  indigo: "#5D68C9",
+  input: "#F5F5F5",
+
+  ring: "#000000",
+
+  // ---------------------------------------------------------------------------
+  // TEXT
+  // ---------------------------------------------------------------------------
+
+  text: "#000000",
+  textMuted: "#6B6B6B",
+
+  // ---------------------------------------------------------------------------
+  // BRAND / UI
+  // ---------------------------------------------------------------------------
+
+  tint: "#000000",
+
+  icon: "#6B6B6B",
+
+  tabIconDefault: "#737373",
+  tabIconSelected: "#000000",
+
+  // ---------------------------------------------------------------------------
+  // SEMANTIC COLORS
+  // ---------------------------------------------------------------------------
+
+  blue: "#3B78E7",
+  green: "#06C167",
+  red: "#E5484D",
+  orange: "#FC823A",
+  yellow: "#D99000",
+  pink: "#C85C91",
+  purple: "#7956D8",
+  teal: "#168F83",
+  indigo: "#5968C9",
 };
 
 export const Colors = {

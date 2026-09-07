@@ -22,13 +22,15 @@ export function HomePopularSheet({
   visible = true,
 }: Props) {
   const cardColor = useColor("card");
-  const backgroundColor = useColor("background");
+  const backgroundColor = useColor("foreground");
+  const textColorSelected = useColor("background");
   const borderColor = useColor("border");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const primaryColor = useColor("primary");
   const primaryForeground = useColor("primaryForeground");
   const iconColor = useColor("icon");
+  const tint = useColor("tint");
 
   const filteredPlaces =
     selectedCategory === "all"
@@ -98,14 +100,14 @@ export function HomePopularSheet({
                   borderColor,
                 },
                 isSelected && {
-                  backgroundColor: primaryColor,
-                  borderColor: primaryColor,
+                  backgroundColor: backgroundColor,
+                  borderColor: tint,
                 },
               ]}
             >
               <Icon
                 size={14}
-                color={isSelected ? primaryForeground : iconColor}
+                color={isSelected ? textColorSelected : iconColor}
                 strokeWidth={2}
               />
 
@@ -113,7 +115,7 @@ export function HomePopularSheet({
                 style={[
                   styles.categoryText,
                   {
-                    color: isSelected ? primaryForeground : textColor,
+                    color: isSelected ? textColorSelected : textColor,
                   },
                 ]}
                 numberOfLines={1}
