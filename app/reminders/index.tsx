@@ -19,6 +19,7 @@ export default function RemindersScreen() {
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
+
   const textMuted = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
@@ -194,7 +195,9 @@ export default function RemindersScreen() {
           icon={Plus}
           onPress={() => router.push("/reminders/add-reminder")}
         >
-          <Text style={styles.addButtonText}>Add to Reminder</Text>
+          <Text style={[styles.addButtonText, { color: primaryForeground }]}>
+            Add to Reminder
+          </Text>
         </Button>
       </View>
     </SafeAreaView>
@@ -308,6 +311,5 @@ const styles = StyleSheet.create({
   addButtonText: {
     fontSize: 15,
     fontWeight: "600",
-    color: "#FFFFFF",
   },
 });

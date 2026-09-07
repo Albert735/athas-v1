@@ -54,8 +54,8 @@ export const darkColors = {
   // ---------------------------------------------------------------------------
 
   // Uber-inspired green for primary actions / navigation states.
-  primary: "#06C167",
-  primaryForeground: "#000000",
+  primary: "#8F8F8F",
+  primaryForeground: "#FFFFFF",
 
   // ---------------------------------------------------------------------------
   // NEUTRALS
@@ -142,7 +142,7 @@ export const lightColors = {
   // PRIMARY
   // ---------------------------------------------------------------------------
 
-  primary: "#06C167",
+  primary: "#6B6B6B",
   primaryForeground: "#000000",
 
   // ---------------------------------------------------------------------------
