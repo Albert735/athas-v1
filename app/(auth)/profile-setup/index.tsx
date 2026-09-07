@@ -54,7 +54,10 @@ export default function ProfileSetupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image source={require("@/assets/images/icon.png")} style={styles.logo} />
+      <Image
+        source={require("@/assets/images/athas-splash-icon-1024.png")}
+        style={styles.logo}
+      />
 
       <View
         style={{

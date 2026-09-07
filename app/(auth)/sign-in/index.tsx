@@ -73,7 +73,7 @@ export default function LogInScreen() {
             {/* Hero section — branding & primary CTA */}
             <View style={styles.hero}>
               <Image
-                source={require("@/assets/images/icon.png")}
+                source={require("@/assets/images/athas-splash-icon-1024.png")}
                 style={styles.logo}
               />
 

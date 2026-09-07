@@ -5,7 +5,8 @@ import {
   ScrollView,
   StyleSheet,
   View,
- TouchableOpacity } from "react-native";
+  TouchableOpacity,
+} from "react-native";
 import { SignUpForm } from "@/components/authentication/sign-up/form";
 import { router } from "expo-router";
 import { Button } from "@/components/ui/button";
@@ -85,7 +86,7 @@ export default function SignUpScreen() {
               {/* Hero section — branding (logo, title, tagline) */}
               <View style={styles.hero}>
                 <Image
-                  source={require("@/assets/images/icon.png")}
+                  source={require("@/assets/images/athas-splash-icon-1024.png")}
                   style={styles.logo}
                 />
 
