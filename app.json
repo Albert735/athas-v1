@@ -10,7 +10,7 @@
     "newArchEnabled": true,
   "ios": {
     "supportsTablet": true,
-    "bundleIdentifier": "com.anonymous.athasv1",
+    "bundleIdentifier": "com.anonymous.rautev1",
     "infoPlist": {
       "NSLocationWhenInUseUsageDescription": "Athas uses your location to show you on the map and calculate walking routes to campus buildings."
     }
@@ -24,7 +24,7 @@
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": true,
-      "package": "com.anonymous.athasv1"
+      "package": "com.anonymous.rautev1"
     },
     "web": {
       "output": "static",

@@ -95,9 +95,9 @@ packagingOptions {
     buildToolsVersion rootProject.ext.buildToolsVersion
     compileSdk rootProject.ext.compileSdkVersion
 
-    namespace 'com.anonymous.athasv1'
+    namespace 'com.anonymous.rautev1'
     defaultConfig {
-        applicationId 'com.anonymous.athasv1'
+        applicationId 'com.anonymous.rautev1'
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

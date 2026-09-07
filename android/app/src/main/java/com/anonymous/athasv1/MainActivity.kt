@@ -1,4 +1,4 @@
-package com.anonymous.athasv1
+package com.anonymous.rautev1
 import expo.modules.splashscreen.SplashScreenManager
 
 import android.os.Build

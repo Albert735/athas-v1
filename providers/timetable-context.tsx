@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import type { ScheduledClass } from "@/types/class";
 
-const TIMETABLE_STORAGE_KEY = "@athas/timetable";
+const TIMETABLE_STORAGE_KEY = "@raute/timetable";
 
 interface TimetableContextValue {
   classes: ScheduledClass[];

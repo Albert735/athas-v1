@@ -34,7 +34,7 @@ export const Fonts = Platform.select({
 
 export const darkColors = {
   // Softer, less saturated navy — reads as "ink" rather than "brand blue"
-  background: "#0B1420",
+  background: "#000000",
   foreground: "#EDEFF2",
 
   // Cards sit one step up in value, subtle not stark
@@ -45,7 +45,7 @@ export const darkColors = {
   popoverForeground: "#EDEFF2",
 
   // Primary accent — desaturated sky blue, confident but not neon
-  primary: "#4DA8FF",
+  primary: "#00A7E5",
   primaryForeground: "#0B1420",
 
   // Secondary — muted steel, close to background so it recedes
@@ -90,7 +90,7 @@ export const darkColors = {
 
 export const lightColors = {
   // Off-white, not pure white — easier on the eye, less glare on a map
-  background: "#F7F8FA",
+  background: "#FFFFFF",
   foreground: "#141A22",
 
   card: "#FFFFFF",

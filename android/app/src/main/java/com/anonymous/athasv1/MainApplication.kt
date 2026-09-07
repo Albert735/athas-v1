@@ -1,4 +1,4 @@
-package com.anonymous.athasv1
+package com.anonymous.rautev1
 
 import android.app.Application
 import android.content.res.Configuration

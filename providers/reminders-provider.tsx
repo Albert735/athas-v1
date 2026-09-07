@@ -11,7 +11,7 @@ import {
 import type { Reminder } from "@/types/reminder";
 import type { ReminderFormData } from "@/schemas/reminder";
 
-const STORAGE_KEY = "@athas_reminders";
+const STORAGE_KEY = "@raute_reminders";
 
 type StoredReminder = Omit<Reminder, "dateTime" | "createdAt"> & {
   dateTime: string;
