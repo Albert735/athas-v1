@@ -18,7 +18,7 @@ import { useState, useMemo } from "react";
 import { router } from "expo-router";
 import { CATEGORIES } from "@/data/categories";
 import { COLLECTIONS } from "@/data/collections";
-
+import { Button } from "@/components/ui/button";
 
 /**
  * ExploreScreen
@@ -32,11 +32,12 @@ export default function ExploreScreen() {
   // Theme color tokens from custom hook
   const icon = useColor("icon");
   const textColor = useColor("text");
-  const primaryColor = useColor("primary");
   const mutedColor = useColor("textMuted");
   const cardColor = useColor("card");
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
   // Search & Filter State
   const [query, setQuery] = useState("");
@@ -149,7 +150,9 @@ export default function ExploreScreen() {
                       <Text
                         style={[
                           styles.chipText,
-                          { color: isSelected ? "#FFFFFF" : mutedColor },
+                          {
+                            color: isSelected ? primaryForeground : mutedColor,
+                          },
                         ]}
                       >
                         {item.label}
@@ -196,14 +199,14 @@ export default function ExploreScreen() {
                   </View>
                 </View>
                 {/* Navigation button directing user to interactive map view */}
-                <TouchableOpacity
-                  style={styles.goButton}
-                  activeOpacity={0.85}
+                <Button
+                  variant="default"
+                  size="sm"
+                  icon={Navigation}
                   onPress={() => router.push(`/map?buildingId=${item.id}`)}
                 >
-                  <Navigation size={14} color="#FFFFFF" />
-                  <Text style={styles.goButtonText}>Go</Text>
-                </TouchableOpacity>
+                  <Text>Go</Text>
+                </Button>
               </View>
             </Pressable>
           )}
