@@ -205,7 +205,7 @@ export default function ExploreScreen() {
                   icon={Navigation}
                   onPress={() => router.push(`/map?buildingId=${item.id}`)}
                 >
-                  <Text>Go</Text>
+                  <Text style={{ color: primaryForeground }}>Go</Text>
                 </Button>
               </View>
             </Pressable>
