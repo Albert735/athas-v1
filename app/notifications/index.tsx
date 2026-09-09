@@ -1,3 +1,4 @@
+// File: notifications/index.tsx – purpose: Displays a filterable list of user notifications.
 import React from "react";
 import { View, StyleSheet, Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

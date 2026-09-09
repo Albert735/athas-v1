@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(schedule)/_layout.tsx – purpose: Configures the schedule tab navigation stack with multiple screens.
 import { Stack } from "expo-router";
 
 export default function ScheduleLayout() {

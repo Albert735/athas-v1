@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(schedule)/add-class/index.tsx – purpose: Displays a form for adding a new class to the schedule.
 import React, { useState } from "react";
 import {
   View,

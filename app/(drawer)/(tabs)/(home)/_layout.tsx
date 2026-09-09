@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(home)/_layout.tsx – purpose: Configures the home tab navigation stack with screens for the main dashboard and popular places.
 import { Stack } from "expo-router";
 
 export default function HomeLayout() {

@@ -1,3 +1,4 @@
+// File: notifications/notification-details/index.tsx – purpose: Displays detailed information for a selected notification and provides options for editing or deleting it.
 import React from "react";
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

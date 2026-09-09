@@ -1,3 +1,4 @@
+// File: reminders/_layout.tsx – purpose: Configures the navigation stack for reminders, provides reminders context, and handles routing for adding and viewing reminders.
 import { Stack } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { RemindersProvider } from "@/providers/reminders-provider";

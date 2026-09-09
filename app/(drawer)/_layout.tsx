@@ -1,3 +1,4 @@
+// File: (drawer)/_layout.tsx – purpose: Configures the navigation stack for the main application layout with a drawer menu.
 import { Drawer } from "expo-router/drawer";
 import { DrawerContent } from "@/components/drawer/drawer-content";
 import { useColor } from "@/hooks/useColor";

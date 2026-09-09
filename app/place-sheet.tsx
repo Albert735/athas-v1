@@ -1,3 +1,4 @@
+// File: place-sheet.tsx – purpose: Displays detailed information for a selected place (library, cafe, etc.), including photos, ratings, hours, and directions.
 import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Image } from "expo-image";
 import { useLocalSearchParams, router } from "expo-router";

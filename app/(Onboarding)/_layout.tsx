@@ -1,3 +1,4 @@
+// File: (onboarding)/_layout.tsx – purpose: Configures the navigation stack for the onboarding flow.
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { useColorScheme } from "@/hooks/useColorScheme";

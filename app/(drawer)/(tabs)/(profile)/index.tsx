@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(profile)/index.tsx – purpose: Displays user profile information, settings, and support options.
 import {
   StyleSheet,
   Text,

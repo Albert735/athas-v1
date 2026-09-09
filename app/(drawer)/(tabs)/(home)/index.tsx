@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(home)/index.tsx – purpose: Displays the main map view with interactive place markers, search functionality, and popular location suggestions.
 import { View, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router, useFocusEffect } from "expo-router";

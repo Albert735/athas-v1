@@ -1,3 +1,4 @@
+// File: map/_layout.tsx – purpose: Configures the map-related navigation stack with shared styling and options.
 import { Stack } from "expo-router";
 import { Platform, useColorScheme } from "react-native";
 import { isLiquidGlassAvailable } from "expo-glass-effect";

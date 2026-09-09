@@ -1,3 +1,4 @@
+// File: building/[id]/index.tsx – purpose: Displays detailed information for a selected building.
 import { StyleSheet, Text, View, Pressable, Share } from "react-native";
 import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";

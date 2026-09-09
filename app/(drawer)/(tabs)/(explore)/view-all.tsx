@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(explore)/view-all.tsx – purpose: Displays a searchable list of nearby facilities and buildings.
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { SearchBar } from "@/components/ui/searchbar";

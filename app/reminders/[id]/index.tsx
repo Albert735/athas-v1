@@ -1,3 +1,4 @@
+// File: reminders/[id]/index.tsx – purpose: Displays detailed information for a selected reminder and provides options for editing or deleting it.
 import {
   View,
   Text,

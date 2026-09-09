@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(schedule)/[id]/index.tsx – purpose: Displays the details of a specific scheduled class.
 import { Text, View, StyleSheet, Pressable, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";

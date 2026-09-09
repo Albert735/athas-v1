@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(profile)/_layout.tsx – purpose: Configures the profile screen navigation stack.
 import { Stack } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { Platform, useColorScheme } from "react-native";

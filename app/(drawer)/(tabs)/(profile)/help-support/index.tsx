@@ -1,4 +1,5 @@
-import { StyleSheet, Text, View, FlatList , Pressable } from "react-native";
+// File: (drawer)/(tabs)/(profile)/help-support/index.tsx – purpose: Provides help and support options to users.
+import { StyleSheet, Text, View, FlatList, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { Header } from "@/components/shared/screen/header";

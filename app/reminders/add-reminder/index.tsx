@@ -1,3 +1,5 @@
+// File: reminders/add-reminder/index.tsx – purpose: Lets users create new reminders
+//  by specifying a task, location, time, and alert preferences.
 import {
   View,
   Text,

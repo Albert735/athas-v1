@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/_layout.web.tsx – purpose: Configures the tab navigation stack with shared styling and options.
 import { Tabs } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import {

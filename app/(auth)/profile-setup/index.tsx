@@ -1,3 +1,4 @@
+// File: (auth)/profile-setup/index.tsx – purpose: Guides new users through setting up their profile and academic details.
 import { View, StyleSheet, Pressable, Image } from "react-native";
 import { Text } from "@/components/ui/text";
 import { Landmark, Map } from "lucide-react-native";

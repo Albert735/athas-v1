@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(schedule)/scheduled-class-list/index.tsx – purpose: Displays the list of scheduled classes.
 import { ActiveClassCard, UpcomingClassCard } from "@/components/timetable";
 import {
   StyleSheet,

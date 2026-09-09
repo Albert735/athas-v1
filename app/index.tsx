@@ -1,3 +1,4 @@
+// File: index.tsx – purpose: Redirects initial application entry point to the main tab-based navigation layout.
 import { Redirect } from "expo-router";
 
 /**

@@ -1,3 +1,4 @@
+// File: (auth)/guest/index.tsx – purpose: Displays the guest landing screen with navigation options for exploring campus as a guest.
 import { useRef } from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

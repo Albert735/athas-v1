@@ -1,3 +1,4 @@
+// File: (auth)/_layout.tsx – purpose: (Handles authentication-related screens, providing a consistent layout and navigation structure for all authentication flows.)
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
@@ -24,4 +25,3 @@ export default function AuthLayout() {
     </>
   );
 }
-

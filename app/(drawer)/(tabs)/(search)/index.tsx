@@ -1,7 +1,8 @@
-import { ScrollView } from '@/components/ui/scroll-view';
-import { Text } from '@/components/ui/text';
-import { View } from '@/components/ui/view';
-import { useSearch } from '@/providers/search-context';
+// File: (drawer)/(tabs)/(search)/index.tsx – purpose: Displays search results and handles search queries.
+import { ScrollView } from "@/components/ui/scroll-view";
+import { Text } from "@/components/ui/text";
+import { View } from "@/components/ui/view";
+import { useSearch } from "@/providers/search-context";
 
 export default function SearchScreen() {
   const { searchText } = useSearch();
@@ -15,9 +16,9 @@ export default function SearchScreen() {
     >
       <View style={{ gap: 16 }}>
         <Text
-          variant='heading'
+          variant="heading"
           style={{
-            textAlign: 'center',
+            textAlign: "center",
           }}
         >
           BNA Search Screen
@@ -25,15 +26,15 @@ export default function SearchScreen() {
 
         {searchText ? (
           <View style={{ marginTop: 20 }}>
-            <Text variant='title' style={{ marginBottom: 8 }}>
+            <Text variant="title" style={{ marginBottom: 8 }}>
               Search Query:
             </Text>
-            <Text variant='body'>{searchText}</Text>
+            <Text variant="body">{searchText}</Text>
           </View>
         ) : (
           <Text
-            variant='caption'
-            style={{ textAlign: 'center', marginTop: 20 }}
+            variant="caption"
+            style={{ textAlign: "center", marginTop: 20 }}
           >
             Start typing in the search bar...
           </Text>

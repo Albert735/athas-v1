@@ -1,3 +1,4 @@
+// File: reminders/index.tsx – purpose: Displays all reminders with filtering and navigation to reminder details.
 import { View, Text, StyleSheet, FlatList, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { router } from "expo-router";

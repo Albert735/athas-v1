@@ -1,4 +1,5 @@
-import { View , Pressable } from "react-native";
+// File: (drawer)/(tabs)/(schedule)/index.tsx – purpose: Displays the weekly class schedule and redirects to the class list if classes are available.
+import { View, Pressable } from "react-native";
 import { EmptySchedule } from "@/components/timetable/empty-schedule/empty-schedule";
 import { useTimetable } from "@/hooks/useTimetable";
 import { router, Redirect } from "expo-router";

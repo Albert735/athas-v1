@@ -1,3 +1,4 @@
+// File: (auth)/sign-up/index.tsx – purpose: (add a descriptive comment here)
 import {
   Image,
   KeyboardAvoidingView,

@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(explore)/_layout.tsx – purpose: Configures the explore tab navigation stack with screens for nearby facilities and directory listings.
 import { Stack } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { Platform, useColorScheme } from "react-native";

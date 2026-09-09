@@ -1,3 +1,5 @@
+// File: (drawer)/(tabs)/(explore)/index.tsx – purpose: Displays the campus discovery and directory screen, allowing users to explore facilities and buildings.
+// Core React Native imports
 import {
   View,
   Text,
@@ -9,8 +11,11 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Mic, MapPin, Navigation, ArrowLeft } from "lucide-react-native";
+// UI components
 import { SearchBar } from "@/components/ui/searchbar";
+// Custom hook for theming
 import { useColor } from "@/hooks/useColor";
+// Static data: places information
 import { places } from "@/data/places";
 import { categoryImages } from "@/data/category-images";
 import { Image } from "expo-image";
@@ -28,6 +33,7 @@ import { Button } from "@/components/ui/button";
  * 1. Discovery Mode (default): Displays curated collections and a category tile grid.
  * 2. Directory Mode (active when search query or category is selected): Displays search results, category filter chips, and facility cards.
  */
+// ExploreScreen component renders campus exploration UI
 export default function ExploreScreen() {
   // Theme color tokens from custom hook
   const icon = useColor("icon");
@@ -43,7 +49,7 @@ export default function ExploreScreen() {
   const [query, setQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
-  // Filter places based on active category filter and search query
+  // Compute filtered places based on selected category and search query
   const filteredPlaces = useMemo(() => {
     let result = places;
 
@@ -62,13 +68,16 @@ export default function ExploreScreen() {
     return result;
   }, [query, selectedCategory]);
 
-  // Determine view mode: true when user is searching or has selected a category filter
+  // Determine whether we are in browsing (search/filter) mode
   const isBrowsing = !!query.trim() || !!selectedCategory;
 
+  // Render the UI
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* ── Header Title Row ── */}
       <View style={styles.titleRow}>
+        // Render either browsing mode (search results) or discovery mode
+        (collections) based on isBrowsing
         {isBrowsing ? (
           // In browsing mode, show a back button to reset search/filter
           <Pressable
@@ -309,6 +318,7 @@ export default function ExploreScreen() {
   );
 }
 
+// Style definitions for the ExploreScreen component
 const styles = StyleSheet.create({
   container: { paddingBottom: 80 },
   titleRow: { paddingHorizontal: 20, paddingVertical: 10, gap: 2 },

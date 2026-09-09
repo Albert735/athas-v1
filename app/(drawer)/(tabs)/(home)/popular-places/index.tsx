@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(home)/popular-places/index.tsx – purpose: Displays a searchable grid of popular places on campus with detailed filters.
 import { Header } from "@/components/shared";
 import { Text, View, FlatList, Pressable, StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

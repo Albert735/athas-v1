@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/_layout.tsx – purpose: Configures the tab navigation stack for the main application layout.
 import { Platform } from "react-native";
 import { useColor } from "@/hooks/useColor";
 import { isLiquidGlassAvailable } from "expo-glass-effect";

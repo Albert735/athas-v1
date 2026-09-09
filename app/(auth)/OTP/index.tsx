@@ -6,7 +6,6 @@
 import { StyleSheet, View } from "react-native";
 
 import { Text } from "@/components/ui/text";
-import { Button } from "@/components/ui/button";
 import { ShieldCheck } from "lucide-react-native";
 import { Image } from "expo-image";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -51,7 +50,10 @@ export default function OTPScreen() {
         <View style={styles.footerContainer}>
           <ShieldCheck strokeWidth={1} size={14} color={iconColor} />
           <Text style={styles.footer}>
-            SECURED BY RAUTE IDENTITY {`\n`} MANAGEMENT
+            SECURED BY RAUTE IDENTITY{" "}
+            {`
+`}{" "}
+            MANAGEMENT
           </Text>
         </View>
       </KeyboardAvoidingView>

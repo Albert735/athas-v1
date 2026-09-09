@@ -1,3 +1,4 @@
+// File: _layout.tsx – purpose: Configures the main application shell, including theme, navigation layout, and global providers (Toast, Mapbox, Timetable).
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { Colors } from "@/theme/colors";
 import { ThemeProvider } from "@/theme/theme-provider";

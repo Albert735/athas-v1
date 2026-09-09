@@ -1,3 +1,4 @@
+// File: (auth)/forgotten-password/index.tsx – purpose: Displays the forgotten password form and handles password reset requests.
 import { Button } from "@/components/ui/button";
 import { Text } from "@/components/ui/text";
 import { ForgottenPasswordForm } from "@/components/authentication/forgotten-password/form/forgotten-password-form";

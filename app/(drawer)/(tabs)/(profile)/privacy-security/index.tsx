@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(profile)/privacy-security/index.tsx – purpose: Manages user privacy settings and security options.
 import React, { useState } from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";

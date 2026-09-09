@@ -1,3 +1,4 @@
+// File: (drawer)/(tabs)/(schedule)/[id]/edit/index.tsx – purpose: Edits an existing class in the timetable.
 import React, { useEffect } from "react";
 import {
   View,
