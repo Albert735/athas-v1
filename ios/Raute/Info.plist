@@ -28,6 +28,7 @@
         <key>CFBundleURLSchemes</key>
         <array>
           <string>com.raute.app</string>
+          <string>com.raute.app</string>
         </array>
       </dict>
     </array>
