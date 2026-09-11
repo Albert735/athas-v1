@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
 import { Button } from "../ui/button";
 
@@ -20,7 +20,11 @@ import { useLiveLocation } from "@/hooks/useLiveLocation";
 
 import { getDistanceMeters } from "@/utils/geo";
 
+import { useVoiceNavigation } from "@/hooks/useVoiceNavigation";
+
 const ARRIVAL_THRESHOLD = 15;
+
+const VOICE_TRIGGER_DISTANCE = 5;
 
 interface Props {
   route: RouteResult | null;
@@ -29,57 +33,37 @@ interface Props {
 
 export default function MapNavigationCard({ route, onExit }: Props) {
   const [stepIndex, setStepIndex] = useState(0);
+  const [voiceEnabled, setVoiceEnabled] = useState(true);
 
   const liveLocation = useLiveLocation(true);
+
+  const { speak, stop } = useVoiceNavigation();
+
+  const spokenInstructions = useRef<Set<string>>(new Set());
 
   const cardColor = useColor("card");
   const textColor = useColor("text");
   const mutedColor = useColor("textMuted");
   const borderColor = useColor("border");
   const backgroundColor = useColor("background");
+  const primaryColor = useColor("foreground");
+  const primaryForeground = useColor("background");
 
-  const primaryColor = useColor("primary");
-
-  /**
-   * Reset the instruction index whenever
-   * a completely new route starts.
-   */
   useEffect(() => {
     setStepIndex(0);
-  }, [route]);
+    spokenInstructions.current.clear();
+
+    stop();
+  }, [route, stop]);
 
   const step = route?.steps[stepIndex];
 
   const isLastStep = route ? stepIndex >= route.steps.length - 1 : true;
 
   /**
-   * Determine whether the current
-   * maneuver has been reached.
+   * Distance from the user's current position
+   * to the current maneuver.
    */
-  useEffect(() => {
-    if (!route) return;
-    if (!step) return;
-    if (!liveLocation) return;
-
-    if (liveLocation.accuracy !== null && liveLocation.accuracy > 30) {
-      return;
-    }
-
-    const distanceToManeuver = getDistanceMeters(
-      liveLocation.coords,
-      step.maneuver.location,
-    );
-
-    if (distanceToManeuver > ARRIVAL_THRESHOLD) {
-      return;
-    }
-
-    if (isLastStep) {
-      return;
-    }
-    setStepIndex((current) => (current === stepIndex ? current + 1 : current));
-  }, [liveLocation, route, step, stepIndex, isLastStep, onExit]);
-
   const liveDistance = useMemo(() => {
     if (!step) return 0;
 
@@ -90,6 +74,108 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     return getDistanceMeters(liveLocation.coords, step.maneuver.location);
   }, [liveLocation, step]);
 
+  /**
+   * Speak Mapbox's voice instructions when
+   * the user reaches their trigger distance.
+   */
+  useEffect(() => {
+    if (!route) return;
+    if (!step) return;
+    if (!liveLocation) return;
+    if (!voiceEnabled) return;
+
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 30) {
+      return;
+    }
+
+    for (const voiceInstruction of step.voiceInstructions) {
+      const announcement = voiceInstruction.announcement;
+
+      if (!announcement) continue;
+
+      if (spokenInstructions.current.has(announcement)) {
+        continue;
+      }
+
+      const triggerDistance = voiceInstruction.distanceAlongGeometry;
+
+      /**
+       * Speak when the user is close enough to
+       * Mapbox's recommended announcement point.
+       */
+      if (liveDistance <= triggerDistance + VOICE_TRIGGER_DISTANCE) {
+        spokenInstructions.current.add(announcement);
+
+        speak(announcement);
+      }
+    }
+  }, [liveLocation, route, step, liveDistance, voiceEnabled, speak]);
+
+  /**
+   * Advance to the next maneuver once the
+   * current maneuver has been reached.
+   */
+  useEffect(() => {
+    if (!route) return;
+    if (!step) return;
+    if (!liveLocation) return;
+
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 30) {
+      return;
+    }
+
+    if (liveDistance > ARRIVAL_THRESHOLD) {
+      return;
+    }
+
+    if (isLastStep) {
+      return;
+    }
+
+    setStepIndex((current) => (current === stepIndex ? current + 1 : current));
+  }, [liveLocation, route, step, stepIndex, liveDistance, isLastStep]);
+
+  /**
+   * Handle arrival at the destination.
+   */
+  useEffect(() => {
+    if (!route) return;
+    if (!step) return;
+    if (!liveLocation) return;
+    if (!isLastStep) return;
+
+    if (liveLocation.accuracy !== null && liveLocation.accuracy > 30) {
+      return;
+    }
+
+    if (liveDistance > ARRIVAL_THRESHOLD) {
+      return;
+    }
+
+    const arrivalKey = "destination-arrival";
+
+    if (spokenInstructions.current.has(arrivalKey)) {
+      return;
+    }
+
+    spokenInstructions.current.add(arrivalKey);
+
+    if (voiceEnabled) {
+      speak("You have arrived at your destination.");
+    }
+  }, [
+    route,
+    step,
+    liveLocation,
+    isLastStep,
+    liveDistance,
+    voiceEnabled,
+    speak,
+  ]);
+
+  /**
+   * Calculate remaining route distance.
+   */
   const remainingDistance = useMemo(() => {
     if (!route || !step) return 0;
 
@@ -100,6 +186,9 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     return liveDistance + futureDistance;
   }, [route, step, stepIndex, liveDistance]);
 
+  /**
+   * Calculate remaining route duration.
+   */
   const remainingDuration = useMemo(() => {
     if (!route || !step) return 0;
 
@@ -114,6 +203,12 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 
     return currentRemaining + futureDuration;
   }, [route, step, stepIndex, liveDistance]);
+
+  const handleExit = async () => {
+    await stop();
+    spokenInstructions.current.clear();
+    onExit?.();
+  };
 
   if (!route || !step) {
     return (
@@ -135,7 +230,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
 
         <Button
           variant="destructive"
-          onPress={onExit}
+          onPress={handleExit}
           style={{
             marginTop: 16,
           }}
@@ -166,7 +261,11 @@ export default function MapNavigationCard({ route, onExit }: Props) {
             },
           ]}
         >
-          <MaterialIcons name={iconName as any} size={26} color="#FFFFFF" />
+          <MaterialIcons
+            name={iconName as any}
+            size={26}
+            color={primaryForeground}
+          />
         </View>
 
         <View style={styles.instructionContainer}>
@@ -261,7 +360,29 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      <Button variant="destructive" onPress={onExit}>
+      <Button
+        variant="outline"
+        onPress={() => {
+          setVoiceEnabled((current) => {
+            const next = !current;
+
+            if (!next) {
+              stop();
+            }
+
+            return next;
+          });
+        }}
+      >
+        <MaterialIcons
+          name={voiceEnabled ? "volume-up" : "volume-off"}
+          size={20}
+        />
+
+        {voiceEnabled ? " Voice guidance on" : " Voice guidance off"}
+      </Button>
+
+      <Button variant="destructive" onPress={handleExit}>
         Exit Navigation
       </Button>
     </View>
