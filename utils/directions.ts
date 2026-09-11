@@ -1,5 +1,11 @@
 import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
 
+export interface VoiceInstruction {
+  distanceAlongGeometry: number;
+  announcement: string;
+  ssmlAnnouncement?: string;
+}
+
 export interface RouteStep {
   instruction: string;
   distance: number;
@@ -10,6 +16,8 @@ export interface RouteStep {
     modifier?: string;
     location: [number, number];
   };
+
+  voiceInstructions: VoiceInstruction[];
 }
 
 export interface RouteResult {
@@ -33,6 +41,9 @@ export async function getRoute(
     `https://api.mapbox.com/directions/v5/mapbox/${profile}/${coordinates}` +
     `?geometries=geojson` +
     `&steps=true` +
+    `&voice_instructions=true` +
+    `&voice_units=metric` +
+    `&language=en` +
     `&overview=full` +
     `&access_token=${MAPBOX_PUBLIC_TOKEN}`;
 
@@ -41,7 +52,6 @@ export async function getRoute(
 
     if (!response.ok) {
       console.warn("Directions request failed:", response.status);
-
       return null;
     }
 
@@ -68,6 +78,13 @@ export async function getRoute(
 
           location: step.maneuver?.location,
         },
+
+        voiceInstructions:
+          step.voiceInstructions?.map((voice: any) => ({
+            distanceAlongGeometry: voice.distanceAlongGeometry ?? 0,
+            announcement: voice.announcement ?? "",
+            ssmlAnnouncement: voice.ssmlAnnouncement,
+          })) ?? [],
       })) ?? [];
 
     return {
