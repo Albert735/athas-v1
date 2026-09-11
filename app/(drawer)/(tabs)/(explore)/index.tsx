@@ -76,8 +76,8 @@ export default function ExploreScreen() {
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
       {/* ── Header Title Row ── */}
       <View style={styles.titleRow}>
-        // Render either browsing mode (search results) or discovery mode
-        (collections) based on isBrowsing
+        {/* // Render either browsing mode (search results) or discovery mode */}
+
         {isBrowsing ? (
           // In browsing mode, show a back button to reset search/filter
           <Pressable

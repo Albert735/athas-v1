@@ -27,8 +27,7 @@
       <dict>
         <key>CFBundleURLSchemes</key>
         <array>
-          <string>raute</string>
-          <string>com.anonymous.rautev1</string>
+          <string>com.raute.app</string>
         </array>
       </dict>
     </array>
