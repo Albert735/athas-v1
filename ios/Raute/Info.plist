@@ -49,11 +49,7 @@
     <key>NSLocationAlwaysUsageDescription</key>
     <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>NSLocationWhenInUseUsageDescription</key>
-    <string>Raute uses your location to show you on the map and calculate walking routes to campus buildings.</string>
-    <key>NSUserActivityTypes</key>
-    <array>
-      <string>$(PRODUCT_BUNDLE_IDENTIFIER).expo.index_route</string>
-    </array>
+    <string>Allow $(PRODUCT_NAME) to access your location</string>
     <key>RCTNewArchEnabled</key>
     <true/>
     <key>UILaunchStoryboardName</key>
