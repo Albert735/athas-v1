@@ -379,7 +379,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
           size={20}
         />
 
-        {voiceEnabled ? " Voice guidance on" : " Voice guidance off"}
+        {/* {voiceEnabled ? " Voice guidance on" : " Voice guidance off"} */}
       </Button>
 
       <Button variant="destructive" onPress={handleExit}>

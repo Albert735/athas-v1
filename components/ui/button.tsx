@@ -321,7 +321,6 @@ export const Button = forwardRef<View, ButtonProps>(
     const contentColor = getColor();
     const iconSize = getIconSize();
     const styleWithoutFlex = getStyleWithoutFlex();
-    const IconComponent = icon;
 
     return animation ? (
       <Pressable
@@ -353,12 +352,8 @@ export const Button = forwardRef<View, ButtonProps>(
             <Text
               style={{ flexDirection: "row", alignItems: "center", gap: 6 }}
             >
-              {IconComponent && (
-                <IconComponent
-                  color={contentColor}
-                  size={iconSize}
-                  strokeWidth={2}
-                />
+              {icon && (
+                <Icon name={icon} color={contentColor} size={iconSize} />
               )}
               {children}
             </Text>
