@@ -212,7 +212,7 @@ export default function PlaceSheet() {
         </View>
       </View>
 
-      <Button size="sm" icon={Navigation} onPress={handleDirections}>
+      <Button icon={Navigation} onPress={handleDirections}>
         Get Directions
       </Button>
 
