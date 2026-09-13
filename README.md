@@ -1,198 +1,510 @@
-# BNA UI 🚀
+# Raute
 
-![BNA UI Header](https://bna-ui.s3.eu-north-1.amazonaws.com/bna-ui-header.png)
+## Campus Navigation, Built for Students.
 
-**B**uild **N**ative **A**pps - A powerful CLI for creating Expo React Native applications with a beautiful UI component library.
+Raute is a mobile campus navigation platform designed to help university students find locations, navigate campus, manage their class schedules, and get to their destinations efficiently.
 
-## ✨ Features
-
-- 🎨 **Beautiful UI Components** - Pre-built, customizable components with modern design
-- 🌙 **Theme Support** - Built-in light/dark mode with seamless transitions
-- 📱 **Expo Router Ready** - Complete navigation setup with tab and stack navigation
-- 🎯 **TypeScript First** - Full TypeScript support with excellent IntelliSense
-- 📦 **Flexible Package Manager** - Works with npm, yarn, or pnpm
-- 🚀 **Zero Configuration** - Get started in seconds with sensible defaults
-- 🔧 **Highly Customizable** - Easily customize colors, spacing, and components
-- 📲 **Cross-Platform** - Perfect compatibility across iOS and Android
-- ⚡ **Performance Optimized** - Lightweight and fast components
-- 🎭 **Animation Ready** - Smooth animations with React Native Reanimated
-
-## 📦 Installation
-
-```bash
-# The fastest way to set up BNA UI in your Expo project:
-npx bna-ui init
-
-# Navigate to your Expo project
-cd bna-app
-
-# Start your Expo app
-npx expo start
-
-# Start adding components
-npx bna-ui add button
-npx bna-ui add card
-npx bna-ui add input
-```
-
-## 🚀 Quick Start
-
-### Starting Your Project
-
-1. **Initialize your project** (if you haven't already):
-
-   ```bash
-   npx bna-ui init
-   cd bna-app
-   ```
-
-2. **Start your Expo app**:
-
-   ```bash
-   npx expo start
-   ```
-
-## 🎨 Available Components
-
-| Component      | Description                       | Status         |
-| -------------- | --------------------------------- | -------------- |
-| `Button`       | Customizable button with variants | ✅ Available   |
-| `Card`         | Container component with shadow   | ✅ Available   |
-| `Input`        | Text input with validation        | ✅ Available   |
-| `Bottom Sheet` | Overlay modal component           | ✅ Available   |
-| `Spinner`      | Loading spinner and skeletons     | ✅ Available   |
-| `Avatar`       | User profile image component      | ✅ Available   |
-| `Badge`        | Small status indicator            | ✅ Available   |
-| `Date Picker`  | Date Picker component             | ✅ Available   |
-| `Switch`       | Toggle switch component           | ✅ Available   |
-| `Progress`     | Range progress component          | ✅ Available   |
-| `Charts`       | Charts components.                | 🔄 Coming Soon |
-
-## 🎯 Usage Example
-
-```tsx
-import React from 'react';
-import { Button } from '@/components/ui/button';
-import { Card } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { View } from '@/components/ui/view';
-
-export default function HomeScreen() {
-  return (
-    <View style={{ flex: 1, padding: 20 }}>
-      <Card>
-        <Input placeholder='Enter your email' keyboardType='email-address' />
-        <Button
-          variant='success'
-          onPress={() => console.log('Button pressed!')}
-        >
-          Get Started
-        </Button>
-      </Card>
-    </View>
-  );
-}
-```
-
-## 🌙 Theme Configuration
-
-BNA UI comes with a flexible theming system:
-
-```tsx
-// theme/colors.ts
-export const lightTheme = {
-  colors: {
-    background: '#FFFFFF',
-    foreground: '#000000',
-    card: '#F2F2F7',
-    cardForeground: '#000000',
-    popover: '#F2F2F7',
-    popoverForeground: '#000000',
-    primary: '#18181b',
-    primaryForeground: '#FFFFFF',
-    secondary: '#F2F2F7',
-    secondaryForeground: '#18181b',
-    muted: '#78788033',
-    mutedForeground: '#71717a',
-    // ... more colors
-  },
-};
-
-export const darkTheme = {
-  colors: {
-    background: '#000000',
-    foreground: '#FFFFFF',
-    card: '#1C1C1E',
-    cardForeground: '#FFFFFF',
-    popover: '#18181b',
-    popoverForeground: '#FFFFFF',
-    primary: '#e4e4e7',
-    primaryForeground: '#18181b',
-    secondary: '#1C1C1E',
-    secondaryForeground: '#FFFFFF',
-    muted: '#78788033',
-    mutedForeground: '#a1a1aa',
-    // ... more colors
-  },
-};
-```
-
-## 📱 Platform Support
-
-- ✅ **iOS** - Full native iOS support
-- ✅ **Android** - Full native Android support
-- ✅ **Web** - Responsive web support
-- ✅ **Expo Go** - Development with Expo Go
-- ✅ **EAS Build** - Production builds with EAS
-
-## 🛠️ Development
-
-```bash
-# Clone the repository
-git clone https://github.com/ahmedbna/bna-ui.git
-cd bna-ui
-
-# Install dependencies
-npm install
-
-# Build for production
-npm run build
-```
-
-## 🤝 Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🔗 Links
-
-- 📚 **Documentation**: [https://ui.ahmedbna.com](https://ui.ahmedbna.com)
-- 🐛 **Bug Reports**: [GitHub Issues](https://github.com/ahmedbna/ui/issues)
-- 💬 **Linkedin**: [@ahmedbna](https://www.linkedin.com/in/ahmedbna/)
-- 𝕏 **X**: [@ahmedbnaa](https://x.com/ahmedbnaa)
-
-## ⭐ Support
-
-If you find BNA UI helpful, please consider giving it a star on GitHub! It helps us a lot.
-
-[![GitHub stars](https://img.shields.io/github/stars/ahmedbna/ui?style=social)](https://github.com/ahmedbna/ui)
-
-## 📈 Stats
-
-![GitHub package.json version](https://img.shields.io/github/package-json/v/ahmedbna/ui)
-![npm](https://img.shields.io/npm/v/bna-ui)
-![npm](https://img.shields.io/npm/dm/bna-ui)
-![GitHub](https://img.shields.io/github/license/ahmedbna/ui)
+The application combines interactive maps, location search, walking directions, timetable management, and navigation into a single mobile experience.
 
 ---
 
-Made with ❤️ by [Ahmed BNA](https://github.com/ahmedbna)
+## Overview
+
+Navigating a large university campus can be difficult, particularly for new students and visitors. Finding buildings, locating facilities, and getting to classes on time often requires relying on unfamiliar landmarks or asking for directions.
+
+Raute addresses this problem by providing a centralized campus navigation experience.
+
+Users can:
+
+- Search for campus buildings and facilities
+- Explore important locations around campus
+- View detailed information about places
+- Get walking directions between locations
+- Follow step-by-step navigation
+- Use voice-guided navigation
+- Create and manage class schedules
+- Associate classes with campus buildings
+- Navigate directly to scheduled classes
+- Access an "I'm Late" navigation experience
+- Receive campus alerts
+- Explore campus through an interactive map
+
+---
+
+## Core Features
+
+### Interactive Campus Map
+
+The map is the central component of Raute and provides an interactive view of the university campus.
+
+Users can:
+
+- Explore campus locations
+- Search for places
+- Filter locations by category
+- Select buildings and facilities
+- View location details
+- Generate walking routes
+- Start navigation to a destination
+
+The map experience is powered by Mapbox.
+
+---
+
+### Location Search
+
+Raute provides search and category-based discovery for campus locations.
+
+Supported location types include:
+
+- Buildings
+- Lecture halls
+- Libraries
+- Banks
+- Clinics
+- Laboratories
+- Restrooms
+- Cafés
+- Printing locations
+- Bus stops
+- Other campus facilities
+
+---
+
+### Point-to-Point Navigation
+
+Users can select a destination and generate a walking route from their current location.
+
+Navigation provides:
+
+- Route visualization
+- Walking distance
+- Estimated travel time
+- Step-by-step directions
+- Navigation progress
+- Voice guidance
+
+Routing is handled through the Mapbox Directions API.
+
+---
+
+### Voice-Guided Navigation
+
+Raute is designed to support hands-free navigation through spoken turn-by-turn instructions.
+
+This allows users to navigate campus without constantly looking at their phone while walking.
+
+---
+
+### Timetable Management
+
+Students can create and manage their personal class schedules.
+
+A class can contain:
+
+- Course name
+- Course code
+- Building
+- Lecture hall
+- Start time
+- End time
+- Class days
+- Repeat schedule
+
+Students can:
+
+- Add classes
+- Edit classes
+- Delete classes
+- View upcoming classes
+- Select a campus building
+- Navigate directly to a class
+
+---
+
+### "I'm Late" Mode
+
+Raute includes an "I'm Late" experience for students who are running behind schedule.
+
+The feature is designed to provide quick access to the student's upcoming class and immediately start navigation to the associated building.
+
+---
+
+### Campus Alerts
+
+Raute is designed to support campus-wide notifications and announcements.
+
+Potential alerts include:
+
+- Building closures
+- Maintenance
+- Events
+- Schedule changes
+- Emergency announcements
+- General campus notices
+
+---
+
+## Technology Stack
+
+### Mobile Application
+
+- React Native
+- Expo
+- Expo Router
+- TypeScript
+- NativeWind
+- React Hook Form
+- Zod
+
+### Maps and Navigation
+
+- Mapbox
+- @rnmapbox/maps
+- Mapbox Directions API
+- Device location services
+
+### Application Architecture
+
+- React Context
+- Custom React hooks
+- Service-based architecture
+- Component-driven UI
+- Modular feature structure
+
+### Development
+
+- Git
+- GitHub
+- npm
+- Xcode
+- Android Studio
+
+---
+
+## Architecture
+
+Raute follows a modular React Native architecture designed to keep application features separated and maintainable.
+
+```text
+Raute
+│
+├── app/
+│   ├── (auth)/
+│   ├── (drawer)/
+│   │   └── (tabs)/
+│   │       ├── home/
+│   │       ├── map/
+│   │       └── schedule/
+│   │
+│   └── map/
+│
+├── components/
+│   ├── authentication/
+│   ├── map/
+│   ├── timetable/
+│   ├── shared/
+│   └── ui/
+│
+├── hooks/
+│   ├── usePlaceSearch.ts
+│   ├── useUserLocation.ts
+│   └── useVoiceNavigation.ts
+│
+├── providers/
+│   ├── reminders-provider.tsx
+│   └── timetable-provider.tsx
+│
+├── services/
+│   ├── navigation/
+│   └── notification/
+│
+├── data/
+│   ├── places.ts
+│   ├── facilities.ts
+│   └── navigation-steps.ts
+│
+├── constants/
+│   └── mapbox.ts
+│
+└── types/
+```
+
+The architecture separates the application into:
+
+```text
+UI
+ │
+ ▼
+Application Logic
+ │
+ ▼
+Services
+ │
+ ▼
+External APIs
+```
+
+This structure allows individual features to evolve independently while keeping the application maintainable.
+
+---
+
+## Navigation Flow
+
+```text
+Current Location
+       │
+       ▼
+Search / Select Destination
+       │
+       ▼
+View Location Details
+       │
+       ▼
+Get Directions
+       │
+       ▼
+Calculate Walking Route
+       │
+       ▼
+Start Navigation
+       │
+       ├── Route Visualization
+       ├── Step-by-Step Directions
+       └── Voice Guidance
+```
+
+---
+
+## Timetable Flow
+
+```text
+Add Class
+   │
+   ├── Course Information
+   ├── Class Days
+   ├── Start & End Time
+   └── Campus Building
+            │
+            ▼
+        Save Class
+            │
+            ▼
+        My Schedule
+            │
+            ▼
+        Select Class
+            │
+            ▼
+     Navigate to Class
+```
+
+---
+
+## Design Philosophy
+
+Raute follows a minimal, modern, and mobile-first design approach.
+
+The interface focuses on:
+
+- Clear information hierarchy
+- Simple navigation
+- Consistent spacing
+- Accessible interactions
+- Context-aware interfaces
+- Map-focused experiences
+- Native mobile interaction patterns
+- Minimal cognitive load
+
+The objective is to make common campus tasks quick and intuitive rather than forcing users through complicated workflows.
+
+---
+
+## Application Structure
+
+| Area       | Purpose                                     |
+| ---------- | ------------------------------------------- |
+| Home       | Campus overview and frequently used actions |
+| Map        | Search, explore, and navigate campus        |
+| Schedule   | Manage classes and timetable                |
+| Navigation | Walking directions and route guidance       |
+| Profile    | Account and user preferences                |
+| Alerts     | Campus notifications                        |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+Make sure the following are installed:
+
+- Node.js
+- npm
+- Git
+- Expo development environment
+- Xcode for iOS development
+- Android Studio for Android development
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/Albert735/raute.git
+
+cd raute
+```
+
+### Install Dependencies
+
+```bash
+npm install
+```
+
+### Configure Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN=your_mapbox_public_token
+```
+
+Replace the value with your Mapbox public access token.
+
+### Start the Development Server
+
+```bash
+npx expo start
+```
+
+For iOS:
+
+```bash
+npx expo run:ios
+```
+
+For Android:
+
+```bash
+npx expo run:android
+```
+
+Some native features require a development build rather than Expo Go.
+
+---
+
+## Environment Variables
+
+| Variable                          | Description                |
+| --------------------------------- | -------------------------- |
+| `EXPO_PUBLIC_MAPBOX_PUBLIC_TOKEN` | Public Mapbox access token |
+
+Do not commit private API keys, secrets, or production credentials to the repository.
+
+---
+
+## Project Status
+
+Raute is currently under active development.
+
+The initial implementation is focused on the University of Ghana campus and is being developed as a university campus navigation and student planning platform.
+
+---
+
+## Roadmap
+
+### Navigation
+
+- [x] Interactive campus map
+- [x] Location search
+- [x] Location categories
+- [x] Building details
+- [x] Walking route generation
+- [ ] Voice-guided navigation
+- [ ] Offline campus maps
+- [ ] Accessibility-aware routing
+- [ ] Indoor navigation
+
+### Student Schedule
+
+- [x] Add classes
+- [x] Edit classes
+- [x] Delete classes
+- [x] Select class buildings
+- [x] Navigate to classes
+- [ ] Persistent timetable storage
+- [ ] Advanced reminders
+- [ ] "I'm Late" mode
+
+### Campus Platform
+
+- [ ] Campus alerts
+- [ ] Real-time campus updates
+- [ ] University events
+- [ ] Administrative location management
+- [ ] Multi-campus support
+
+---
+
+## Contributing
+
+Contributions, suggestions, and improvements are welcome.
+
+To contribute:
+
+1. Fork the repository.
+2. Create a feature branch.
+
+```bash
+git checkout -b feature/your-feature
+```
+
+3. Make your changes.
+4. Commit your changes.
+
+```bash
+git commit -m "feat: add your feature"
+```
+
+5. Push the branch.
+
+```bash
+git push origin feature/your-feature
+```
+
+6. Open a pull request.
+
+Please keep contributions focused and consistent with the existing architecture and coding conventions.
+
+---
+
+## Project Context
+
+Raute is being developed as a university-focused campus navigation platform, with the initial target environment centered around the University of Ghana campus.
+
+The project explores how mobile navigation, location services, and student scheduling can be combined to improve the everyday campus experience.
+
+---
+
+## License
+
+This project is currently intended for educational and development purposes.
+
+License information will be added as the project progresses.
+
+---
+
+## Author
+
+**Albert Quaye**
+
+Frontend Developer focused on React, React Native, Next.js, and user interface development.
+
+---
+
+<div align="center">
+
+# Raute
+
+**Find your place. Get there faster.**
+
+</div>
