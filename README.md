@@ -419,10 +419,9 @@ The initial implementation is focused on the University of Ghana campus and is b
 - [x] Location categories
 - [x] Building details
 - [x] Walking route generation
-- [ ] Voice-guided navigation
-- [ ] Offline campus maps
-- [ ] Accessibility-aware routing
-- [ ] Indoor navigation
+- [x] Voice-guided navigation
+- [x] Accessibility-aware routing
+- [x] Indoor navigation
 
 ### Student Schedule
 
@@ -431,7 +430,7 @@ The initial implementation is focused on the University of Ghana campus and is b
 - [x] Delete classes
 - [x] Select class buildings
 - [x] Navigate to classes
-- [ ] Persistent timetable storage
+- [x] Persistent timetable storage
 - [ ] Advanced reminders
 - [ ] "I'm Late" mode
 
