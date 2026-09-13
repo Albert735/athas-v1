@@ -1102,20 +1102,20 @@ ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeD
 
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang -v -E -dM -arch arm64 -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -x c -c /dev/null
 
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
-
-ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
-
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --version --output-format xml1
 
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc --version
+
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/ibtool --version --output-format xml1
+
+ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/libtool -V
 
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/usr/bin/actool --print-asset-tag-combinations --output-format xml1 /Users/albertquaye/Downloads/athas-v1/ios/Raute/Images.xcassets
 
 ExecuteExternalTool /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ld -version_details
 
-Build description signature: b976f386ba19955e13b71ec2bf87fd69
-Build description path: /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/XCBuildData/b976f386ba19955e13b71ec2bf87fd69.xcbuilddata
+Build description signature: 8e5f30c125019563b0b085ae4c254f8d
+Build description path: /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/XCBuildData/8e5f30c125019563b0b085ae4c254f8d.xcbuilddata
 ClangStatCache /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk /Users/albertquaye/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E252-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
     cd /Users/albertquaye/Downloads/athas-v1/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/clang-stat-cache /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/SDKStatCaches.noindex/iphoneos26.4-23E252-68a138bb55de9ba35ce6c8c40d12849e.sdkstatcache
@@ -2739,6 +2739,14 @@ PhaseScriptExecution [CP-User]\ [RNDeps]\ Replace\ React\ Native\ Core\ for\ the
 Node found at: /Users/albertquaye/.nvm/versions/node/v24.5.0/bin/node
 No previous build detected, but Debug Configuration. No need to replace React-Core-prebuilt
 
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/React-Core/React-Core_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/React-Core/ResourceBundle-React-Core_privacy-React-Core-Info.plist (in target 'React-Core-React-Core_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/React-Core/ResourceBundle-React-Core_privacy-React-Core-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/React-Core/React-Core_privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/React-cxxreact/React-cxxreact_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/React-cxxreact/ResourceBundle-React-cxxreact_privacy-React-cxxreact-Info.plist (in target 'React-cxxreact-React-cxxreact_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/React-cxxreact/ResourceBundle-React-cxxreact_privacy-React-cxxreact-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/React-cxxreact/React-cxxreact_privacy.bundle/Info.plist
+
 note: Run script build phase '[CP-User] [RN]Check FBReactNativeSpec' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'React-RCTFBReactNativeSpec' from project 'Pods')
 PhaseScriptExecution [CP-User]\ [RN]Check\ FBReactNativeSpec /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/React-RCTFBReactNativeSpec.build/Script-46EB2E00029160.sh (in target 'React-RCTFBReactNativeSpec' from project 'Pods')
     cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
@@ -3276,6 +3284,14 @@ PhaseScriptExecution [CP-User]\ [RN]Check\ FBReactNativeSpec /Users/albertquaye/
     export variant\=normal
     /bin/sh -c /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/React-RCTFBReactNativeSpec.build/Script-46EB2E00029160.sh
 Checking whether Codegen has run...
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/EXConstants/EXConstants.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-EXConstants-EXConstants-Info.plist (in target 'EXConstants-EXConstants' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-EXConstants-EXConstants-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/EXConstants/EXConstants.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/EXConstants/ExpoConstants_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-ExpoConstants_privacy-EXConstants-Info.plist (in target 'EXConstants-ExpoConstants_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/EXConstants/ResourceBundle-ExpoConstants_privacy-EXConstants-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/EXConstants/ExpoConstants_privacy.bundle/Info.plist
 
 note: Run script build phase '[CP-User] Generate app.config for prebuilt Constants.manifest' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'EXConstants' from project 'Pods')
 PhaseScriptExecution [CP-User]\ Generate\ app.config\ for\ prebuilt\ Constants.manifest /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/EXConstants.build/Script-46EB2E00029110.sh (in target 'EXConstants' from project 'Pods')
@@ -3836,8 +3852,36 @@ PhaseScriptExecution [CP-User]\ Generate\ app.config\ for\ prebuilt\ Constants.m
     /bin/sh -c /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/EXConstants.build/Script-46EB2E00029110.sh
 Node found at: /Users/albertquaye/.nvm/versions/node/v24.5.0/bin/node
 
-note: Run script build phase '[Expo] Configure project' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Raute' from project 'Raute')
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/RNSVG/RNSVGFilters.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist (in target 'RNSVG-RNSVGFilters' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNSVG/ResourceBundle-RNSVGFilters-RNSVG-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/RNSVG/RNSVGFilters.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/SDWebImage/SDWebImage.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/SDWebImage/ResourceBundle-SDWebImage-SDWebImage-Info.plist (in target 'SDWebImage-SDWebImage' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/SDWebImage/ResourceBundle-SDWebImage-SDWebImage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/SDWebImage/SDWebImage.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist (in target 'RNCAsyncStorage-RNCAsyncStorage_resources' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/RNCAsyncStorage/ResourceBundle-RNCAsyncStorage_resources-RNCAsyncStorage-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/RNCAsyncStorage/RNCAsyncStorage_resources.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoSystemUI/ExpoSystemUI_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoSystemUI/ResourceBundle-ExpoSystemUI_privacy-ExpoSystemUI-Info.plist (in target 'ExpoSystemUI-ExpoSystemUI_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoSystemUI/ResourceBundle-ExpoSystemUI_privacy-ExpoSystemUI-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoSystemUI/ExpoSystemUI_privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist (in target 'ExpoFileSystem-ExpoFileSystem_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoFileSystem/ResourceBundle-ExpoFileSystem_privacy-ExpoFileSystem-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoFileSystem/ExpoFileSystem_privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist (in target 'ExpoDevice-ExpoDevice_privacy' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/ExpoDevice/ResourceBundle-ExpoDevice_privacy-ExpoDevice-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/ExpoDevice/ExpoDevice_privacy.bundle/Info.plist
+
+ProcessInfoPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/MapboxMaps/MapboxMapsResources.bundle/Info.plist /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/MapboxMaps/ResourceBundle-MapboxMapsResources-MapboxMaps-Info.plist (in target 'MapboxMaps-MapboxMapsResources' from project 'Pods')
+    cd /Users/albertquaye/Downloads/athas-v1/ios/Pods
+    builtin-infoPlistUtility /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/MapboxMaps/ResourceBundle-MapboxMapsResources-MapboxMaps-Info.plist -producttype com.apple.product-type.bundle -expandbuildsettings -format binary -platform iphoneos -additionalcontentfile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Pods.build/Debug-iphoneos/MapboxMaps-MapboxMapsResources.build/assetcatalog_generated_info.plist -requiredArchitecture arm64 -o /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/MapboxMaps/MapboxMapsResources.bundle/Info.plist
+
 note: Run script build phase 'Bundle React Native code and images' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Raute' from project 'Raute')
+note: Run script build phase '[Expo] Configure project' will be run during every build because the option to run the script phase "Based on dependency analysis" is unchecked. (in target 'Raute' from project 'Raute')
 ProcessProductPackaging /Users/albertquaye/Downloads/athas-v1/ios/Raute/Raute.entitlements /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Raute.app.xcent (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     
@@ -4513,27 +4557,27 @@ PrecompileSwiftBridgingHeader normal arm64 (in target 'Raute' from project 'Raut
 
 SwiftDriverJobDiscovery normal arm64 Compiling bridging header (in target 'Raute' from project 'Raute')
 
-SwiftCompile normal arm64 Compiling\ AppDelegate.swift /Users/albertquaye/Downloads/athas-v1/ios/Raute/AppDelegate.swift (in target 'Raute' from project 'Raute')
-
-SwiftCompile normal arm64 /Users/albertquaye/Downloads/athas-v1/ios/Raute/AppDelegate.swift (in target 'Raute' from project 'Raute')
-    cd /Users/albertquaye/Downloads/athas-v1/ios
-    
-
 SwiftEmitModule normal arm64 Emitting\ module\ for\ Raute (in target 'Raute' from project 'Raute')
 
 EmitSwiftModule normal arm64 (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     
 
-SwiftCompile normal arm64 Compiling\ ExpoModulesProvider.swift /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/Pods-Raute/ExpoModulesProvider.swift (in target 'Raute' from project 'Raute')
-
-SwiftCompile normal arm64 /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/Pods-Raute/ExpoModulesProvider.swift (in target 'Raute' from project 'Raute')
-    cd /Users/albertquaye/Downloads/athas-v1/ios
-    
-
 SwiftCompile normal arm64 Compiling\ GeneratedAssetSymbols.swift /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Raute' from project 'Raute')
 
 SwiftCompile normal arm64 /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/DerivedSources/GeneratedAssetSymbols.swift (in target 'Raute' from project 'Raute')
+    cd /Users/albertquaye/Downloads/athas-v1/ios
+    
+
+SwiftCompile normal arm64 Compiling\ AppDelegate.swift /Users/albertquaye/Downloads/athas-v1/ios/Raute/AppDelegate.swift (in target 'Raute' from project 'Raute')
+
+SwiftCompile normal arm64 /Users/albertquaye/Downloads/athas-v1/ios/Raute/AppDelegate.swift (in target 'Raute' from project 'Raute')
+    cd /Users/albertquaye/Downloads/athas-v1/ios
+    
+
+SwiftCompile normal arm64 Compiling\ ExpoModulesProvider.swift /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/Pods-Raute/ExpoModulesProvider.swift (in target 'Raute' from project 'Raute')
+
+SwiftCompile normal arm64 /Users/albertquaye/Downloads/athas-v1/ios/Pods/Target\ Support\ Files/Pods-Raute/ExpoModulesProvider.swift (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     
 
@@ -4564,9 +4608,9 @@ SwiftDriver\ Compilation Raute normal arm64 com.apple.xcode.tools.swift.compiler
 LinkAssetCatalog /Users/albertquaye/Downloads/athas-v1/ios/Raute/Images.xcassets (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     builtin-linkAssetCatalog --thinned /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_output/thinned --thinned-dependencies /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_dependencies_thinned --thinned-info-plist-content /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_generated_info.plist_thinned --unthinned /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_output/unthinned --unthinned-dependencies /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_dependencies_unthinned --unthinned-info-plist-content /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_generated_info.plist_unthinned --output /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app --plist-output /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/assetcatalog_generated_info.plist
+note: Emplaced /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/AppIcon60x60@2x.png (in target 'Raute' from project 'Raute')
 note: Emplaced /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/Assets.car (in target 'Raute' from project 'Raute')
 note: Emplaced /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/AppIcon76x76@2x~ipad.png (in target 'Raute' from project 'Raute')
-note: Emplaced /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/AppIcon60x60@2x.png (in target 'Raute' from project 'Raute')
 
 CopyPlistFile /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/Expo.plist /Users/albertquaye/Downloads/athas-v1/ios/Raute/Supporting/Expo.plist (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
@@ -5231,7 +5275,7 @@ PhaseScriptExecution [CP]\ Copy\ Pods\ Resources /Users/albertquaye/Library/Deve
 Transfer starting: 138 files
 EXConstants.bundle/app.config
 
-sent 11262 bytes  received 42 bytes  748609 bytes/sec
+sent 11262 bytes  received 42 bytes  702111 bytes/sec
 total size is 145290  speedup is 12.85
 
 CopySwiftLibs /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app (in target 'Raute' from project 'Raute')
@@ -5241,8 +5285,8 @@ CopySwiftLibs /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnnga
 ExtractAppIntentsMetadata (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
     /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/appintentsmetadataprocessor --toolchain-dir /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain --module-name Raute --sdk-root /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS26.4.sdk --xcode-version 17E202 --platform-family iOS --deployment-target 15.1 --bundle-identifier com.raute.app --output /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app --target-triple arm64-apple-ios15.1 --binary-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/Raute --dependency-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Objects-normal/arm64/Raute_dependency_info.dat --stringsdata-file /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Objects-normal/arm64/ExtractedAppShortcutsMetadata.stringsdata --source-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Objects-normal/arm64/Raute.SwiftFileList --metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Raute.DependencyMetadataFileList --static-metadata-file-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Raute.DependencyStaticMetadataFileList --swift-const-vals-list /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Intermediates.noindex/Raute.build/Debug-iphoneos/Raute.build/Objects-normal/arm64/Raute.SwiftConstValuesFileList --compile-time-extraction --deployment-aware-processing --validate-assistant-intents --no-app-shortcuts-localization
-2026-09-13 06:57:56.439 appintentsmetadataprocessor[2705:2882426] Starting appintentsmetadataprocessor export
-2026-09-13 06:57:56.461 appintentsmetadataprocessor[2705:2882426] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
+2026-09-13 07:47:13.514 appintentsmetadataprocessor[8380:2959366] Starting appintentsmetadataprocessor export
+2026-09-13 07:47:13.555 appintentsmetadataprocessor[8380:2959366] warning: Metadata extraction skipped. No AppIntents.framework dependency found.
 
 CodeSign /Users/albertquaye/Library/Developer/Xcode/DerivedData/Raute-dnngaxhrtmovzfgombagkrfzvtmz/Build/Products/Debug-iphoneos/Raute.app/Raute.debug.dylib (in target 'Raute' from project 'Raute')
     cd /Users/albertquaye/Downloads/athas-v1/ios
