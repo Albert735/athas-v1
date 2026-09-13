@@ -19,8 +19,11 @@ import type { SheetState, TransportProfile } from "@/types/map";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
+import { getDistanceMeters } from "@/utils/geo";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
+
+const ROUTE_UPDATE_DISTANCE = 20;
 
 type Place = (typeof places)[number];
 
@@ -53,12 +56,24 @@ export default function Map() {
   const cameraRef = useRef<MapboxGL.Camera>(null);
   const requestIdRef = useRef(0);
 
+  const lastRouteOriginRef = useRef<[number, number] | null>(null);
+
+  const reroutingRef = useRef(false);
+
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+
   const [sheetState, setSheetState] = useState<SheetState>("details");
+
+  const navigationActive = sheetState === "navigating";
+
   const [route, setRoute] = useState<RouteResult | null>(null);
+
   const [routeLoading, setRouteLoading] = useState(false);
+
   const [searchQuery, setSearchQuery] = useState("");
+
   const [searchFocused, setSearchFocused] = useState(false);
+
   const [cameraMode, setCameraMode] = useState<CameraMode>("normal");
 
   const searchResults = usePlaceSearch(searchQuery);
@@ -116,6 +131,9 @@ export default function Map() {
       setRoute(null);
       setRouteLoading(false);
 
+      lastRouteOriginRef.current = null;
+      reroutingRef.current = false;
+
       setSearchQuery("");
       setSearchFocused(false);
 
@@ -132,6 +150,9 @@ export default function Map() {
       setSheetState("details");
       setRoute(null);
       setRouteLoading(false);
+
+      lastRouteOriginRef.current = null;
+      reroutingRef.current = false;
 
       setSearchQuery("");
       setSearchFocused(false);
@@ -211,11 +232,12 @@ export default function Map() {
         return;
       }
 
-      const result = await getRoute(
-        origin,
-        [selectedPlace.longitude, selectedPlace.latitude],
-        profile,
-      );
+      const destination: [number, number] = [
+        selectedPlace.longitude,
+        selectedPlace.latitude,
+      ];
+
+      const result = await getRoute(origin, destination, profile);
 
       if (thisRequestId !== requestIdRef.current) {
         return;
@@ -223,6 +245,10 @@ export default function Map() {
 
       setRoute(result);
       setRouteLoading(false);
+
+      if (result) {
+        lastRouteOriginRef.current = origin;
+      }
 
       if (!result) {
         Alert.alert(
@@ -259,6 +285,9 @@ export default function Map() {
     setRoute(null);
     setRouteLoading(false);
 
+    lastRouteOriginRef.current = null;
+    reroutingRef.current = false;
+
     setSheetState("details");
     setCameraMode("normal");
 
@@ -274,16 +303,6 @@ export default function Map() {
     });
   }, [selectedPlace]);
 
-  /*
-   * Handles navigation into the Map screen.
-   *
-   * Existing buildingId flow:
-   *   buildingId → find place → show details/directions
-   *
-   * Reminder flow:
-   *   latitude + longitude + placeName → create destination
-   *   → show directions → automatically request route
-   */
   useEffect(() => {
     if (latitude && longitude && placeName) {
       const destination: Place = {
@@ -302,6 +321,10 @@ export default function Map() {
       setSelectedPlace(destination);
       setRoute(null);
       setRouteLoading(false);
+
+      lastRouteOriginRef.current = null;
+      reroutingRef.current = false;
+
       setSearchQuery("");
       setSearchFocused(false);
 
@@ -326,12 +349,17 @@ export default function Map() {
 
     if (!found) {
       console.warn("Building not found in places:", buildingId);
+
       return;
     }
 
     setSelectedPlace(found);
     setRoute(null);
     setRouteLoading(false);
+
+    lastRouteOriginRef.current = null;
+    reroutingRef.current = false;
+
     setSearchQuery("");
     setSearchFocused(false);
 
@@ -342,10 +370,6 @@ export default function Map() {
     });
   }, [buildingId, latitude, longitude, placeName, source, focusPlace]);
 
-  /*
-   * Automatically requests a walking route when entering
-   * the Map from Home or a Reminder.
-   */
   useEffect(() => {
     if (
       !["home", "reminder"].includes(source) ||
@@ -369,7 +393,67 @@ export default function Map() {
     handleRequestDirections,
   ]);
 
-  const navigationActive = sheetState === "navigating";
+  /*
+   * Recalculates the route after the user has
+   * moved far enough from the origin used for
+   * the previous route.
+   */
+  useEffect(() => {
+    if (!navigationActive || !selectedPlace || !userLocation) {
+      return;
+    }
+
+    const lastOrigin = lastRouteOriginRef.current;
+
+    if (!lastOrigin) {
+      return;
+    }
+
+    const distanceMoved = getDistanceMeters(lastOrigin, userLocation);
+
+    if (distanceMoved < ROUTE_UPDATE_DISTANCE) {
+      return;
+    }
+
+    if (reroutingRef.current) {
+      return;
+    }
+
+    reroutingRef.current = true;
+
+    const requestId = ++requestIdRef.current;
+
+    const updateRoute = async () => {
+      try {
+        const destination: [number, number] = [
+          selectedPlace.longitude,
+          selectedPlace.latitude,
+        ];
+
+        const updatedRoute = await getRoute(
+          userLocation,
+          destination,
+          "walking",
+        );
+
+        if (requestId !== requestIdRef.current) {
+          return;
+        }
+
+        if (updatedRoute) {
+          setRoute(updatedRoute);
+
+          lastRouteOriginRef.current = userLocation;
+        }
+      } catch (error) {
+        console.warn("Failed to update navigation route:", error);
+      } finally {
+        reroutingRef.current = false;
+      }
+    };
+
+    updateRoute();
+  }, [navigationActive, selectedPlace, userLocation]);
 
   const clearSelectedPlace = useCallback(() => {
     requestIdRef.current += 1;
@@ -377,6 +461,10 @@ export default function Map() {
     setSelectedPlace(null);
     setRoute(null);
     setRouteLoading(false);
+
+    lastRouteOriginRef.current = null;
+    reroutingRef.current = false;
+
     setSheetState("details");
     setCameraMode("normal");
 
@@ -403,7 +491,6 @@ export default function Map() {
         compassEnabled={false}
         scaleBarEnabled={false}
         pitchEnabled
-        //
       >
         <MapboxGL.Camera
           ref={cameraRef}
