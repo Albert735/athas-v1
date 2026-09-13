@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 
 import { MaterialIcons } from "@expo/vector-icons";
 
@@ -360,8 +360,25 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         </View>
       </View>
 
-      <Button
-        variant="outline"
+      <TouchableOpacity
+        style={{
+          position: "absolute",
+          right: 20,
+          top: "50%",
+          transform: [{ translateY: -22 }],
+          width: 44,
+          height: 44,
+          borderRadius: 22,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: "#fff",
+          zIndex: 100,
+          elevation: 5,
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.15,
+          shadowRadius: 6,
+        }}
         onPress={() => {
           setVoiceEnabled((current) => {
             const next = !current;
@@ -377,10 +394,9 @@ export default function MapNavigationCard({ route, onExit }: Props) {
         <MaterialIcons
           name={voiceEnabled ? "volume-up" : "volume-off"}
           size={20}
+          color="#111"
         />
-
-        {/* {voiceEnabled ? " Voice guidance on" : " Voice guidance off"} */}
-      </Button>
+      </TouchableOpacity>
 
       <Button variant="destructive" onPress={handleExit}>
         Exit Navigation
