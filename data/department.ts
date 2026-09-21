@@ -4,7 +4,7 @@ export const departmentsBySchool: Record<
 > = {
   ug: [
     { value: "computer_science", label: "Computer Science" },
-    { value: "information_technology", label: "Information Technology" },
+    { value: "Information technology", label: "Information Technology" },
     { value: "engineering", label: "Engineering Sciences" },
     { value: "business", label: "Business Administration" },
     { value: "law", label: "Law" },

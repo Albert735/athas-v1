@@ -24,7 +24,7 @@ export default function OTPScreen() {
           {/* App logo */}
           <View style={styles.logoContainer}>
             <Image
-              source={require("../../../assets/images/raute-splash-icon-1024.png")}
+              source={require("../../../assets/images/raute-app-icon-1024.png")}
               style={styles.logo}
               contentFit="contain"
             />

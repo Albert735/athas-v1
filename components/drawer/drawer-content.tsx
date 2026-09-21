@@ -4,7 +4,8 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
- useColorScheme } from "react-native";
+  useColorScheme,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { DrawerContentComponentProps } from "@react-navigation/drawer";
 import { router, usePathname } from "expo-router";
@@ -97,10 +98,10 @@ export function DrawerContent(props: DrawerContentComponentProps) {
         </View>
         <View style={styles.profileInfo}>
           <Text style={[styles.profileName, { color: textColor }]}>
-            Lamine Yamal
+            Jeremiah Awuah Quaye
           </Text>
           <Text style={[styles.profileSub, { color: iconColor }]}>
-            University of Ghana
+            B.Sc. in Information Technology
           </Text>
         </View>
 

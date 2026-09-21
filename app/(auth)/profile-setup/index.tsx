@@ -56,7 +56,7 @@ export default function ProfileSetupScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <Image
-        source={require("@/assets/images/raute-splash-icon-1024.png")}
+        source={require("@/assets/images/raute-app-icon-1024.png")}
         style={styles.logo}
       />
 
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   container: { flex: 1, padding: SPACING, alignItems: "center" },
   innerContainer: { gap: 16, width: "100%" },
   header: { gap: 8 },
-  logo: { width: 40, height: 40 },
+  logo: { width: 40, height: 40, borderRadius: 10 },
   title: { fontSize: 28, fontWeight: "700" },
   card: { gap: 20 },
   sectionHeader: { flexDirection: "row", alignItems: "center", gap: 10 },

@@ -74,7 +74,7 @@ export default function LogInScreen() {
             {/* Hero section — branding & primary CTA */}
             <View style={styles.hero}>
               <Image
-                source={require("@/assets/images/raute-splash-icon-1024.png")}
+                source={require("@/assets/images/raute-app-icon-1024.png")}
                 style={styles.logo}
               />
 
@@ -212,6 +212,7 @@ const styles = StyleSheet.create({
   logo: {
     width: 50,
     height: 50,
+    borderRadius: 10,
   },
 
   /** App name heading */

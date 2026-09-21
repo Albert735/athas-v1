@@ -79,16 +79,16 @@ export default function Profile() {
         {/* PROFILE HEADER */}
         <View style={styles.card}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>LM</Text>
+            <Text style={styles.avatarText}>JAQ</Text>
           </View>
 
           <View style={styles.info}>
             <Text style={[styles.name, { color: textColor }]}>
-              Lamine Yamal
+              Jeremiah Awuah Quaye
             </Text>
 
             <Text style={[styles.major, { color: textMuted }]}>
-              B.Sc. in Computer Science
+              B.Sc. in Information Technology
             </Text>
 
             <Badge
