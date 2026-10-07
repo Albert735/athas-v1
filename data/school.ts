@@ -1,10 +1,10 @@
 export const schools = [
   {
-    value: "University of Ghana",
+    value: "ug",
     label: "University of Ghana",
   },
   {
-    value: "Kwame Nkrumah University of Science and Technology",
+    value: "knust",
     label: "Kwame Nkrumah University of Science and Technology",
   },
   {

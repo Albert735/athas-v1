@@ -4,15 +4,23 @@ import { Text } from "@/components/ui/text";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useColor } from "@/hooks/useColor";
-import { router } from "expo-router";
-import { stepTwoSchema, type StepTwoData } from "@/schemas/auth";
+import {
+  stepTwoSchema,
+  type StepOneData,
+  type StepTwoData,
+} from "@/schemas/auth";
+import { useAuth } from "@/providers/auth-context";
+import { getAuthErrorMessage } from "@/services/auth-service";
+import { useToast } from "@/components/ui/toast";
 
 type Props = {
-  stepOneData: any;
+  stepOneData: StepOneData | null;
   onBack: () => void;
 };
 
 export function StepTwo({ stepOneData, onBack }: Props) {
+  const { signUp } = useAuth();
+  const { toast } = useToast();
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const borderColor = useColor("border");
@@ -27,9 +35,26 @@ export function StepTwo({ stepOneData, onBack }: Props) {
   });
 
   const onSubmit = async (data: StepTwoData) => {
-    const fullData = { ...stepOneData, ...data };
-    console.log("Full sign up data:", fullData);
-    router.push("/(auth)/profile-setup");
+    if (!stepOneData) {
+      onBack();
+      return;
+    }
+
+    try {
+      // On success the auth gate in app/_layout.tsx opens profile-setup.
+      await signUp({
+        fullName: stepOneData.fullName,
+        email: stepOneData.email,
+        universityId: stepOneData.universityId,
+        password: data.password,
+      });
+    } catch (error) {
+      toast({
+        title: "Couldn't create account",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
   };
 
   return (

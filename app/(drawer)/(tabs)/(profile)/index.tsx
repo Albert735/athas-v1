@@ -1,13 +1,6 @@
 // File: (drawer)/(tabs)/(profile)/index.tsx – purpose: Displays user profile information, settings, and support options.
-import {
-  StyleSheet,
-  Text,
-  View,
-  TouchableOpacity,
-  FlatList,
-} from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { useState } from "react";
 
 import {
   BookOpen,
@@ -16,6 +9,7 @@ import {
   ShieldCheck,
   Info,
   ChevronRight,
+  LogOut,
 } from "lucide-react-native";
 
 import { Badge } from "@/components/ui/badge";
@@ -23,40 +17,53 @@ import { IDCard } from "@/components/profile";
 import { Checkbox } from "@/components/ui/checkbox";
 import { router } from "expo-router";
 import { ScrollView } from "@/components/ui/scroll-view";
+import { useToast } from "@/components/ui/toast";
 import { useColor } from "@/hooks/useColor";
+import { useAuth } from "@/providers/auth-context";
+import { getAuthErrorMessage } from "@/services/auth-service";
+import {
+  getDepartmentLabel,
+  getInitials,
+  getSchoolLabel,
+} from "@/utils/profile-labels";
 
-const initialPreferences = [
+/**
+ * Map-category preferences. `key` is what gets saved on the user's profile
+ * (users/{uid}.preferences.<key>); `defaultChecked` applies until they change it.
+ */
+const PREFERENCES = [
   {
-    id: "1",
+    key: "studySpots",
     title: "Study Spots",
     subtitle: "Libraries and quiet spaces",
     icon: BookOpen,
-    checked: true,
+    defaultChecked: true,
   },
   {
-    id: "2",
+    key: "food",
     title: "Food & Cafeterias",
     subtitle: "Restaurants and cafés",
     icon: Coffee,
-    checked: true,
+    defaultChecked: true,
   },
   {
-    id: "3",
+    key: "restrooms",
     title: "Restrooms",
     subtitle: "Ease your mind",
     icon: Toilet,
-    checked: false,
+    defaultChecked: false,
   },
-];
+] as const;
 
 /**
  * Profile Screen
  *
- * Renders the user profile page containing the student ID card,
- * search preferences, privacy & security settings, and support links.
+ * Renders the signed-in student's profile: name, department and level,
+ * student ID card, saved map preferences, settings and log out.
  */
 export default function Profile() {
-  const [preferences, setPreferences] = useState(initialPreferences);
+  const { user, profile, updateProfile, signOut } = useAuth();
+  const { toast } = useToast();
 
   const backgroundColor = useColor("background");
 
@@ -66,43 +73,93 @@ export default function Profile() {
   const borderColor = useColor("border");
   const primaryColor = useColor("primary");
   const iconColor = useColor("icon");
+  const redColor = useColor("red");
 
-  const togglePreference = (id: string, value: boolean) => {
-    setPreferences((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, checked: value } : item)),
-    );
+  const fullName = profile?.fullName ?? user?.displayName ?? "Student";
+  const email = profile?.email ?? user?.email ?? undefined;
+  const schoolLabel = getSchoolLabel(profile?.school);
+  const departmentLabel =
+    getDepartmentLabel(profile?.school, profile?.department) ?? schoolLabel;
+
+  // Saved value if the student has changed it, otherwise the default.
+  const currentPreferences = Object.fromEntries(
+    PREFERENCES.map((item) => [
+      item.key,
+      profile?.preferences?.[item.key] ?? item.defaultChecked,
+    ]),
+  ) as Record<string, boolean>;
+
+  const togglePreference = async (key: string, value: boolean) => {
+    try {
+      await updateProfile({
+        preferences: { ...currentPreferences, [key]: value },
+      });
+    } catch (error) {
+      toast({
+        title: "Couldn't save preference",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      // The auth gate in app/_layout.tsx sends the user back to sign-in.
+      await signOut();
+    } catch (error) {
+      toast({
+        title: "Couldn't log out",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
   };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
-      <View style={styles.scrollContent}>
+      <ScrollView
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         {/* PROFILE HEADER */}
         <View style={styles.card}>
           <View style={styles.avatar}>
-            <Text style={styles.avatarText}>JAQ</Text>
+            <Text style={styles.avatarText}>{getInitials(fullName)}</Text>
           </View>
 
           <View style={styles.info}>
-            <Text style={[styles.name, { color: textColor }]}>
-              Jeremiah Awuah Quaye
-            </Text>
+            <Text style={[styles.name, { color: textColor }]}>{fullName}</Text>
 
-            <Text style={[styles.major, { color: textMuted }]}>
-              B.Sc. in Information Technology
-            </Text>
-
-            <Badge
-              style={{
-                ...styles.badge,
-                backgroundColor: cardColor,
-                borderColor,
-              }}
-            >
-              <Text style={[styles.batch, { color: textColor }]}>
-                Class of 2027
+            {departmentLabel ? (
+              <Text style={[styles.major, { color: textMuted }]}>
+                {departmentLabel}
               </Text>
-            </Badge>
+            ) : null}
+
+            {profile?.level ? (
+              <Badge
+                style={{
+                  ...styles.badge,
+                  backgroundColor: cardColor,
+                  borderColor,
+                }}
+              >
+                <Text style={[styles.batch, { color: textColor }]}>
+                  {profile.level}
+                </Text>
+              </Badge>
+            ) : null}
           </View>
+        </View>
+
+        {/* STUDENT ID */}
+        <View style={styles.idCard}>
+          <IDCard
+            school={schoolLabel}
+            universityId={profile?.universityId}
+            email={email}
+          />
         </View>
 
         {/* MAP PREFERENCES */}
@@ -113,53 +170,45 @@ export default function Profile() {
               { backgroundColor: cardColor, borderColor },
             ]}
           >
-            <FlatList
-              data={preferences}
-              keyExtractor={(item) => item.id}
-              scrollEnabled={false}
-              renderItem={({ item, index }) => {
-                const Icon = item.icon;
+            {PREFERENCES.map((item) => {
+              const Icon = item.icon;
 
-                return (
-                  <View style={styles.preferenceItemContainer}>
-                    <View style={styles.preferenceItem}>
-                      <View style={styles.preferenceLeft}>
-                        <View style={styles.iconContainer}>
-                          <Icon size={18} color={primaryColor} />
-                        </View>
-
-                        <View>
-                          <Text
-                            style={[
-                              styles.preferenceTitle,
-                              { color: textColor },
-                            ]}
-                          >
-                            {item.title}
-                          </Text>
-
-                          <Text
-                            style={[
-                              styles.preferenceSubtitle,
-                              { color: textMuted },
-                            ]}
-                          >
-                            {item.subtitle}
-                          </Text>
-                        </View>
+              return (
+                <View key={item.key} style={styles.preferenceItemContainer}>
+                  <View style={styles.preferenceItem}>
+                    <View style={styles.preferenceLeft}>
+                      <View style={styles.iconContainer}>
+                        <Icon size={18} color={primaryColor} />
                       </View>
 
-                      <Checkbox
-                        checked={item.checked}
-                        onCheckedChange={(value) =>
-                          togglePreference(item.id, value as boolean)
-                        }
-                      />
+                      <View>
+                        <Text
+                          style={[styles.preferenceTitle, { color: textColor }]}
+                        >
+                          {item.title}
+                        </Text>
+
+                        <Text
+                          style={[
+                            styles.preferenceSubtitle,
+                            { color: textMuted },
+                          ]}
+                        >
+                          {item.subtitle}
+                        </Text>
+                      </View>
                     </View>
+
+                    <Checkbox
+                      checked={currentPreferences[item.key]}
+                      onCheckedChange={(value) =>
+                        togglePreference(item.key, value as boolean)
+                      }
+                    />
                   </View>
-                );
-              }}
-            />
+                </View>
+              );
+            })}
           </View>
         </View>
 
@@ -195,8 +244,17 @@ export default function Profile() {
             </View>
             <ChevronRight size={18} color={iconColor} />
           </TouchableOpacity>
+
+          <TouchableOpacity style={styles.settingItem} onPress={handleLogout}>
+            <View style={styles.settingLeft}>
+              <LogOut size={18} color={redColor} />
+              <Text style={[styles.settingTitle, { color: redColor }]}>
+                Log Out
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -212,10 +270,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingTop: 20,
     paddingBottom: 120,
-  },
-
-  spacing: {
-    marginTop: 24,
   },
 
   /* HEADER */
@@ -249,11 +303,13 @@ const styles = StyleSheet.create({
   name: {
     fontSize: 20,
     fontWeight: "700",
+    textAlign: "center",
   },
 
   major: {
     marginTop: 4,
     fontSize: 14,
+    textAlign: "center",
   },
 
   badge: {
@@ -271,16 +327,14 @@ const styles = StyleSheet.create({
     textTransform: "uppercase",
   },
 
+  /* STUDENT ID */
+  idCard: {
+    marginTop: 24,
+  },
+
   /* PREFERENCES */
   preferences: {
     marginTop: 22,
-  },
-
-  prefHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "flex-end",
-    marginBottom: 16,
   },
 
   preferencesCard: {

@@ -5,7 +5,12 @@ import { ThemeProvider } from "@/theme/theme-provider";
 import { osName } from "expo-device";
 import { isLiquidGlassAvailable } from "expo-glass-effect";
 import * as NavigationBar from "expo-navigation-bar";
-import { Stack } from "expo-router";
+import {
+  Stack,
+  router,
+  useRootNavigationState,
+  useSegments,
+} from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { setBackgroundColorAsync } from "expo-system-ui";
@@ -17,8 +22,68 @@ import { ToastProvider } from "@/components/ui/toast";
 import MapboxGL from "@rnmapbox/maps";
 import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
 import { TimetableProvider } from "@/providers/timetable-context";
+import { AuthProvider, useAuth } from "@/providers/auth-context";
 
 MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN!);
+
+// Keep the splash screen up until Firebase has restored (or ruled out) a
+// saved session, so signed-in students never see a flash of the sign-in screen.
+SplashScreen.preventAutoHideAsync();
+
+/**
+ * Sends the user to the right place based on auth state:
+ *
+ *  - signed out                  → (auth) / (onboarding) screens only
+ *  - signed in, setup incomplete → profile-setup
+ *  - signed in, setup complete   → the app (drawer)
+ *
+ * Screens never navigate on sign-in / sign-up / sign-out themselves;
+ * they just call useAuth() and this gate follows the state.
+ */
+function AuthGate() {
+  const { user, profile, loading } = useAuth();
+  const segments = useSegments();
+  const navigationState = useRootNavigationState();
+
+  useEffect(() => {
+    if (!loading) {
+      SplashScreen.hideAsync();
+    }
+  }, [loading]);
+
+  useEffect(() => {
+    // Wait for the navigator to mount and for auth to settle.
+    if (loading || !navigationState?.key) return;
+
+    const group = segments[0] as string | undefined;
+    const inAuth = group === "(auth)";
+    const inOnboarding = group === "(onboarding)";
+    const onProfileSetup =
+      inAuth && (segments as string[])[1] === "profile-setup";
+
+    if (!user) {
+      if (!inAuth && !inOnboarding) router.replace("/(auth)/sign-in");
+      return;
+    }
+
+    // Signed in, but the profile document hasn't arrived yet (right after
+    // sign-up). The snapshot listener will re-run this effect when it does.
+    if (!profile) return;
+
+    const setupComplete = !!profile.school && !!profile.department;
+
+    if (!setupComplete) {
+      if (!onProfileSetup) router.replace("/(auth)/profile-setup");
+      return;
+    }
+
+    if (inAuth || inOnboarding) {
+      router.replace("/(drawer)/(tabs)/(home)");
+    }
+  }, [user, profile, loading, segments, navigationState?.key]);
+
+  return null;
+}
 
 export default function RootLayout() {
   const colorScheme = useColorScheme() || "light";
@@ -41,7 +106,9 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <ThemeProvider>
         <ToastProvider>
+          <AuthProvider>
           <TimetableProvider>
+            <AuthGate />
             <StatusBar
               style={colorScheme === "dark" ? "light" : "dark"}
               animated
@@ -140,6 +207,7 @@ export default function RootLayout() {
               <Stack.Screen name="+not-found" />
             </Stack>
           </TimetableProvider>
+          </AuthProvider>
         </ToastProvider>
       </ThemeProvider>
     </GestureHandlerRootView>

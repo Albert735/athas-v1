@@ -1,6 +1,15 @@
 // File: (drawer)/(tabs)/(profile)/privacy-security/index.tsx – purpose: Manages user privacy settings and security options.
-import React, { useState } from "react";
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import {
+  Alert,
+  AppState,
+  Linking,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from "react-native";
+import * as Location from "expo-location";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Header } from "@/components/shared/screen/header";
 import {
@@ -19,10 +28,92 @@ import { Switch } from "@/components/ui/switch";
 import { Button } from "@/components/ui/button";
 import { ScrollView } from "@/components/ui/scroll-view";
 import { useColor } from "@/hooks/useColor";
+import { useAuth } from "@/providers/auth-context";
+import { useToast } from "@/components/ui/toast";
+import { getAuthErrorMessage } from "@/services/auth-service";
+
+/** Plain-English label for the app's real location permission. */
+function describeLocationPermission(
+  permission: Location.LocationPermissionResponse | null,
+): string {
+  if (!permission) return "Checking…";
+  if (permission.granted) return "Allowed while using the app";
+  if (permission.status === Location.PermissionStatus.UNDETERMINED) {
+    return "Not set yet";
+  }
+  return "Not allowed";
+}
 
 export default function PrivacySecurity() {
   const [isLiveTrackingEnabled, setIsLiveTrackingEnabled] = useState(false);
   const [isRouteHistoryEnabled, setIsRouteHistoryEnabled] = useState(false);
+  const [locationPermission, setLocationPermission] =
+    useState<Location.LocationPermissionResponse | null>(null);
+
+  const { user, profile, resetPassword } = useAuth();
+  const { toast } = useToast();
+
+  // Read the real permission now, and again whenever the student comes back
+  // from the iOS/Android Settings app.
+  const refreshLocationPermission = useCallback(async () => {
+    try {
+      setLocationPermission(await Location.getForegroundPermissionsAsync());
+    } catch {
+      setLocationPermission(null);
+    }
+  }, []);
+
+  useEffect(() => {
+    refreshLocationPermission();
+
+    const subscription = AppState.addEventListener("change", (state) => {
+      if (state === "active") refreshLocationPermission();
+    });
+    return () => subscription.remove();
+  }, [refreshLocationPermission]);
+
+  const openSystemSettings = () => {
+    Linking.openSettings().catch(() => {
+      toast({
+        title: "Couldn't open Settings",
+        description: "Open your phone's Settings app and find Raute.",
+        variant: "error",
+      });
+    });
+  };
+
+  const accountEmail = profile?.email ?? user?.email ?? undefined;
+
+  const handlePasswordReset = () => {
+    if (!accountEmail) return;
+
+    Alert.alert(
+      "Reset your password",
+      `We'll email a password reset link to ${accountEmail}.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Send link",
+          onPress: async () => {
+            try {
+              await resetPassword(accountEmail);
+              toast({
+                title: "Check your email",
+                description: `A reset link is on its way to ${accountEmail}.`,
+                variant: "success",
+              });
+            } catch (error) {
+              toast({
+                title: "Couldn't send reset link",
+                description: getAuthErrorMessage(error),
+                variant: "error",
+              });
+            }
+          },
+        },
+      ],
+    );
+  };
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
@@ -51,7 +142,12 @@ export default function PrivacySecurity() {
             { backgroundColor: cardColor, borderColor },
           ]}
         >
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.7}
+            onPress={handlePasswordReset}
+            disabled={!accountEmail}
+          >
             <View style={styles.cardLeft}>
               <View
                 style={[
@@ -64,10 +160,10 @@ export default function PrivacySecurity() {
 
               <View style={styles.cardTextWrap}>
                 <Text style={[styles.cardTitle, { color: textColor }]}>
-                  Password & Security
+                  Change Password
                 </Text>
                 <Text style={[styles.cardSubtitle, { color: textMuted }]}>
-                  Last updated 3 months ago
+                  We&apos;ll email you a reset link
                 </Text>
               </View>
             </View>
@@ -75,7 +171,8 @@ export default function PrivacySecurity() {
             <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          {/* Two-factor sign-in isn't built yet, so don't claim it's on. */}
+          <View style={[styles.card, { opacity: 0.6 }]}>
             <View style={styles.cardLeft}>
               <View
                 style={[
@@ -90,14 +187,12 @@ export default function PrivacySecurity() {
                 <Text style={[styles.cardTitle, { color: textColor }]}>
                   Two-Factor Authentication
                 </Text>
-                <Text style={[styles.cardSubtitle, { color: successColor }]}>
-                  Currently Enabled
+                <Text style={[styles.cardSubtitle, { color: textMuted }]}>
+                  Coming soon
                 </Text>
               </View>
             </View>
-
-            <ChevronRight size={20} color={iconColor} />
-          </TouchableOpacity>
+          </View>
         </View>
 
         {/* ── LOCATION PRIVACY ── */}
@@ -181,7 +276,11 @@ export default function PrivacySecurity() {
             { backgroundColor: cardColor, borderColor },
           ]}
         >
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.7}
+            onPress={openSystemSettings}
+          >
             <View style={styles.cardLeft}>
               <View
                 style={[
@@ -197,7 +296,7 @@ export default function PrivacySecurity() {
                   Location
                 </Text>
                 <Text style={[styles.cardSubtitle, { color: textMuted }]}>
-                  Always allowed
+                  {describeLocationPermission(locationPermission)}
                 </Text>
               </View>
             </View>
@@ -205,7 +304,11 @@ export default function PrivacySecurity() {
             <ChevronRight size={20} color={iconColor} />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.card} activeOpacity={0.7}>
+          <TouchableOpacity
+            style={styles.card}
+            activeOpacity={0.7}
+            onPress={openSystemSettings}
+          >
             <View style={styles.cardLeft}>
               <View
                 style={[

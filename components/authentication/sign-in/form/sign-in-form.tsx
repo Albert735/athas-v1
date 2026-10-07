@@ -8,6 +8,9 @@ import React from "react";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signInSchema, type SignInFormData } from "@/schemas/auth";
+import { useAuth } from "@/providers/auth-context";
+import { getAuthErrorMessage } from "@/services/auth-service";
+import { useToast } from "@/components/ui/toast";
 
 /**
  * SignInForm Component
@@ -21,6 +24,8 @@ export function SignInForm() {
   const textColor = useColor("text");
   const borderColor = useColor("border");
   const [checked, setChecked] = React.useState(false);
+  const { signIn } = useAuth();
+  const { toast } = useToast();
 
   const {
     control,
@@ -32,8 +37,16 @@ export function SignInForm() {
   });
 
   const onSubmit = async (data: SignInFormData) => {
-    console.log("Sign in data:", data);
-    router.replace("/(drawer)/(tabs)/(home)");
+    try {
+      // On success the auth gate in app/_layout.tsx moves the user into the app.
+      await signIn(data.email, data.password);
+    } catch (error) {
+      toast({
+        title: "Couldn't sign in",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
   };
 
   return (

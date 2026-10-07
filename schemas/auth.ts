@@ -49,7 +49,8 @@ export const forgotPasswordSchema = z.object({
     .string()
     .min(1, "Email is required")
     .email("Enter a valid email address")
-    .endsWith("st.ug.edu.gh", "Must be a UG institutional email"),
+    // Same rule as sign-up, so anyone who can register can also reset.
+    .endsWith("ug.edu.gh", "Must be a UG institutional email"),
 });
 export const resetPasswordSchema = z
   .object({

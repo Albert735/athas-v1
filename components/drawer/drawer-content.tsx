@@ -23,6 +23,8 @@ import {
 } from "lucide-react-native";
 import { ModeToggle } from "../ui/mode-toggle";
 import { useColor } from "@/hooks/useColor";
+import { useAuth } from "@/providers/auth-context";
+import { departmentsBySchool } from "@/data/department";
 
 /**
  * Navigation items structure for the custom side drawer.
@@ -56,6 +58,16 @@ const MENU_ITEMS = [
 export function DrawerContent(props: DrawerContentComponentProps) {
   const theme = useColorScheme();
   const glassAvailable = isLiquidGlassAvailable();
+  const { user, profile, signOut } = useAuth();
+
+  const displayName = profile?.fullName ?? user?.displayName ?? "Student";
+  const departmentLabel =
+    profile?.school && profile?.department
+      ? departmentsBySchool[profile.school]?.find(
+          (d) => d.value === profile.department,
+        )?.label
+      : undefined;
+  const displaySub = departmentLabel ?? "University of Ghana";
 
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
@@ -84,9 +96,10 @@ export function DrawerContent(props: DrawerContentComponentProps) {
     }
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
     props.navigation.closeDrawer();
-    router.replace("/(auth)/sign-in");
+    // The auth gate in app/_layout.tsx sends the user back to sign-in.
+    await signOut();
   };
 
   const content = (
@@ -98,10 +111,10 @@ export function DrawerContent(props: DrawerContentComponentProps) {
         </View>
         <View style={styles.profileInfo}>
           <Text style={[styles.profileName, { color: textColor }]}>
-            Jeremiah Awuah Quaye
+            {displayName}
           </Text>
           <Text style={[styles.profileSub, { color: iconColor }]}>
-            B.Sc. in Information Technology
+            {displaySub}
           </Text>
         </View>
 

@@ -18,8 +18,10 @@ import {
 } from "@/components/ui/combobox";
 import { schools } from "@/data/school";
 import { departmentsBySchool } from "@/data/department";
-import { router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
+import { useAuth } from "@/providers/auth-context";
+import { getAuthErrorMessage } from "@/services/auth-service";
+import { useToast } from "@/components/ui/toast";
 import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { profileSetupSchema, type ProfileSetupData } from "@/schemas/profile";
@@ -30,11 +32,14 @@ const LEVELS = ["Year 1", "Year 2", "Year 3", "Year 4", "Post Graduate"];
 
 export default function ProfileSetupScreen() {
   const iconColor = useColor("text");
+  const { updateProfile } = useAuth();
+  const { toast } = useToast();
 
   const {
     control,
     handleSubmit,
     watch,
+    setValue,
     formState: { errors, isSubmitting },
   } = useForm<ProfileSetupData>({
     resolver: zodResolver(profileSetupSchema),
@@ -49,8 +54,21 @@ export default function ProfileSetupScreen() {
   }, [selectedSchool]);
 
   const onSubmit = async (data: ProfileSetupData) => {
-    console.log("Profile setup:", data);
-    router.push("/(drawer)/(tabs)/(home)");
+    try {
+      // Once the profile has a school + department, the auth gate in
+      // app/_layout.tsx moves the student into the app.
+      await updateProfile({
+        school: data.school,
+        department: data.department,
+        level: data.level,
+      });
+    } catch (error) {
+      toast({
+        title: "Couldn't save your profile",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
   };
 
   return (
@@ -93,9 +111,20 @@ export default function ProfileSetupScreen() {
                   name="school"
                   render={({ field: { onChange, value } }) => (
                     <Combobox
-                      value={value ? { value, label: value } : null}
+                      value={
+                        value
+                          ? (schools.find((s) => s.value === value) ?? {
+                              value,
+                              label: value,
+                            })
+                          : null
+                      }
                       onValueChange={(val) => {
-                        onChange(val?.value || "");
+                        const next = val?.value || "";
+                        // A department belongs to one school, so clear it
+                        // when the school changes.
+                        if (next !== value) setValue("department", "");
+                        onChange(next);
                       }}
                     >
                       <ComboboxTrigger>
@@ -128,7 +157,14 @@ export default function ProfileSetupScreen() {
                   name="department"
                   render={({ field: { onChange, value } }) => (
                     <Combobox
-                      value={value ? { value, label: value } : null}
+                      value={
+                        value
+                          ? (departments.find((d) => d.value === value) ?? {
+                              value,
+                              label: value,
+                            })
+                          : null
+                      }
                       onValueChange={(val) => onChange(val?.value || "")}
                       disabled={!selectedSchool}
                     >

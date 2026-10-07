@@ -7,8 +7,13 @@ import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useColor } from "@/hooks/useColor";
 import { forgotPasswordSchema, type ForgotPasswordData } from "@/schemas/auth";
+import { useAuth } from "@/providers/auth-context";
+import { getAuthErrorMessage } from "@/services/auth-service";
+import { useToast } from "@/components/ui/toast";
 
 export function ForgottenPasswordForm() {
+  const { resetPassword } = useAuth();
+  const { toast } = useToast();
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const borderColor = useColor("border");
@@ -23,8 +28,24 @@ export function ForgottenPasswordForm() {
   });
 
   const onSubmit = async (data: ForgotPasswordData) => {
-    console.log("Reset link sent to:", data.email);
-    router.push("/(auth)/otp");
+    try {
+      await resetPassword(data.email);
+
+      // Firebase emails a reset link (no numeric OTP), so we skip the
+      // /otp and /reset-password screens and send the student back to sign in.
+      toast({
+        title: "Check your email",
+        description: `If an account exists for ${data.email}, a reset link is on its way.`,
+        variant: "success",
+      });
+      router.replace("/(auth)/sign-in");
+    } catch (error) {
+      toast({
+        title: "Couldn't send reset link",
+        description: getAuthErrorMessage(error),
+        variant: "error",
+      });
+    }
   };
 
   return (
