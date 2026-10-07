@@ -1,15 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { doc, onSnapshot, setDoc } from "firebase/firestore";
 import React, {
   createContext,
   useCallback,
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
-import type { ScheduledClass } from "@/types/class";
 
-const TIMETABLE_STORAGE_KEY = "@raute/timetable";
+import { db } from "@/constants/firebase";
+import { useAuth } from "@/providers/auth-context";
+import type { ScheduledClass } from "@/types/class";
 
 interface TimetableContextValue {
   classes: ScheduledClass[];
@@ -24,77 +26,91 @@ const TimetableContext = createContext<TimetableContextValue | undefined>(
   undefined,
 );
 
+/**
+ * The student's timetable lives in Firestore at users/{uid}/data/timetable,
+ * so it follows their account instead of the phone.
+ */
 export function TimetableProvider({ children }: { children: React.ReactNode }) {
+  const { user } = useAuth();
+  const uid = user?.uid ?? null;
+
   const [classes, setClasses] = useState<ScheduledClass[]>([]);
   const [loading, setLoading] = useState(true);
 
+  // Always holds the latest list so rapid edits never work from stale data.
+  const classesRef = useRef<ScheduledClass[]>([]);
+
   useEffect(() => {
-    const loadClasses = async () => {
-      try {
-        const storedClasses = await AsyncStorage.getItem(TIMETABLE_STORAGE_KEY);
+    classesRef.current = [];
+    setClasses([]);
 
-        if (storedClasses) {
-          setClasses(JSON.parse(storedClasses));
-        }
-      } catch (error) {
-        console.error("Failed to load timetable:", error);
-      } finally {
+    if (!uid) {
+      setLoading(false);
+      return;
+    }
+
+    setLoading(true);
+
+    const unsubscribe = onSnapshot(
+      doc(db, "users", uid, "data", "timetable"),
+      (snapshot) => {
+        const stored = snapshot.data()?.classes;
+        const next: ScheduledClass[] = Array.isArray(stored) ? stored : [];
+
+        classesRef.current = next;
+        setClasses(next);
         setLoading(false);
-      }
-    };
+      },
+      (error) => {
+        console.error("Failed to load timetable:", error);
+        setLoading(false);
+      },
+    );
 
-    loadClasses();
-  }, []);
+    return unsubscribe;
+  }, [uid]);
 
-  const persistClasses = useCallback(
-    async (updatedClasses: ScheduledClass[]) => {
-      await AsyncStorage.setItem(
-        TIMETABLE_STORAGE_KEY,
-        JSON.stringify(updatedClasses),
-      );
+  const commit = useCallback(
+    async (next: ScheduledClass[]) => {
+      if (!uid) throw new Error("You must be signed in to edit your timetable.");
+
+      // Show the change immediately; Firestore confirms in the background.
+      classesRef.current = next;
+      setClasses(next);
+
+      // JSON round-trip drops `undefined` values, which Firestore rejects.
+      const clean = JSON.parse(JSON.stringify(next));
+
+      await setDoc(doc(db, "users", uid, "data", "timetable"), {
+        classes: clean,
+      });
     },
-    [],
+    [uid],
   );
 
   const addClass = useCallback(
-    async (newClasses: ScheduledClass[]) => {
-      const updatedClasses = [...classes, ...newClasses];
-
-      setClasses(updatedClasses);
-
-      await persistClasses(updatedClasses);
-    },
-    [classes, persistClasses],
+    (newClasses: ScheduledClass[]) =>
+      commit([...classesRef.current, ...newClasses]),
+    [commit],
   );
 
   const updateClass = useCallback(
-    async (id: string, updates: Partial<ScheduledClass>) => {
-      const updatedClasses = classes.map((item) =>
-        item.id === id ? { ...item, ...updates } : item,
-      );
-
-      setClasses(updatedClasses);
-
-      await persistClasses(updatedClasses);
-    },
-    [classes, persistClasses],
+    (id: string, updates: Partial<ScheduledClass>) =>
+      commit(
+        classesRef.current.map((item) =>
+          item.id === id ? { ...item, ...updates } : item,
+        ),
+      ),
+    [commit],
   );
 
   const deleteClass = useCallback(
-    async (id: string) => {
-      const updatedClasses = classes.filter((item) => item.id !== id);
-
-      setClasses(updatedClasses);
-
-      await persistClasses(updatedClasses);
-    },
-    [classes, persistClasses],
+    (id: string) =>
+      commit(classesRef.current.filter((item) => item.id !== id)),
+    [commit],
   );
 
-  const clearClasses = useCallback(async () => {
-    await AsyncStorage.removeItem(TIMETABLE_STORAGE_KEY);
-    setClasses([]);
-  }, []);
+  const clearClasses = useCallback(() => commit([]), [commit]);
 
   const value = useMemo(
     () => ({

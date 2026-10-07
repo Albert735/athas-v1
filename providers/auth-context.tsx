@@ -6,6 +6,7 @@ import React, {
   useMemo,
   useState,
 } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import type { User } from "firebase/auth";
 import { doc, onSnapshot } from "firebase/firestore";
 import { db } from "@/constants/firebase";
@@ -26,13 +27,20 @@ interface AuthContextValue {
   /** True until Firebase has restored (or ruled out) a saved session. */
   loading: boolean;
   signUp: (input: SignUpInput) => Promise<void>;
-  signIn: (email: string, password: string) => Promise<void>;
+  signIn: (
+    email: string,
+    password: string,
+    rememberMe?: boolean,
+  ) => Promise<void>;
   resetPassword: (email: string) => Promise<void>;
   signOut: () => Promise<void>;
   updateProfile: (
     data: Parameters<typeof updateUserProfile>[1],
   ) => Promise<void>;
 }
+
+/** "false" means: end the session the next time the app is opened. */
+const REMEMBER_ME_KEY = "@raute/remember-me";
 
 const AuthContext = createContext<AuthContextValue | null>(null);
 
@@ -43,7 +51,28 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   // 1. Track the signed-in user.
   useEffect(() => {
-    const unsubscribe = subscribeToAuthState((nextUser) => {
+    let firstEvent = true;
+
+    const unsubscribe = subscribeToAuthState(async (nextUser) => {
+      // On app launch, honour an unticked "Remember me" from the last sign-in
+      // by ending the restored session.
+      if (firstEvent) {
+        firstEvent = false;
+
+        if (nextUser) {
+          try {
+            const remember = await AsyncStorage.getItem(REMEMBER_ME_KEY);
+
+            if (remember === "false") {
+              await logOut();
+              return; // the null auth event that follows updates the state
+            }
+          } catch {
+            // If the flag can't be read, keep the session.
+          }
+        }
+      }
+
       setUser(nextUser);
       if (!nextUser) {
         setProfile(null);
@@ -88,9 +117,13 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       loading,
       signUp: async (input) => {
         await signUp(input);
+        AsyncStorage.setItem(REMEMBER_ME_KEY, "true").catch(() => {});
       },
-      signIn: async (email, password) => {
+      signIn: async (email, password, rememberMe = true) => {
         await signIn(email, password);
+        AsyncStorage.setItem(REMEMBER_ME_KEY, String(rememberMe)).catch(
+          () => {},
+        );
       },
       resetPassword,
       signOut: logOut,

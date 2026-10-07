@@ -23,7 +23,7 @@ export function SignInForm() {
   const backgroundColor = useColor("background");
   const textColor = useColor("text");
   const borderColor = useColor("border");
-  const [checked, setChecked] = React.useState(false);
+  const [checked, setChecked] = React.useState(true);
   const { signIn } = useAuth();
   const { toast } = useToast();
 
@@ -39,7 +39,7 @@ export function SignInForm() {
   const onSubmit = async (data: SignInFormData) => {
     try {
       // On success the auth gate in app/_layout.tsx moves the user into the app.
-      await signIn(data.email, data.password);
+      await signIn(data.email, data.password, checked);
     } catch (error) {
       toast({
         title: "Couldn't sign in",
