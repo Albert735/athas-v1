@@ -19,6 +19,7 @@ import type { SheetState, TransportProfile } from "@/types/map";
 import { useColorScheme } from "@/hooks/useColorScheme";
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
+import { ArrivedScreen } from "@/components/map/arrived-screen";
 import { getDistanceMeters } from "@/utils/geo";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
@@ -65,6 +66,15 @@ export default function Map() {
   const [sheetState, setSheetState] = useState<SheetState>("details");
 
   const navigationActive = sheetState === "navigating";
+
+  // Set when the student reaches the destination; shows the arrived screen.
+  const [arrival, setArrival] = useState<{
+    distanceMeters: number;
+    durationSeconds: number;
+  } | null>(null);
+  const tripRef = useRef<{ startedAt: number; distanceMeters: number } | null>(
+    null,
+  );
 
   const [route, setRoute] = useState<RouteResult | null>(null);
 
@@ -275,12 +285,28 @@ export default function Map() {
       return;
     }
 
+    tripRef.current = {
+      startedAt: Date.now(),
+      distanceMeters: route.distanceMeters,
+    };
+
     setCameraMode("navigation");
     setSheetState("navigating");
   }, [route]);
 
+  const handleArrive = useCallback(() => {
+    const trip = tripRef.current;
+
+    setArrival({
+      distanceMeters: trip?.distanceMeters ?? 0,
+      durationSeconds: trip ? (Date.now() - trip.startedAt) / 1000 : 0,
+    });
+  }, []);
+
   const handleNavigationExit = useCallback(() => {
     requestIdRef.current += 1;
+    tripRef.current = null;
+    setArrival(null);
 
     setRoute(null);
     setRouteLoading(false);
@@ -609,10 +635,20 @@ export default function Map() {
           distanceOverride={selectedPlaceDistance}
           isOpenOverride={selectedPlaceIsOpen}
           onNavigationExit={handleNavigationExit}
+          onArrive={handleArrive}
           onClose={clearSelectedPlace}
           onStart={startNavigation}
         />
       )}
+
+      {arrival && selectedPlace ? (
+        <ArrivedScreen
+          destination={selectedPlace.name}
+          distanceMeters={arrival.distanceMeters}
+          durationSeconds={arrival.durationSeconds}
+          onDone={handleNavigationExit}
+        />
+      ) : null}
     </View>
   );
 }

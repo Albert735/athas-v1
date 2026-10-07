@@ -15,7 +15,7 @@ import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { setBackgroundColorAsync } from "expo-system-ui";
 import React, { useEffect } from "react";
-import { Platform } from "react-native";
+import { Platform, LogBox } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import "react-native-reanimated";
 import { ToastProvider } from "@/components/ui/toast";
@@ -30,6 +30,11 @@ MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN!);
 // Keep the splash screen up until Firebase has restored (or ruled out) a
 // saved session, so signed-in students never see a flash of the sign-in screen.
 SplashScreen.preventAutoHideAsync();
+
+// Reloading the app in development tears down a map that is still starting up;
+// @rnmapbox/maps then logs this harmless leftover retry. It never happens in a
+// real build, so keep it out of the dev error overlay.
+LogBox.ignoreLogs(["Could not find view with tag"]);
 
 /**
  * Sends the user to the right place based on auth state:

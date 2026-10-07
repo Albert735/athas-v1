@@ -16,6 +16,7 @@ interface Props {
   onRequestDirections: (profile?: TransportProfile) => void;
   onClose?: () => void;
   onNavigationExit?: () => void;
+  onArrive?: () => void;
   onStart?: () => void;
   distanceOverride?: string;
   isOpenOverride?: boolean;
@@ -30,6 +31,7 @@ export default function MapBottomSheet({
   onRequestDirections,
   onClose,
   onNavigationExit,
+  onArrive,
   onStart,
   distanceOverride,
   isOpenOverride,
@@ -66,6 +68,7 @@ export default function MapBottomSheet({
   return (
     <MapNavigationCard
       route={route}
+      onArrive={onArrive}
       onExit={() => {
         onSheetStateChange("details");
 

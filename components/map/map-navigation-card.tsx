@@ -38,9 +38,11 @@ function getStartingStepIndex(route: RouteResult | null): number {
 interface Props {
   route: RouteResult | null;
   onExit?: () => void;
+  /** Called once when the student reaches the destination. */
+  onArrive?: () => void;
 }
 
-export default function MapNavigationCard({ route, onExit }: Props) {
+export default function MapNavigationCard({ route, onExit, onArrive }: Props) {
   const [stepIndex, setStepIndex] = useState(() =>
     getStartingStepIndex(route),
   );
@@ -188,7 +190,10 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     if (voiceEnabled) {
       speak("You have arrived at your destination.");
     }
+
+    onArrive?.();
   }, [
+    onArrive,
     route,
     step,
     liveLocation,
