@@ -23,6 +23,7 @@ import MapboxGL from "@rnmapbox/maps";
 import { MAPBOX_PUBLIC_TOKEN } from "@/constants/mapbox";
 import { TimetableProvider } from "@/providers/timetable-context";
 import { AuthProvider, useAuth } from "@/providers/auth-context";
+import { AnimatedSplash } from "@/components/splash/animated-splash";
 
 MapboxGL.setAccessToken(MAPBOX_PUBLIC_TOKEN!);
 
@@ -44,12 +45,6 @@ function AuthGate() {
   const { user, profile, loading } = useAuth();
   const segments = useSegments();
   const navigationState = useRootNavigationState();
-
-  useEffect(() => {
-    if (!loading) {
-      SplashScreen.hideAsync();
-    }
-  }, [loading]);
 
   useEffect(() => {
     // Wait for the navigator to mount and for auth to settle.
@@ -82,7 +77,9 @@ function AuthGate() {
     }
   }, [user, profile, loading, segments, navigationState?.key]);
 
-  return null;
+  // Animated launch screen; it hides the native splash itself and fades out
+  // once Firebase has restored (or ruled out) a saved session.
+  return <AnimatedSplash ready={!loading} />;
 }
 
 export default function RootLayout() {

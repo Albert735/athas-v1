@@ -7,11 +7,17 @@
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "automatic",
    "scheme": "raute",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
+    "plugins": [
+      [
+        "expo-splash-screen",
+        {
+          "image": "./assets/images/raute-splash-icon-1024.png",
+          "imageWidth": 200,
+          "resizeMode": "contain",
+          "backgroundColor": "#000000"
+        }
+      ]
+    ],
     "updates": {
       "fallbackToCacheTimeout": 0
     },

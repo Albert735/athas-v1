@@ -40,7 +40,42 @@ export default function GuestScreen() {
   // false = landing page, true = full-screen read-only campus map.
   const [exploring, setExploring] = useState(false);
 
-  const handleBack = () => (exploring ? setExploring(false) : router.back());
+  /*
+   * Leaving while the map is still starting up (back / Sign In tapped right
+   * after opening it) removes the MapView before its native side has
+   * registered, which makes Mapbox log "Could not find view with tag ...".
+   * So any action that would unmount the map waits until it has loaded.
+   */
+  const mapReady = useRef(false);
+  const pendingAction = useRef<(() => void) | null>(null);
+
+  const afterMapReady = (action: () => void) => {
+    if (!exploring || mapReady.current) {
+      action();
+    } else {
+      pendingAction.current = action;
+    }
+  };
+
+  const handleMapLoaded = () => {
+    mapReady.current = true;
+
+    const action = pendingAction.current;
+    pendingAction.current = null;
+    action?.();
+  };
+
+  const closeMap = () => {
+    mapReady.current = false;
+    pendingAction.current = null;
+    setExploring(false);
+  };
+
+  const handleBack = () =>
+    afterMapReady(() => (exploring ? closeMap() : router.back()));
+
+  const handleSignIn = () =>
+    afterMapReady(() => router.replace("/(auth)/sign-in"));
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor }]}>
@@ -53,6 +88,7 @@ export default function GuestScreen() {
           attributionEnabled={false}
           compassEnabled
           pitchEnabled
+          onDidFinishLoadingMap={handleMapLoaded}
         >
           <MapboxGL.Camera
             ref={cameraRef}
@@ -90,7 +126,7 @@ export default function GuestScreen() {
               Sign in for directions, your timetable and reminders.
             </Text>
 
-            <Button onPress={() => router.replace("/(auth)/sign-in")}>
+            <Button onPress={handleSignIn}>
               Sign In
             </Button>
           </View>
