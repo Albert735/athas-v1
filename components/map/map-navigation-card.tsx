@@ -26,13 +26,24 @@ const ARRIVAL_THRESHOLD = 15;
 
 const VOICE_TRIGGER_DISTANCE = 5;
 
+/**
+ * Mapbox routes begin with a "depart" step whose maneuver is the user's own
+ * start point. Skip it so the card always points at the next real maneuver.
+ */
+function getStartingStepIndex(route: RouteResult | null): number {
+  if (!route || route.steps.length < 2) return 0;
+  return route.steps[0].maneuver.type === "depart" ? 1 : 0;
+}
+
 interface Props {
   route: RouteResult | null;
   onExit?: () => void;
 }
 
 export default function MapNavigationCard({ route, onExit }: Props) {
-  const [stepIndex, setStepIndex] = useState(0);
+  const [stepIndex, setStepIndex] = useState(() =>
+    getStartingStepIndex(route),
+  );
   const [voiceEnabled, setVoiceEnabled] = useState(true);
 
   const liveLocation = useLiveLocation(true);
@@ -50,7 +61,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   const primaryForeground = useColor("background");
 
   useEffect(() => {
-    setStepIndex(0);
+    setStepIndex(getStartingStepIndex(route));
     spokenInstructions.current.clear();
 
     stop();
@@ -88,28 +99,42 @@ export default function MapNavigationCard({ route, onExit }: Props) {
       return;
     }
 
-    for (const voiceInstruction of step.voiceInstructions) {
+    /**
+     * Mapbox attaches the announcements for a maneuver to the step BEFORE it
+     * (the leg of road leading up to it), so read them from stepIndex - 1.
+     */
+    const approachStep = route.steps[stepIndex - 1];
+
+    if (!approachStep) return;
+
+    // Collect every announcement that is due and speak only the most urgent
+    // one (smallest trigger distance). Speaking several in one tick would cut
+    // each other off.
+    let due: { key: string; announcement: string; trigger: number } | null =
+      null;
+
+    for (const voiceInstruction of approachStep.voiceInstructions) {
       const announcement = voiceInstruction.announcement;
 
       if (!announcement) continue;
 
-      if (spokenInstructions.current.has(announcement)) {
-        continue;
-      }
+      const trigger = voiceInstruction.distanceAlongGeometry;
+      const key = `${stepIndex}:${trigger}:${announcement}`;
 
-      const triggerDistance = voiceInstruction.distanceAlongGeometry;
+      if (spokenInstructions.current.has(key)) continue;
 
-      /**
-       * Speak when the user is close enough to
-       * Mapbox's recommended announcement point.
-       */
-      if (liveDistance <= triggerDistance + VOICE_TRIGGER_DISTANCE) {
-        spokenInstructions.current.add(announcement);
+      if (liveDistance <= trigger + VOICE_TRIGGER_DISTANCE) {
+        // Mark every due announcement as handled so older ones never replay.
+        spokenInstructions.current.add(key);
 
-        speak(announcement);
+        if (!due || trigger < due.trigger) {
+          due = { key, announcement, trigger };
+        }
       }
     }
-  }, [liveLocation, route, step, liveDistance, voiceEnabled, speak]);
+
+    if (due) speak(due.announcement);
+  }, [liveLocation, route, step, stepIndex, liveDistance, voiceEnabled, speak]);
 
   /**
    * Advance to the next maneuver once the
@@ -180,7 +205,7 @@ export default function MapNavigationCard({ route, onExit }: Props) {
     if (!route || !step) return 0;
 
     const futureDistance = route.steps
-      .slice(stepIndex + 1)
+      .slice(stepIndex)
       .reduce((total, item) => total + item.distance, 0);
 
     return liveDistance + futureDistance;
@@ -192,13 +217,18 @@ export default function MapNavigationCard({ route, onExit }: Props) {
   const remainingDuration = useMemo(() => {
     if (!route || !step) return 0;
 
-    const currentRatio =
-      step.distance > 0 ? Math.min(liveDistance / step.distance, 1) : 0;
+    // Time to reach the next maneuver = the previous step's duration,
+    // scaled by how much of that stretch is still ahead.
+    const approachStep = route.steps[stepIndex - 1];
 
-    const currentRemaining = step.duration * currentRatio;
+    const currentRemaining =
+      approachStep && approachStep.distance > 0
+        ? approachStep.duration *
+          Math.min(liveDistance / approachStep.distance, 1)
+        : 0;
 
     const futureDuration = route.steps
-      .slice(stepIndex + 1)
+      .slice(stepIndex)
       .reduce((total, item) => total + item.duration, 0);
 
     return currentRemaining + futureDuration;
@@ -380,15 +410,9 @@ export default function MapNavigationCard({ route, onExit }: Props) {
           shadowRadius: 6,
         }}
         onPress={() => {
-          setVoiceEnabled((current) => {
-            const next = !current;
+          if (voiceEnabled) stop();
 
-            if (!next) {
-              stop();
-            }
-
-            return next;
-          });
+          setVoiceEnabled(!voiceEnabled);
         }}
       >
         <MaterialIcons
