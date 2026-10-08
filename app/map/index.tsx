@@ -2,7 +2,7 @@
 import { Alert, View, StyleSheet, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import MapboxGL from "@rnmapbox/maps";
 import { Mic } from "lucide-react-native";
 
@@ -20,11 +20,15 @@ import { useColorScheme } from "@/hooks/useColorScheme";
 import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 import { ArrivedScreen } from "@/components/map/arrived-screen";
-import { getDistanceMeters } from "@/utils/geo";
+import { getRemainingRoute, snapToRoute } from "@/utils/route-geometry";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
-const ROUTE_UPDATE_DISTANCE = 20;
+/** Re-route only when the student is this far from the route line. */
+const OFF_ROUTE_DISTANCE = 30;
+
+/** Minimum gap between two automatic re-routes. */
+const REROUTE_COOLDOWN_MS = 8000;
 
 type Place = (typeof places)[number];
 
@@ -420,24 +424,44 @@ export default function Map() {
   ]);
 
   /*
-   * Recalculates the route after the user has
-   * moved far enough from the origin used for
-   * the previous route.
+   * Where the user is relative to the route line. While navigating, the line
+   * is drawn only from this point forward, so it follows the dot.
+   */
+  const routeSnap = useMemo(() => {
+    if (!navigationActive || !route || !userLocation) return null;
+
+    return snapToRoute(
+      route.geometry.coordinates as [number, number][],
+      userLocation,
+    );
+  }, [navigationActive, route, userLocation]);
+
+  const routeGeometry = useMemo(() => {
+    if (!route) return null;
+    if (!routeSnap) return route.geometry;
+
+    return {
+      ...route.geometry,
+      coordinates: getRemainingRoute(
+        route.geometry.coordinates as [number, number][],
+        routeSnap,
+      ),
+    };
+  }, [route, routeSnap]);
+
+  const lastRerouteAtRef = useRef(0);
+
+  /*
+   * Recalculates the route only when the user has actually left it.
+   * Re-routing while they are on the route would reset the turn-by-turn
+   * steps and replay voice announcements.
    */
   useEffect(() => {
     if (!navigationActive || !selectedPlace || !userLocation) {
       return;
     }
 
-    const lastOrigin = lastRouteOriginRef.current;
-
-    if (!lastOrigin) {
-      return;
-    }
-
-    const distanceMoved = getDistanceMeters(lastOrigin, userLocation);
-
-    if (distanceMoved < ROUTE_UPDATE_DISTANCE) {
+    if (!routeSnap || routeSnap.distanceFromRoute < OFF_ROUTE_DISTANCE) {
       return;
     }
 
@@ -445,6 +469,11 @@ export default function Map() {
       return;
     }
 
+    if (Date.now() - lastRerouteAtRef.current < REROUTE_COOLDOWN_MS) {
+      return;
+    }
+
+    lastRerouteAtRef.current = Date.now();
     reroutingRef.current = true;
 
     const requestId = ++requestIdRef.current;
@@ -479,7 +508,7 @@ export default function Map() {
     };
 
     updateRoute();
-  }, [navigationActive, selectedPlace, userLocation]);
+  }, [navigationActive, selectedPlace, userLocation, routeSnap]);
 
   const clearSelectedPlace = useCallback(() => {
     requestIdRef.current += 1;
@@ -552,7 +581,7 @@ export default function Map() {
         />
 
         {route && (
-          <MapboxGL.ShapeSource id="navigationRoute" shape={route.geometry}>
+          <MapboxGL.ShapeSource id="navigationRoute" shape={routeGeometry ?? route.geometry}>
             <MapboxGL.LineLayer
               id="navigationRouteLine"
               style={{
