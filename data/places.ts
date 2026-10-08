@@ -375,4 +375,20 @@ export const places: {
     days: "Mon - Fri",
     isOpen: false,
   },
+
+  // CONFERENCE HALLS
+  {
+    id: "27",
+    name: "ISSER Conference Hall",
+    category: "lecture-hall",
+    description:
+      "Conference hall at the Institute of Statistical, Social and Economic Research (ISSER) annex, used for seminars, workshops and university events.",
+    distance: "0.6 km",
+    latitude: 5.65531,
+    longitude: -0.18444,
+    // Typically opens around 8:30–9:00 AM and closes by 5:00 PM.
+    hours: "9:00 AM - 5:00 PM",
+    days: "Mon - Fri",
+    isOpen: true,
+  },
 ];

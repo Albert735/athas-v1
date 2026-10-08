@@ -4,7 +4,8 @@ import { router, useLocalSearchParams } from "expo-router";
 import { Image } from "expo-image";
 import { ParallaxScrollView } from "@/components/ui/parallax-scrollview";
 import { places } from "@/data/places";
-import { categoryImages } from "@/data/category-images";
+import { getPlaceGallery, getPlaceImage } from "@/data/place-images";
+import { ImageViewer } from "@/components/building/image-viewer";
 import { Brain, FlaskConical, Utensils, ArrowRight } from "lucide-react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -53,6 +54,7 @@ export default function BuildingDetailsScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const foundPlace = places.find((p) => p.id === id);
   const [isFavorited, setIsFavorited] = useState(false);
+  const [viewerIndex, setViewerIndex] = useState<number | null>(null);
 
   const backgroundColor = useColor("background");
   const primaryColor = useColor("primary");
@@ -122,7 +124,7 @@ export default function BuildingDetailsScreen() {
     },
   ];
 
-  const image = categoryImages[place.category] ?? categoryImages.library;
+  const image = getPlaceImage(place);
 
   const handleShare = () => {
     Share.share({
@@ -132,103 +134,126 @@ export default function BuildingDetailsScreen() {
   };
 
   return (
-    <ParallaxScrollView
-      headerHeight={450}
-      headerImage={
-        <Image
-          source={image}
-          style={{ width: "100%", height: "100%" }}
-          contentFit="cover"
-        />
-      }
-      headerOverlay={
-        <>
-          <StatusBar style="light" translucent backgroundColor="transparent" />
-          <SafeAreaView edges={["top"]}>
-            <Header title={place.name} variant="transparent" />
-          </SafeAreaView>
-        </>
-      }
-    >
-      <View style={[styles.container, { backgroundColor }]}>
-        <View style={styles.badgeRow}>
-          <BuildingHeaderBadges
-            isFavorited={isFavorited}
-            onToggleFavorite={() => setIsFavorited((prev) => !prev)}
-            onShare={handleShare}
-          />
-          <BuildingStatusBadge isOpen={place.isOpen} />
-        </View>
-
-        <BuildingNameBlock
-          name={place.name}
-          rating={4.7}
-          reviewCount={MOCK_REVIEWS.length}
-          distance={place.distance}
-        />
-
-        <Button
-          icon={ArrowRight}
-          size="sm"
-          onPress={() => router.push(`/map?buildingId=${id}`)}
-        >
-          Navigate
-        </Button>
-
-        <Tabs
-          orientation="horizontal"
-          enableSwipe={false}
-          defaultValue="overview"
-          style={{ marginTop: 16, marginBottom: 24 }}
-        >
-          <TabsList
-            style={{
-              backgroundColor: cardColor,
-              padding: 6,
-            }}
+    <>
+      <ParallaxScrollView
+        headerHeight={450}
+        headerImage={
+          <Pressable
+            style={{ width: "100%", height: "100%" }}
+            onPress={() => setViewerIndex(0)}
+            accessibilityRole="imagebutton"
+            accessibilityLabel="View photos"
           >
-            <TabsTrigger value="overview">
-              <Text style={{ color: textColor }}>Overview</Text>
-            </TabsTrigger>
-            <TabsTrigger value="photos">
-              <Text style={{ color: textColor }}>Photos</Text>
-            </TabsTrigger>
-            <TabsTrigger value="reviews">
-              <Text style={{ color: textColor }}>Reviews</Text>
-            </TabsTrigger>
-            <TabsTrigger value="about">
-              <Text style={{ color: textColor }}>About</Text>
-            </TabsTrigger>
-          </TabsList>
-
-          <TabsContent value="overview">
-            <BuildingOverviewTab
-              description={place.description}
-              days={place.days}
-              hours={place.hours}
-              isOpen={place.isOpen}
-              facilities={facilities}
+            <Image
+              source={image}
+              style={{ width: "100%", height: "100%" }}
+              contentFit="cover"
             />
-          </TabsContent>
-
-          <TabsContent value="photos">
-            <BuildingPhotosTab images={[image, image, image, image]} />
-          </TabsContent>
-
-          <TabsContent value="reviews">
-            <BuildingReviewsTab reviews={MOCK_REVIEWS} />
-          </TabsContent>
-
-          <TabsContent value="about">
-            <BuildingAboutTab
-              description={place.description}
-              accessibility={accessibility}
-              onContactConcierge={() => {}}
+          </Pressable>
+        }
+        headerOverlay={
+          <>
+            <StatusBar
+              style="light"
+              translucent
+              backgroundColor="transparent"
             />
-          </TabsContent>
-        </Tabs>
-      </View>
-    </ParallaxScrollView>
+            <SafeAreaView edges={["top"]}>
+              <Header title={place.name} variant="transparent" />
+            </SafeAreaView>
+          </>
+        }
+      >
+        <View style={[styles.container, { backgroundColor }]}>
+          <View style={styles.badgeRow}>
+            <BuildingHeaderBadges
+              isFavorited={isFavorited}
+              onToggleFavorite={() => setIsFavorited((prev) => !prev)}
+              onShare={handleShare}
+            />
+            <BuildingStatusBadge isOpen={place.isOpen} />
+          </View>
+
+          <BuildingNameBlock
+            name={place.name}
+            rating={4.7}
+            reviewCount={MOCK_REVIEWS.length}
+            distance={place.distance}
+          />
+
+          <Button
+            icon={ArrowRight}
+            size="sm"
+            onPress={() => router.push(`/map?buildingId=${id}`)}
+          >
+            Navigate
+          </Button>
+
+          <Tabs
+            orientation="horizontal"
+            enableSwipe={false}
+            defaultValue="overview"
+            style={{ marginTop: 16, marginBottom: 24 }}
+          >
+            <TabsList
+              style={{
+                backgroundColor: cardColor,
+                padding: 6,
+              }}
+            >
+              <TabsTrigger value="overview">
+                <Text style={{ color: textColor }}>Overview</Text>
+              </TabsTrigger>
+              <TabsTrigger value="photos">
+                <Text style={{ color: textColor }}>Photos</Text>
+              </TabsTrigger>
+              <TabsTrigger value="reviews">
+                <Text style={{ color: textColor }}>Reviews</Text>
+              </TabsTrigger>
+              <TabsTrigger value="about">
+                <Text style={{ color: textColor }}>About</Text>
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview">
+              <BuildingOverviewTab
+                description={place.description}
+                days={place.days}
+                hours={place.hours}
+                isOpen={place.isOpen}
+                facilities={facilities}
+              />
+            </TabsContent>
+
+            <TabsContent value="photos">
+              <BuildingPhotosTab
+                images={getPlaceGallery(place)}
+                onImagePress={setViewerIndex}
+              />
+            </TabsContent>
+
+            <TabsContent value="reviews">
+              <BuildingReviewsTab reviews={MOCK_REVIEWS} />
+            </TabsContent>
+
+            <TabsContent value="about">
+              <BuildingAboutTab
+                description={place.description}
+                accessibility={accessibility}
+                onContactConcierge={() => {}}
+              />
+            </TabsContent>
+          </Tabs>
+        </View>
+      </ParallaxScrollView>
+
+      <ImageViewer
+        visible={viewerIndex !== null}
+        images={getPlaceGallery(place)}
+        initialIndex={viewerIndex ?? 0}
+        onClose={() => setViewerIndex(null)}
+      />
+    </>
   );
 }
 

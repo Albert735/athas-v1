@@ -2,6 +2,8 @@ import { useEffect, useRef, useState } from "react";
 
 import * as Location from "expo-location";
 
+import { useSimulatedLocation } from "@/hooks/useSimulatedLocation";
+
 export interface LiveLocation {
   coords: [number, number];
   accuracy: number | null;
@@ -10,6 +12,7 @@ export interface LiveLocation {
 
 export function useLiveLocation(active: boolean) {
   const [location, setLocation] = useState<LiveLocation | null>(null);
+  const simulated = useSimulatedLocation();
 
   const subscriptionRef = useRef<Location.LocationSubscription | null>(null);
 
@@ -64,5 +67,6 @@ export function useLiveLocation(active: boolean) {
     };
   }, [active]);
 
-  return location;
+  // A simulated walk (developer tool) takes over from the real GPS.
+  return simulated ?? location;
 }

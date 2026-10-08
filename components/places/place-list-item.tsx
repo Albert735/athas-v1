@@ -9,7 +9,7 @@ import { Image } from "expo-image";
 import { useLocalSearchParams, router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
-import { categoryImages } from "@/data/category-images";
+import { getPlaceImage } from "@/data/place-images";
 import { Star, MapPin, Navigation } from "lucide-react-native";
 
 export default function PlaceSheet() {
@@ -71,7 +71,7 @@ export default function PlaceSheet() {
 
       {/* Image */}
       <Image
-        source={categoryImages[place.category] ?? categoryImages.library}
+        source={getPlaceImage(place)}
         style={styles.image}
         contentFit="cover"
       />

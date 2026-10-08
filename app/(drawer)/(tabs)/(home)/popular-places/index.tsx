@@ -6,7 +6,7 @@ import { SearchBar } from "@/components/ui/searchbar";
 import { useColor } from "@/hooks/useColor";
 import { Mic, MapPin } from "lucide-react-native";
 import { places } from "@/data/places";
-import { categoryImages } from "@/data/category-images";
+import { getPlaceImage } from "@/data/place-images";
 import { Image } from "expo-image";
 import { router } from "expo-router";
 import { useState, useMemo } from "react";
@@ -63,7 +63,7 @@ export default function PopularPlaces() {
             ]}
           >
             <Image
-              source={categoryImages[item.category] ?? categoryImages.library}
+              source={getPlaceImage(item)}
               style={styles.cardImage}
               contentFit="cover"
             />

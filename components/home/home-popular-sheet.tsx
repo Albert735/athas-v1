@@ -6,7 +6,7 @@ import { BottomSheet } from "@/components/ui/bottom-sheet";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { quickActions } from "@/data/quick-actions";
-import { categoryImages } from "@/data/category-images";
+import { getPlaceImage } from "@/data/place-images";
 
 interface Props {
   selectedCategory: string;
@@ -147,7 +147,7 @@ export function HomePopularSheet({
             ]}
           >
             <Image
-              source={categoryImages[item.category] ?? categoryImages.library}
+              source={getPlaceImage(item)}
               style={styles.placeImage}
               contentFit="cover"
             />

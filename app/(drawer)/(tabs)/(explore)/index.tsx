@@ -18,6 +18,7 @@ import { useColor } from "@/hooks/useColor";
 // Static data: places information
 import { places } from "@/data/places";
 import { categoryImages } from "@/data/category-images";
+import { getPlaceImage } from "@/data/place-images";
 import { Image } from "expo-image";
 import { useState, useMemo } from "react";
 import { router } from "expo-router";
@@ -191,7 +192,7 @@ export default function ExploreScreen() {
               onPress={() => router.push(`/building/${item.id}`)}
             >
               <Image
-                source={categoryImages[item.category] ?? categoryImages.library}
+                source={getPlaceImage(item)}
                 style={styles.cardImage}
                 contentFit="cover"
               />
@@ -253,10 +254,7 @@ export default function ExploreScreen() {
                       onPress={() => router.push(`/building/${item.id}`)}
                     >
                       <Image
-                        source={
-                          categoryImages[item.category] ??
-                          categoryImages.library
-                        }
+                        source={getPlaceImage(item)}
                         style={styles.collectionImage}
                         contentFit="cover"
                       />

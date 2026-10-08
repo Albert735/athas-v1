@@ -1,5 +1,5 @@
 // File: map/index.tsx – purpose: Displays an interactive map with building highlighting, search, directions, and navigation features.
-import { Alert, View, StyleSheet, Pressable } from "react-native";
+import { Alert, View, StyleSheet, Pressable, Text } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams } from "expo-router";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -21,6 +21,9 @@ import { PlaceSearchDropdown } from "@/components/map/place-search-dropdown";
 import MapBottomSheet from "@/components/map/map-bottom-sheet";
 import { ArrivedScreen } from "@/components/map/arrived-screen";
 import { getRemainingRoute, snapToRoute } from "@/utils/route-geometry";
+import { useLiveLocation } from "@/hooks/useLiveLocation";
+import { useSimulatedLocation } from "@/hooks/useSimulatedLocation";
+import { startSimulatedWalk, stopSimulatedWalk } from "@/utils/simulated-walk";
 
 const CAMPUS_CENTER: [number, number] = [-0.1869, 5.6508];
 
@@ -299,6 +302,8 @@ export default function Map() {
   }, [route]);
 
   const handleArrive = useCallback(() => {
+    stopSimulatedWalk(true);
+
     const trip = tripRef.current;
 
     setArrival({
@@ -310,6 +315,7 @@ export default function Map() {
   const handleNavigationExit = useCallback(() => {
     requestIdRef.current += 1;
     tripRef.current = null;
+    stopSimulatedWalk();
     setArrival(null);
 
     setRoute(null);
@@ -423,18 +429,25 @@ export default function Map() {
     handleRequestDirections,
   ]);
 
+  // Live GPS (or the simulated walk) while navigating. The one-off
+  // userLocation above is only a starting point for requesting a route.
+  const liveLocation = useLiveLocation(navigationActive);
+  const simulated = useSimulatedLocation();
+  const navLocation: [number, number] | null =
+    liveLocation?.coords ?? userLocation;
+
   /*
    * Where the user is relative to the route line. While navigating, the line
    * is drawn only from this point forward, so it follows the dot.
    */
   const routeSnap = useMemo(() => {
-    if (!navigationActive || !route || !userLocation) return null;
+    if (!navigationActive || !route || !navLocation) return null;
 
     return snapToRoute(
       route.geometry.coordinates as [number, number][],
-      userLocation,
+      navLocation,
     );
-  }, [navigationActive, route, userLocation]);
+  }, [navigationActive, route, navLocation]);
 
   const routeGeometry = useMemo(() => {
     if (!route) return null;
@@ -457,7 +470,7 @@ export default function Map() {
    * steps and replay voice announcements.
    */
   useEffect(() => {
-    if (!navigationActive || !selectedPlace || !userLocation) {
+    if (!navigationActive || !selectedPlace || !navLocation) {
       return;
     }
 
@@ -486,7 +499,7 @@ export default function Map() {
         ];
 
         const updatedRoute = await getRoute(
-          userLocation,
+          navLocation,
           destination,
           "walking",
         );
@@ -498,7 +511,7 @@ export default function Map() {
         if (updatedRoute) {
           setRoute(updatedRoute);
 
-          lastRouteOriginRef.current = userLocation;
+          lastRouteOriginRef.current = navLocation;
         }
       } catch (error) {
         console.warn("Failed to update navigation route:", error);
@@ -508,7 +521,7 @@ export default function Map() {
     };
 
     updateRoute();
-  }, [navigationActive, selectedPlace, userLocation, routeSnap]);
+  }, [navigationActive, selectedPlace, navLocation, routeSnap]);
 
   const clearSelectedPlace = useCallback(() => {
     requestIdRef.current += 1;
@@ -551,8 +564,15 @@ export default function Map() {
           ref={cameraRef}
           zoomLevel={navigationActive ? 18 : 16}
           pitch={navigationActive ? 60 : 0}
-          centerCoordinate={navigationActive ? undefined : CAMPUS_CENTER}
-          followUserLocation={navigationActive}
+          centerCoordinate={
+            simulated && navigationActive
+              ? simulated.coords
+              : navigationActive
+                ? undefined
+                : CAMPUS_CENTER
+          }
+          heading={simulated && navigationActive ? simulated.heading : undefined}
+          followUserLocation={navigationActive && !simulated}
           followUserMode={
             navigationActive
               ? MapboxGL.UserTrackingMode.FollowWithCourse
@@ -564,7 +584,24 @@ export default function Map() {
           animationDuration={700}
         />
 
-        <MapboxGL.UserLocation visible showsUserHeadingIndicator />
+        <MapboxGL.UserLocation visible={!simulated} showsUserHeadingIndicator />
+
+        {simulated ? (
+          <MapboxGL.ShapeSource
+            id="simulatedPuck"
+            shape={{ type: "Point", coordinates: simulated.coords }}
+          >
+            <MapboxGL.CircleLayer
+              id="simulatedPuckDot"
+              style={{
+                circleRadius: 9,
+                circleColor: "#2563EB",
+                circleStrokeColor: "#FFFFFF",
+                circleStrokeWidth: 3,
+              }}
+            />
+          </MapboxGL.ShapeSource>
+        ) : null}
 
         <MapboxGL.FillExtrusionLayer
           id="3d-buildings"
@@ -670,6 +707,28 @@ export default function Map() {
         />
       )}
 
+      {__DEV__ && navigationActive && route && !arrival ? (
+        <SafeAreaView style={styles.devBar} pointerEvents="box-none">
+          <Pressable
+            style={styles.devButton}
+            onPress={() => {
+              if (simulated) {
+                stopSimulatedWalk();
+              } else {
+                startSimulatedWalk(
+                  route.geometry.coordinates as [number, number][],
+                  3,
+                );
+              }
+            }}
+          >
+            <Text style={styles.devButtonText}>
+              {simulated ? "Stop simulation" : "Simulate walk (3x)"}
+            </Text>
+          </Pressable>
+        </SafeAreaView>
+      ) : null}
+
       {arrival && selectedPlace ? (
         <ArrivedScreen
           destination={selectedPlace.name}
@@ -703,6 +762,32 @@ const styles = StyleSheet.create({
   searchRow: {
     paddingHorizontal: 20,
     marginTop: 12,
+  },
+
+  devBar: {
+    position: "absolute",
+    top: 0,
+    right: 0,
+    left: 0,
+    alignItems: "flex-end",
+    paddingHorizontal: 16,
+    paddingTop: 8,
+    zIndex: 20,
+  },
+
+  devButton: {
+    backgroundColor: "#111827",
+    borderRadius: 999,
+    paddingHorizontal: 14,
+    paddingVertical: 8,
+    borderWidth: 1,
+    borderColor: "#4DA8FF",
+  },
+
+  devButtonText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "700",
   },
 
   dismissOverlay: {

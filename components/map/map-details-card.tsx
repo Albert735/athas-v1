@@ -6,7 +6,7 @@ import { MAP_ACTIONS } from "@/data/map-actions";
 import { Clock, Navigation, X } from "lucide-react-native";
 import { Button } from "../ui/button";
 import { Image } from "expo-image";
-import { categoryImages } from "@/data/category-images";
+import { getPlaceImage } from "@/data/place-images";
 
 interface Props {
   place: (typeof places)[number];
@@ -58,7 +58,7 @@ export default function MapDetailsCard({
 
       <View style={styles.imageWrapper}>
         <Image
-          source={categoryImages[place.category] ?? categoryImages.library}
+          source={getPlaceImage(place)}
           style={styles.image}
           contentFit="cover"
         />
