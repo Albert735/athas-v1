@@ -5,6 +5,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { getPlaceImage } from "@/data/place-images";
+import { computeIsOpen } from "@/utils/place-utils";
 import { Star, MapPin, Navigation, Clock3 } from "lucide-react-native";
 import { Button } from "@/components/ui/button";
 
@@ -32,6 +33,8 @@ export default function PlaceSheet() {
       </View>
     );
   }
+
+  const isOpen = computeIsOpen(place.hours, place.days);
 
   const categoryLabel = place.category
     .split("-")
@@ -110,7 +113,7 @@ export default function PlaceSheet() {
           style={[
             styles.statusBadge,
             {
-              backgroundColor: place.isOpen
+              backgroundColor: isOpen
                 ? "rgba(34,197,94,0.12)"
                 : "rgba(239,68,68,0.12)",
             },
@@ -120,7 +123,7 @@ export default function PlaceSheet() {
             style={[
               styles.statusDot,
               {
-                backgroundColor: place.isOpen ? "#22C55E" : "#EF4444",
+                backgroundColor: isOpen ? "#22C55E" : "#EF4444",
               },
             ]}
           />
@@ -129,11 +132,11 @@ export default function PlaceSheet() {
             style={[
               styles.statusText,
               {
-                color: place.isOpen ? "#16A34A" : "#DC2626",
+                color: isOpen ? "#16A34A" : "#DC2626",
               },
             ]}
           >
-            {place.isOpen ? "Open now" : "Closed"}
+            {isOpen ? "Open now" : "Closed"}
           </Text>
         </View>
       </View>

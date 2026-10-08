@@ -6,6 +6,7 @@ import { ParallaxScrollView } from "@/components/ui/parallax-scrollview";
 import { places } from "@/data/places";
 import { getPlaceGallery, getPlaceImage } from "@/data/place-images";
 import { ImageViewer } from "@/components/building/image-viewer";
+import { computeIsOpen } from "@/utils/place-utils";
 import { Brain, FlaskConical, Utensils, ArrowRight } from "lucide-react-native";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import MaterialIcons from "@expo/vector-icons/MaterialIcons";
@@ -171,7 +172,7 @@ export default function BuildingDetailsScreen() {
               onToggleFavorite={() => setIsFavorited((prev) => !prev)}
               onShare={handleShare}
             />
-            <BuildingStatusBadge isOpen={place.isOpen} />
+            <BuildingStatusBadge isOpen={computeIsOpen(place.hours, place.days)} />
           </View>
 
           <BuildingNameBlock
@@ -220,7 +221,7 @@ export default function BuildingDetailsScreen() {
                 description={place.description}
                 days={place.days}
                 hours={place.hours}
-                isOpen={place.isOpen}
+                isOpen={computeIsOpen(place.hours, place.days)}
                 facilities={facilities}
               />
             </TabsContent>

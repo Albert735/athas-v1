@@ -61,8 +61,8 @@ export const places: {
     description:
       "The main university library offering quiet study spaces, research resources, and access to digital archives.",
     distance: "0.6 km",
-    latitude: 5.6501,
-    longitude: -0.1861,
+    latitude: 5.651782467934073,
+    longitude: -0.18707385892380765,
     hours: "7:00 AM - 10:00 PM",
     days: "Mon - Sat",
     isOpen: true,
@@ -356,8 +356,8 @@ export const places: {
     description:
       "Administrative offices for the Computer Science department, handling student inquiries and academic records.",
     distance: "0.5 km",
-    latitude: 5.6511,
-    longitude: -0.1859,
+    latitude: 5.654729287734148,
+    longitude: -0.18380122024159823,
     hours: "8:00 AM - 5:00 PM",
     days: "Mon - Fri",
     isOpen: true,

@@ -10,6 +10,7 @@ import { useLocalSearchParams, router } from "expo-router";
 import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { getPlaceImage } from "@/data/place-images";
+import { computeIsOpen } from "@/utils/place-utils";
 import { Star, MapPin, Navigation } from "lucide-react-native";
 
 export default function PlaceSheet() {
@@ -86,7 +87,7 @@ export default function PlaceSheet() {
         <View style={[styles.statPill, { backgroundColor: cardColor }]}>
           <Text style={[styles.statLabel, { color: mutedColor }]}>Status</Text>
           <Text style={[styles.statValue, { color: textColor }]}>
-            {place.isOpen ? "Open" : "Closed"}
+            {computeIsOpen(place.hours, place.days) ? "Open" : "Closed"}
           </Text>
         </View>
         <View style={[styles.statPill, { backgroundColor: cardColor }]}>

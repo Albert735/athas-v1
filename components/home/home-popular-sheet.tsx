@@ -7,6 +7,7 @@ import { useColor } from "@/hooks/useColor";
 import { places } from "@/data/places";
 import { quickActions } from "@/data/quick-actions";
 import { getPlaceImage } from "@/data/place-images";
+import { computeIsOpen } from "@/utils/place-utils";
 
 interface Props {
   selectedCategory: string;
@@ -197,11 +198,11 @@ export function HomePopularSheet({
                   style={[
                     styles.openStatus,
                     {
-                      color: item.isOpen ? "#16A34A" : "#DC2626",
+                      color: computeIsOpen(item.hours, item.days) ? "#16A34A" : "#DC2626",
                     },
                   ]}
                 >
-                  {item.isOpen ? "Open" : "Closed"}
+                  {computeIsOpen(item.hours, item.days) ? "Open" : "Closed"}
                 </Text>
               </View>
             </View>
